@@ -1,0 +1,14 @@
+@keyframes slideIn {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slideIn {
+  animation: slideIn 3s ease;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
