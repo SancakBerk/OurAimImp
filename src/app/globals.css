@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply transition-colors duration-300;
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+input:focus {
+  outline: none;
+}

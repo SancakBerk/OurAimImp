@@ -1,0 +1,12 @@
+.darkModeBackGround {
+  background-image: url("../../public/darkModeBackgroundImage.jpg");
+}
+.lightModeBackGround {
+  background-image: url("../../public/lightModeBackground.webp");
+}
+
+.darkModeBackGround .lightModeBackGround {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
