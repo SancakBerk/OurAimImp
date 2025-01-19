@@ -19,10 +19,12 @@ import { db } from "@/lib/firebaseconfig";
 import { userType } from "@/types/types";
 import exp from "constants";
 import { setLoginInitialStates } from "@/redux/slices/globalSlice";
+import { useDispatch } from "react-redux";
 require("dotenv").config();
 const LoginForm = (): JSX.Element => {
   const [isDarkMode, setisDarkMode] = useState(getIsDarkMode());
   const router = useRouter();
+  const dispatch = useDispatch();
   const { handleChange, handleSubmit, values, errors } = useFormik({
     initialValues: {
       email: "",
@@ -48,35 +50,18 @@ const LoginForm = (): JSX.Element => {
         return;
       }
       const userData = userSnapshot.docs[0].data() as userType;
-      console.log("userSnapshot.docs[0].data() ", userSnapshot.docs[0].data());
       if (userData.password !== values.password) {
         toast.error("Password is incorrect");
         return;
       }
-
-      const options = {
-        expiresIn: "2h",
-      };
-      console.log("Payload (userData):", userData);
-      if (typeof userData !== "object" || !userData) {
-        throw new Error("Payload must be a valid object");
-      }
-      const secretKey = "defaultSecretKey";
-      console.log("secretKey:", secretKey);
-      const userToken = jwt.sign(
-        {
-          email: "email",
-          userId: "userId",
-        },
-        secretKey
-      );
       // localStorage.setItem("userToken", userToken);
-      // setLoginInitialStates({
-      //   email: userData.email,
-      //   token: userToken,
-      //   userId: userData.userId,
-      //   documentId: userSnapshot.docs[0].id,
-      // });
+      dispatch(
+        setLoginInitialStates({
+          email: userData.email,
+          userId: userData.userId,
+          documentId: userSnapshot.docs[0].id,
+        })
+      );
       router.push("/Home");
     } catch (error) {
       console.error("Error finding user:", error);

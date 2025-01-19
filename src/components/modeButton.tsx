@@ -6,6 +6,9 @@ import Image from "next/image";
 import moonImage from "../../public/moon.png";
 import sunImage from "../../public/sun.png";
 import { getIsDarkMode } from "../utils/helperFunctions";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setModeToRedux } from "@/redux/slices/globalSlice";
 
 interface modeButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   setDarkModeProp: (mode: boolean) => void;
@@ -15,11 +18,14 @@ const ModeButton: FC<modeButtonProps> = ({
   setDarkModeProp,
   ...props
 }): JSX.Element => {
-  const [darkMode, setdarkMode] = useState<boolean>(getIsDarkMode());
+  const darkMode = useSelector(
+    (state: RootState) => state.globalSlice.isDarkMode
+  );
+  const dispatch = useDispatch();
+
   const handleMode = (): void => {
     localStorage.setItem("darkMode", JSON.stringify(!darkMode));
-    setdarkMode(!darkMode);
-    setDarkModeProp(!darkMode);
+    dispatch(setModeToRedux(!darkMode));
   };
 
   return (

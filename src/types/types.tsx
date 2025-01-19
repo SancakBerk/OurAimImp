@@ -11,12 +11,16 @@ export type verticalNavbarProps = {
 };
 
 export type expensesType = {
+  price: number;
   amount: number;
+  userId: string;
   imageUrl: string;
   isRequired: boolean;
   name: string;
   rate: number;
-  userId: string;
+};
+export type expensesDataWithDocumentId = expensesType & {
+  documentId: string;
 };
 
 export type savingsType = {
@@ -24,6 +28,10 @@ export type savingsType = {
   date: Date;
   type: string;
   userId: string;
+};
+
+export type savingsTypeWithDocumentId = savingsType & {
+  documentId: string;
 };
 
 export type userType = {

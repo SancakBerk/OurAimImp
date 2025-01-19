@@ -1,49 +1,50 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+interface UserInformationTypes {
+  email: string;
+  userId: string;
+  documentId: string;
+}
+
 export interface InitialStateTypes {
   isDarkMode: boolean;
-  userId: string;
-  token: string;
-  email: string;
-  documentId: string;
+  userInformation: UserInformationTypes;
 }
 
 const initialState: InitialStateTypes = {
   isDarkMode: false,
-  email: "",
-  token: "",
-  userId: "",
-  documentId: "",
+  userInformation: {
+    email: "",
+    userId: "",
+    documentId: "",
+  },
 };
 interface LoginInitialStatesPayload {
   email: string;
-  token: string;
   userId: string;
   documentId: string;
 }
 
-export const counterSlice = createSlice({
+export const globalSlice = createSlice({
   name: "counter",
   initialState,
   reducers: {
-    setModeToLocalStorage: (state, actions) => {
+    setModeToRedux: (state, actions: PayloadAction<boolean>) => {
       state.isDarkMode = actions.payload;
     },
     setLoginInitialStates: (
       state,
       actions: PayloadAction<LoginInitialStatesPayload>
     ) => {
-      state.email = actions.payload.email;
-      state.token = actions.payload.token;
-      state.userId = actions.payload.userId;
-      state.documentId = actions.payload.documentId;
+      state.userInformation.email = actions.payload.email;
+      state.userInformation.userId = actions.payload.userId;
+      state.userInformation.documentId = actions.payload.documentId;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setModeToLocalStorage, setLoginInitialStates } =
-  counterSlice.actions;
+export const { setModeToRedux, setLoginInitialStates } = globalSlice.actions;
 
-export default counterSlice.reducer;
+export default globalSlice.reducer;

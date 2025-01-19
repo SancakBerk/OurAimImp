@@ -1,20 +1,31 @@
 "use client";
 import { getIsDarkMode } from "@/utils/helperFunctions";
-import { JSX, ReactNode, useState } from "react";
+import { JSX, ReactNode, useEffect, useState } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import Expenses from "./components/Expenses";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import UpdateAddPopUp from "./components/UpdateAddPopUp";
+import ConfirmDeletePopUp from "./components/ConfirmDeletePopUp";
 
 const HomePage = (): JSX.Element => {
-  const [isDarkMode, setIsDarkMode] = useState(getIsDarkMode());
+  const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
+  const isDarkMode = useSelector(
+    (state: RootState) => state.globalSlice.isDarkMode
+  );
   return (
     <div className={`${isDarkMode && "dark"}`}>
-      <div className="w-screen h-screen">
-        <div className="w-[10%] h-screen">
+      <div className="w-screen h-screen flex relative">
+        <div className="w-[10%] h-full">
           <VerticalNavbar />
         </div>
         <div className="w-full h-screen">
           <Expenses />
         </div>
+        {homePageSlice.isPopupOpen.isPopupOpen ? <UpdateAddPopUp /> : null}
+        {homePageSlice.deletePopUpConfirmation.showDeletePopUp ? (
+          <ConfirmDeletePopUp />
+        ) : null}
       </div>
     </div>
   );

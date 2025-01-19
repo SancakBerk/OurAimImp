@@ -1,3 +1,5 @@
+import { useDispatch } from "react-redux";
+
 export const getIsDarkMode = (): boolean => {
   if (typeof window !== "undefined") {
     // localStorage yalnızca client tarafında erişilebilir
