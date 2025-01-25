@@ -20,6 +20,7 @@ import { userType } from "@/types/types";
 import exp from "constants";
 import { setLoginInitialStates } from "@/redux/slices/globalSlice";
 import { useDispatch } from "react-redux";
+import { InputComponent } from "@/components/InputComponent";
 require("dotenv").config();
 const LoginForm = (): JSX.Element => {
   const [isDarkMode, setisDarkMode] = useState(getIsDarkMode());
@@ -80,29 +81,31 @@ const LoginForm = (): JSX.Element => {
         <label htmlFor="email" className="   dark:text-white text-lg ">
           Email Address
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Email Adresinizi Giriniz..."
-          className="bg-slate-600 text-white w-[50%] dark:bg-white dark:text-black p-4 rounded"
-          onChange={handleChange}
-          value={values.email}
-        />
+        <div className="w-[50%]">
+          <InputComponent
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Email Adresinizi Giriniz..."
+            onChange={handleChange}
+            value={values.email}
+          />
+        </div>
         {errors.email && <p className=" text-red-600">{errors.email}</p>}
 
         <label htmlFor="password" className="text-lg dark:text-white ">
           Password
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Şifrenizi Giriniz..."
-          className="bg-black text-white w-[50%] dark:bg-white dark:text-black p-4 rounded"
-          onChange={handleChange}
-          value={values.password}
-        />
+        <div className="w-[50%]">
+          <InputComponent
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Şifrenizi Giriniz..."
+            onChange={handleChange}
+            value={values.password}
+          />
+        </div>
         {errors.password && <p className=" text-red-600">{errors.password}</p>}
 
         <div className="flex items-center gap-4 h-10 ">

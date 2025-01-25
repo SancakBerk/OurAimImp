@@ -22,10 +22,10 @@ const HomePage = (): JSX.Element => {
         <div className="w-full h-screen">
           <Expenses />
         </div>
-        {homePageSlice.isPopupOpen.isPopupOpen ? <UpdateAddPopUp /> : null}
-        {homePageSlice.deletePopUpConfirmation.showDeletePopUp ? (
+        {homePageSlice.isPopupOpen.isPopupOpen && <UpdateAddPopUp />}
+        {homePageSlice.deletePopUpConfirmation.showDeletePopUp && (
           <ConfirmDeletePopUp />
-        ) : null}
+        )}
       </div>
     </div>
   );

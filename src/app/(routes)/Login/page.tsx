@@ -9,12 +9,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { getIsDarkMode } from "@/utils/helperFunctions";
 import { get } from "http";
+import { setModeToRedux } from "@/redux/slices/globalSlice";
 
 const LoginPage = (): JSX.Element => {
-  const [darkMode, setDarkMode] = useState<boolean>(getIsDarkMode());
+  const darkMode = useSelector(
+    (state: RootState) => state.globalSlice.isDarkMode
+  );
 
   const setDarkModeProp = (mode: boolean) => {
-    setDarkMode(mode);
+    setModeToRedux(!darkMode);
   };
 
   return (

@@ -5,9 +5,11 @@ import React, { JSX, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface buttonProps extends React.HTMLAttributes<HTMLButtonElement> {
+  parentClassName?: string;
   text: string;
 }
 export const ButtonComponent: React.FC<buttonProps> = ({
+  parentClassName,
   text,
   ...props
 }): JSX.Element => {
@@ -15,10 +17,10 @@ export const ButtonComponent: React.FC<buttonProps> = ({
     (state: RootState) => state.globalSlice.isDarkMode
   );
   return (
-    <div className={`${isDarkMode ? "dark" : ""} ${props.className}`}>
+    <div className={`${isDarkMode ? "dark" : ""} ${parentClassName}`}>
       <button
         onClick={props.onClick}
-        className={`text-xl focus:outline-none p-2 rounded-lg  bg-white dark:bg-black border `}
+        className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white dark:bg-black border `}
       >
         <p className="dark:text-white  "> {text} </p>
       </button>

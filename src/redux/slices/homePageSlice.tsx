@@ -5,7 +5,7 @@ import type { Action, PayloadAction } from "@reduxjs/toolkit";
 export interface isPopupOpenType {
   isPopupOpen: boolean;
   isUpdate: boolean;
-  expenseData?: expensesType;
+  expenseData?: expensesDataWithDocumentId;
 }
 export interface isDeleteConfirmPopUpType {
   showDeletePopUp: boolean;
@@ -33,6 +33,7 @@ export const homePageSlice = createSlice({
     setPopupOpen: (state, actions: PayloadAction<isPopupOpenType>) => {
       state.isPopupOpen.isPopupOpen = actions.payload.isPopupOpen;
       state.isPopupOpen.isUpdate = actions.payload.isUpdate;
+      state.isPopupOpen.expenseData = actions.payload.expenseData;
     },
     setDeletePopUpConfirmation: (
       state,

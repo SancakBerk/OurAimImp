@@ -1,11 +1,11 @@
 "use client";
 import { ButtonComponent } from "@/components/ButtonComponent";
-import { deleteExpensesByDocumentId } from "@/services/userService";
 import {
   setDeletePopUpConfirmation,
   setExpenseDataChanged,
 } from "@/redux/slices/homePageSlice";
 import { RootState } from "@/redux/store";
+import { deleteExpensesByDocumentId } from "@/services/expensesService";
 import { JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
