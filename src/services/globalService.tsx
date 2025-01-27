@@ -1,8 +1,5 @@
 import { exchangeDataType, serviceReturnType } from "@/types/types";
 import axios, { AxiosResponse } from "axios";
-export const editGoldAmount = async (): Promise<void> => {
-  console.log("editGoldAmount");
-};
 export const getCurrentExchangeRates = async (): Promise<serviceReturnType> => {
   try {
     const res: AxiosResponse = await axios.get(

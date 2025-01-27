@@ -75,3 +75,19 @@ export type exchangeDataType = {
   gold22: exchangeDataEachObjectType;
   gold24: exchangeDataEachObjectType;
 };
+
+export type calculateSavingDataType = {
+  aimDate: Date;
+  howManyDaysLeft: number;
+  requiredSavingsPrice: number;
+  requestedSavingsPrice: number;
+  totalSavingMoney: number;
+  monthlyNeededMoney: number;
+};
+
+export type localStorageSessionType = {
+  userId: string;
+  systemEnterDate: Date;
+  systemExpiresDate: Date;
+  rememberMe: boolean;
+};

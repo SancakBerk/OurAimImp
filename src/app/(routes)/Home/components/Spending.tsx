@@ -5,12 +5,7 @@ import { ButtonComponent } from "@/components/ButtonComponent";
 const Spending = (): JSX.Element => {
   return (
     <div className={`w-full h-full bg-blue-400  `}>
-      <ButtonComponent
-        text="Test"
-        onClick={() => {
-          console.log("Test");
-        }}
-      />
+      <ButtonComponent text="Test" onClick={() => {}} />
     </div>
   );
 };

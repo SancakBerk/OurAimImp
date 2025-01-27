@@ -4,7 +4,7 @@ import { getIsDarkMode } from "@/utils/helperFunctions";
 import React, { JSX, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-interface buttonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface buttonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   parentClassName?: string;
   text: string;
 }
@@ -19,6 +19,7 @@ export const ButtonComponent: React.FC<buttonProps> = ({
   return (
     <div className={`${isDarkMode ? "dark" : ""} ${parentClassName}`}>
       <button
+        type={props.type}
         onClick={props.onClick}
         className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white dark:bg-black border `}
       >

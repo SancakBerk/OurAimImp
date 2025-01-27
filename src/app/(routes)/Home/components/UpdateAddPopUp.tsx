@@ -6,56 +6,79 @@ import {
   setPopupOpen,
 } from "@/redux/slices/homePageSlice";
 import { RootState } from "@/redux/store";
-import { updateExpenseDataByDocumentId } from "@/services/expensesService";
+import {
+  addExpense,
+  updateExpenseDataByDocumentId,
+} from "@/services/expensesService";
 import { expensesType, serviceReturnType } from "@/types/types";
 import { updateExpensesSchema } from "@/utils/loginInformationSchemas";
 import { MenuItem, Select } from "@mui/material";
 import { useFormik } from "formik";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 export const UpdateAddPopUp = (): JSX.Element => {
-  const { expenseData } = useSelector(
-    (state: RootState) => state.homePageSlice.isPopupOpen
-  );
+  const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
+  const globalSlice = useSelector((state: RootState) => state.globalSlice);
+  const expenseData = homePageSlice.isPopupOpen.expenseData;
   const dispatch = useDispatch();
+
   const { handleChange, handleSubmit, values, errors } = useFormik({
     initialValues: {
-      amount: expenseData?.amount.toString(),
-      imageUrl: expenseData?.imageUrl,
-      name: expenseData?.name,
-      price: expenseData?.price.toString(),
-      rate: expenseData?.rate.toString(),
-      isRequired: expenseData?.isRequired ? 1 : 0,
+      amount: expenseData?.amount.toString() && "",
+      imageUrl: expenseData?.imageUrl && "",
+      name: expenseData?.name && "",
+      price: expenseData?.price.toString() && "",
+      rate: expenseData?.rate.toString() && "",
+      isRequired: expenseData?.isRequired ? 1 : 0 && "",
     },
     validationSchema: updateExpensesSchema,
     onSubmit: async (values) => {
-      console.log("onSubmit values", values);
-      await updateExpenseDataByDocumentId(expenseData!.documentId, {
+      var object: expensesType = {
         amount: Number(values.amount),
         imageUrl: values.imageUrl as string,
         name: values.name as string,
         price: Number(values.price),
         rate: Number(values.rate),
         isRequired: values.isRequired == 1 ? true : false,
-        userId: expenseData!.userId,
-        isCalculating: expenseData!.isCalculating,
-      }).then((res: serviceReturnType) => {
-        if (res.statusCode === 200) {
-          dispatch(
-            setPopupOpen({
-              isPopupOpen: false,
-              isUpdate: false,
-              expenseData: undefined,
-            })
-          );
-          dispatch(setExpenseDataChanged(true));
-          toast.success("Updated Successfully");
-        } else {
-          console.log("error", res.message);
-        }
-      });
+        userId: globalSlice.userId,
+        isCalculating: expenseData ? expenseData.isCalculating : true,
+      };
+      if (homePageSlice.isPopupOpen.isUpdate) {
+        await updateExpenseDataByDocumentId(
+          expenseData!.documentId,
+          object
+        ).then((res: serviceReturnType) => {
+          if (res.statusCode === 200) {
+            dispatch(
+              setPopupOpen({
+                isPopupOpen: false,
+                isUpdate: false,
+                expenseData: undefined,
+              })
+            );
+            dispatch(setExpenseDataChanged(true));
+            toast.success("Updated Successfully");
+          } else {
+            console.log("error", res.message);
+          }
+        });
+      } else {
+        addExpense(object).then((res) => {
+          if (res.statusCode === 200) {
+            dispatch(
+              setPopupOpen({
+                isPopupOpen: false,
+                isUpdate: false,
+                expenseData: undefined,
+              })
+            );
+            dispatch(setExpenseDataChanged(true));
+            toast.success("Added Successfully");
+          }
+        });
+      }
     },
   });
 
@@ -135,7 +158,10 @@ export const UpdateAddPopUp = (): JSX.Element => {
                 );
               }}
             />
-            <ButtonComponent text="Update" typeof="submit" />
+            <ButtonComponent
+              text={homePageSlice.isPopupOpen.isUpdate ? "Update" : "Add"}
+              type="submit"
+            />
           </div>
         </form>
       </div>

@@ -27,12 +27,14 @@ export const getTotalSavingDataById = async (
     const snapshot = (await getDocs(
       queryForSavingsCollection
     )) as QuerySnapshot<DocumentData>;
+
     const allSavings = snapshot.docs.map((eachSavingData) => {
       return {
         ...(eachSavingData.data() as totalSavingsType),
         documentId: eachSavingData.id,
       } as totalSavingTypeWithDocumentId;
     });
+
     return { statusCode: 200, message: "sucess", data: allSavings };
   } catch (error) {
     console.log("error", error);

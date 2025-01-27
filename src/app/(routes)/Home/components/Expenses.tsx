@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import {
+  setCurrentExpenseData,
   setDeletePopUpConfirmation,
   setExpenseDataChanged,
   setPopupOpen,
@@ -30,7 +31,9 @@ export const Expenses = () => {
   >([]);
 
   useEffect(() => {
-    getExpenses();
+    if (globalSlice.userId) {
+      getExpenses();
+    }
   }, []);
 
   useEffect(() => {
@@ -40,10 +43,15 @@ export const Expenses = () => {
     }
   }, [homePageSlice.expenseDataChanged]);
 
+  useEffect(() => {
+    getExpenses();
+  }, [globalSlice.userId]);
+
   const getExpenses = async () => {
-    await getUserExpensesByUserId(globalSlice.userInformation.userId).then(
+    await getUserExpensesByUserId(globalSlice.userId).then(
       (data: serviceReturnType) => {
         if (data.statusCode == 200) {
+          setCurrentExpenseData(data.data as expensesDataWithDocumentId[]);
           setExpensesData(data.data as expensesDataWithDocumentId[]);
         }
       }
@@ -58,9 +66,12 @@ export const Expenses = () => {
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
+              className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 relative dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
               key={eachData.documentId}
             >
+              <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center ">
+                {eachData.amount} x
+              </div>
               <div className="  w-full h-[60%] flex justify-center">
                 <Image
                   src={eachData.imageUrl}
@@ -127,6 +138,23 @@ export const Expenses = () => {
             </div>
           );
         })}
+        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center ">
+          <div className="w-full h-full  flex justify-center items-center">
+            <ButtonComponent
+              text="+"
+              parentClassName="w-20 h-10"
+              onClick={() => {
+                dispatch(
+                  setPopupOpen({
+                    isPopupOpen: true,
+                    isUpdate: false,
+                    expenseData: undefined,
+                  })
+                );
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -22,13 +22,103 @@ export const updateExpensesSchema = yup.object().shape({
 });
 
 export const addSavingsSchema = yup.object().shape({
-  gold14: yup.number(),
-  gold18: yup.number(),
-  gold22: yup.number(),
-  gold24: yup.number(),
-  dollar: yup.number(),
-  euro: yup.number(),
-  fon: yup.number(),
-  tl: yup.number(),
-  hisse: yup.number(),
+  gold14: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  gold18: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  gold22: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  gold24: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  dollar: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  euro: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  fon: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  tl: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
+  hisse: yup
+    .number()
+    .min(0)
+    .test(
+      "is-decimal",
+      "Gold 14 must have at most two decimal places",
+      (value) =>
+        value === undefined ||
+        value === 0 ||
+        /^\d+(\.\d{1,2})?$/.test(value.toString())
+    ),
 });

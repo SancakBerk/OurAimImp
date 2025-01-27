@@ -1,6 +1,8 @@
 import { RootState } from "@/redux/store";
 import {
+  calculateSavingDataType,
   exchangeDataType,
+  expensesDataWithDocumentId,
   serviceReturnType,
   totalSavingsObjectType,
   totalSavingsType,
@@ -8,7 +10,7 @@ import {
   verticalNavbarProps,
 } from "@/types/types";
 import React, { JSX, use, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PieChart } from "@mui/x-charts/PieChart";
 import {
   getTotalSavingDataById,
@@ -16,40 +18,96 @@ import {
 } from "@/services/savingService";
 import { getCurrentExchangeRates } from "@/services/globalService";
 import { InputComponent } from "@/components/InputComponent";
-import { Button } from "@mui/material";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { useFormik } from "formik";
 import { addSavingsSchema } from "@/utils/loginInformationSchemas";
-import { toast } from "react-toastify";
+import { savingRowInformations } from "@/utils/constants";
+import { setCurrentExchangeRates } from "@/redux/slices/homePageSlice";
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
+  const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
+  const [calculatedSavingInformations, setCalculatedSavingInformations] =
+    useState<calculateSavingDataType>();
+
   const [exchangeDatas, setExchangeDatas] = useState<exchangeDataType>();
   const [savingsData, setSavingsData] =
     useState<totalSavingTypeWithDocumentId | null>(null);
-  useEffect(() => {
-    getTotalSavingDataById(globalSlice.userInformation.userId).then(
-      (res: serviceReturnType) => {
-        if (res.statusCode === 200 && res.data != undefined) {
-          setSavingsData(res.data[0] as totalSavingTypeWithDocumentId);
+  const [isTotalSavingProcessAdding, setIsTotalSavingProcessAdding] =
+    useState(true);
+  const dispatch = useDispatch();
+  const useEffectStartFunctions = () => {
+    if (globalSlice.userId) {
+      getCurrentExchangeRates().then((res: serviceReturnType) => {
+        if (res.statusCode === 200) {
+          var object: exchangeDataType = {
+            dollar: res.data?.USD,
+            gold14: res.data?.["14-ayar-altin"],
+            euro: res.data?.EUR,
+            gold18: res.data?.["18-ayar-altin"],
+            gold22: res.data?.["gram-altin"],
+            gold24: res.data?.["gram-has-altin"],
+          };
+          setExchangeDatas(object);
+          dispatch(setCurrentExchangeRates(object));
         }
-      }
-    );
-    getCurrentExchangeRates().then((res: serviceReturnType) => {
-      var object: exchangeDataType = {
-        dollar: res.data?.USD,
-        gold14: res.data?.["14-ayar-altin"],
-        euro: res.data?.EUR,
-        gold18: res.data?.["18-ayar-altin"],
-        gold22: res.data?.["gram-altin"],
-        gold24: res.data?.["gram-has-altin"],
-      };
+      });
+      getTotalSavingDataById(globalSlice.userId).then(
+        (res: serviceReturnType) => {
+          if (res.statusCode === 200 && res.data != undefined) {
+            setSavingsData(
+              (prev) => res.data[0] as totalSavingTypeWithDocumentId
+            );
+            var calculateSavingDataVar = calculateSavingData();
+            if (calculateSavingDataVar) {
+              setCalculatedSavingInformations(calculateSavingDataVar);
+            }
+          }
+        }
+      );
+    }
+  };
 
-      setExchangeDatas(object);
-    });
+  useEffect(() => {
+    useEffectStartFunctions();
   }, []);
+  useEffect(() => {
+    useEffectStartFunctions();
+  }, [globalSlice.userId]);
 
-  // const addSavings = (theSavingsData:totalSavingsObjectType,) =>
-  // {}
+  const calculateSavingData = (): calculateSavingDataType | null => {
+    if (savingsData) {
+      var currentExpenseData = homePageSlice.currentExpenseData;
+      var totalRequestedDataCosts = 0;
+      var totalRequiredDataCosts = 0;
+      currentExpenseData.map((eachExpenseData) => {
+        if (eachExpenseData.isCalculating) {
+          var exchangeDataToTl =
+            eachExpenseData.price *
+            parseInt(exchangeDatas!.dollar.Alış) *
+            eachExpenseData.amount;
+          if (eachExpenseData.isRequired && exchangeDatas) {
+            totalRequiredDataCosts += exchangeDataToTl;
+          } else {
+            totalRequestedDataCosts += exchangeDataToTl;
+          }
+        }
+      });
+
+      var howManyDaysLeft =
+        savingsData.aimDate.getTime() - new Date().getTime();
+      return {
+        aimDate: savingsData.aimDate,
+        howManyDaysLeft: howManyDaysLeft,
+        requestedSavingsPrice: totalRequestedDataCosts,
+        requiredSavingsPrice: totalRequiredDataCosts,
+        totalSavingMoney: totalRequestedDataCosts + totalRequiredDataCosts,
+        monthlyNeededMoney:
+          (totalRequestedDataCosts + totalRequiredDataCosts) /
+          (howManyDaysLeft / 30),
+      };
+    }
+    return null;
+  };
 
   const clearValues = () => {
     values.gold14 = 0;
@@ -76,7 +134,6 @@ export const SavingComponent = (): JSX.Element => {
     },
     validationSchema: addSavingsSchema,
     onSubmit: async () => {
-      console.log("values", values);
       if (!savingsData) {
         return;
       }
@@ -87,7 +144,13 @@ export const SavingComponent = (): JSX.Element => {
       };
       Object.entries(values).map(([key, value]) => {
         if (value != 0) {
-          object.totalSavings[key as keyof totalSavingsObjectType] += value;
+          {
+            isTotalSavingProcessAdding
+              ? (object.totalSavings[key as keyof totalSavingsObjectType] +=
+                  value)
+              : (object.totalSavings[key as keyof totalSavingsObjectType] -=
+                  value);
+          }
         }
       });
       await UpdateTotalSavingsData(savingsData.documentId, object).then(
@@ -110,146 +173,65 @@ export const SavingComponent = (): JSX.Element => {
   return (
     <div className="w-full h-full border-blue-500 border flex">
       <form className="w-[50%] " onSubmit={handleSubmit}>
+        {Object.entries(savingsData.totalSavings).map(([key, value]) => {
+          var text = savingRowInformations.find(
+            (eachObject) => eachObject.type === key
+          )?.placeholder;
+          return (
+            <div
+              className="flex p-4 w-full justify-center items-center gap-x-5  "
+              key={key}
+            >
+              <div
+                className={`border rounded flex flex-col justify-center items-center  w-[50%] `}
+              >
+                <p>
+                  {text}: {value.toString()}
+                  {key == "gold14" ||
+                  key == "gold18" ||
+                  key == "gold22" ||
+                  key == "gold24"
+                    ? " gram"
+                    : ""}
+                </p>
+              </div>
+              <InputComponent
+                type="number"
+                value={values[key as keyof totalSavingsObjectType]}
+                placeholder={text}
+                parentClassName="w-[25%]"
+                className={`${errors.gold14 && "border-red-500"} text-center`}
+                name={key}
+                onChange={handleChange}
+              />
+            </div>
+          );
+        })}
+
         <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div
-            className={`border rounded flex flex-col justify-center items-center  `}
-          >
-            <p>
-              Altın-14 ayar: {savingsData.totalSavings.gold14.toString()} gram
-            </p>
-          </div>
-          <InputComponent
-            type="number"
-            value={values.gold14}
-            parentClassName="w-[25%]"
-            className={`${errors.gold14 && "border-red-500"} text-center`}
-            name="gold14"
-            onChange={handleChange}
+          <ButtonComponent
+            text="Remove"
+            itemType="button"
+            onClick={() => {
+              setIsTotalSavingProcessAdding(false);
+            }}
           />
-          <ButtonComponent text="Ekle" typeof="submit" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>
-              Altın-18 ayar: {savingsData.totalSavings.gold18.toString()} gram
-            </p>
-          </div>
-          <InputComponent
-            value={values.gold18}
-            type="number"
-            parentClassName="w-[25%]"
-            className={`${errors.gold18 && "border-red-500"} text-center`}
-            name="gold18"
-            onChange={handleChange}
+          <ButtonComponent
+            text="Ekle"
+            itemType="button"
+            onClick={() => {
+              setIsTotalSavingProcessAdding(true);
+            }}
           />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>
-              Altın-22 ayar: {savingsData.totalSavings.gold22.toString()} gram
-            </p>
-          </div>
-          <InputComponent
-            value={values.gold22}
-            type="number"
-            parentClassName="w-[25%]"
-            name="gold22"
-            className={`${errors.gold22 && "border-red-500"} text-center`}
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>
-              Altın-24 ayar: {savingsData.totalSavings.gold24.toString()} gram
-            </p>
-          </div>
-          <InputComponent
-            value={values.gold24}
-            type="number"
-            parentClassName="w-[25%]"
-            className={`${errors.gold24 && "border-red-500"} text-center`}
-            name="gold24"
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>Dolar: {savingsData.totalSavings.dollar.toString()} </p>
-          </div>
-          <InputComponent
-            type="number"
-            value={values.dollar}
-            parentClassName="w-[25%]"
-            className={`${errors.dollar && "border-red-500"} text-center`}
-            name="dollar"
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>Euro: {savingsData.totalSavings.euro.toString()} </p>
-          </div>
-          <InputComponent
-            value={values.euro}
-            type="number"
-            parentClassName="w-[25%]"
-            name="euro"
-            className={`${errors.euro && "border-red-500"} text-center`}
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>Fon: {savingsData.totalSavings.fon.toString()} </p>
-          </div>
-          <InputComponent
-            value={values.fon}
-            type="number"
-            parentClassName="w-[25%]"
-            name="fon"
-            className={`${errors.fon && "border-red-500"} text-center`}
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>Tl: {savingsData.totalSavings.tl.toString()} </p>
-          </div>
-          <InputComponent
-            value={values.tl}
-            type="number"
-            parentClassName="w-[25%]"
-            name="tl"
-            className={`${errors.tl && "border-red-500"} text-center`}
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
-        </div>
-        <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-          <div className="border rounded flex flex-col justify-center items-center ">
-            <p>Hisse: {savingsData.totalSavings.hisse.toString()}</p>
-          </div>
-          <InputComponent
-            value={values.hisse}
-            type="number"
-            parentClassName="w-[25%]"
-            className={`${errors.hisse && "border-red-500"} text-center`}
-            name="hisse"
-            onChange={handleChange}
-          />
-          <ButtonComponent text="Ekle" />
         </div>
       </form>
 
-      <div className="w-[50%]">
-        <p>Some Graphs</p>
+      <div className="w-[50%] flex flex-col">
+        <div className=" w-full p-4 flex flex-col justify-center items-center">
+          <p>Hedef Tarih</p>
+          <p>{calculatedSavingInformations?.aimDate.toString()}</p>
+        </div>
+        <div> {calculatedSavingInformations?.requiredSavingsPrice} </div>
       </div>
     </div>
   );

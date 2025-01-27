@@ -1,4 +1,8 @@
-import { expensesDataWithDocumentId, expensesType } from "@/types/types";
+import {
+  exchangeDataType,
+  expensesDataWithDocumentId,
+  expensesType,
+} from "@/types/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { Action, PayloadAction } from "@reduxjs/toolkit";
 
@@ -16,20 +20,43 @@ export interface InitialStateTypes {
   isPopupOpen: isPopupOpenType;
   deletePopUpConfirmation: isDeleteConfirmPopUpType;
   expenseDataChanged: boolean;
+  currentExpenseData: expensesDataWithDocumentId[];
+  currentExchangeRates: exchangeDataType;
 }
 
 const initialState: InitialStateTypes = {
+  currentExchangeRates: {
+    dollar: { Alış: "1", Tür: "USD", Satış: "1", Değişim: "1" },
+    euro: { Alış: "1", Tür: "EUR", Satış: "1", Değişim: "1" },
+    gold14: { Alış: "1", Tür: "14-ayar-altin", Satış: "1", Değişim: "1" },
+    gold18: { Alış: "1", Tür: "18-ayar-altin", Satış: "1", Değişim: "1" },
+    gold22: { Alış: "1", Tür: "gram-altin", Satış: "1", Değişim: "1" },
+    gold24: { Alış: "1", Tür: "gram-has-altin", Satış: "1", Değişim: "1" },
+  },
   isPopupOpen: { isPopupOpen: false, isUpdate: false },
   deletePopUpConfirmation: {
     showDeletePopUp: false,
   },
   expenseDataChanged: false,
+  currentExpenseData: [],
 };
 
 export const homePageSlice = createSlice({
   name: "homePageSlice",
   initialState,
   reducers: {
+    setCurrentExchangeRates: (
+      state,
+      action: PayloadAction<exchangeDataType>
+    ) => {
+      state.currentExchangeRates = action.payload;
+    },
+    setCurrentExpenseData: (
+      state,
+      actions: PayloadAction<expensesDataWithDocumentId[]>
+    ) => {
+      state.currentExpenseData = actions.payload;
+    },
     setPopupOpen: (state, actions: PayloadAction<isPopupOpenType>) => {
       state.isPopupOpen.isPopupOpen = actions.payload.isPopupOpen;
       state.isPopupOpen.isUpdate = actions.payload.isUpdate;
@@ -55,6 +82,8 @@ export const {
   setPopupOpen,
   setDeletePopUpConfirmation,
   setExpenseDataChanged,
+  setCurrentExchangeRates,
+  setCurrentExpenseData,
 } = homePageSlice.actions;
 
 export default homePageSlice.reducer;

@@ -3,24 +3,17 @@ import { getIsDarkMode } from "@/utils/helperFunctions";
 import { useFormik } from "formik";
 import { JSX, use, useState } from "react";
 import { loginInformationSchema } from "@/utils/loginInformationSchemas";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-import jwt from "jsonwebtoken";
 
-import {
-  collection,
-  doc,
-  DocumentData,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseconfig";
 import { userType } from "@/types/types";
-import exp from "constants";
-import { setLoginInitialStates } from "@/redux/slices/globalSlice";
+import { setUserIdToRedux } from "@/redux/slices/globalSlice";
 import { useDispatch } from "react-redux";
 import { InputComponent } from "@/components/InputComponent";
+import { ButtonComponent } from "@/components/ButtonComponent";
+import { Checkbox } from "@mui/material";
 require("dotenv").config();
 const LoginForm = (): JSX.Element => {
   const [isDarkMode, setisDarkMode] = useState(getIsDarkMode());
@@ -30,7 +23,7 @@ const LoginForm = (): JSX.Element => {
     initialValues: {
       email: "",
       password: "",
-      checkbox: "",
+      checkbox: false,
     },
     validationSchema: loginInformationSchema,
     onSubmit: async (values) => {
@@ -55,14 +48,16 @@ const LoginForm = (): JSX.Element => {
         toast.error("Password is incorrect");
         return;
       }
-      // localStorage.setItem("userToken", userToken);
-      dispatch(
-        setLoginInitialStates({
-          email: userData.email,
-          userId: userData.userId,
-          documentId: userSnapshot.docs[0].id,
-        })
-      );
+
+      var session = JSON.stringify({
+        userId: userData.userId,
+        systemEnterDate: new Date(),
+        systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        rememberMe: values.checkbox,
+      });
+      localStorage.setItem("session", session);
+
+      dispatch(setUserIdToRedux(userData.userId));
       router.push("/Home");
     } catch (error) {
       console.error("Error finding user:", error);
@@ -112,18 +107,20 @@ const LoginForm = (): JSX.Element => {
           <label htmlFor="checkbox" className="dark:text-white text-black">
             Beni Hatırla
           </label>
-          <input
-            type="checkbox"
+          <Checkbox
             id="checkbox"
             className="h-full w-5"
+            name="checkbox"
             onChange={handleChange}
             value={values.checkbox}
           />
         </div>
         <div>
-          <button type="submit" className="border p-2 dark:text-white">
-            Submit
-          </button>
+          <ButtonComponent
+            text="Submit"
+            type="submit"
+            className="border p-2 dark:text-white"
+          />
         </div>
       </form>
       <ToastContainer />
