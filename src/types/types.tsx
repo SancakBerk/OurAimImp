@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { JSX } from "react";
 import { IconType } from "react-icons";
 export type verticalNavbarType = {
@@ -9,7 +10,15 @@ export type verticalNavbarType = {
 export type verticalNavbarProps = {
   visible: boolean;
 };
-
+export type perSavingsType = {
+  type: string;
+  price: number;
+  date: number;
+};
+export type barChartDataType = {
+  data: perSavingsType[];
+  label: string;
+};
 export type expensesType = {
   price: number;
   amount: number;
@@ -26,7 +35,7 @@ export type expensesDataWithDocumentId = expensesType & {
 
 export type totalSavingsType = {
   totalSavings: totalSavingsObjectType;
-  aimDate: Date;
+  aimDate: number;
   userId: string;
 };
 
@@ -48,7 +57,7 @@ export type totalSavingTypeWithDocumentId = totalSavingsType & {
 export type userType = {
   email: string;
   password: string;
-  userAimDate: Date;
+  userAimDate: number;
   userId: string;
 };
 export type userTypeWithDocumentId = userType & {
@@ -77,7 +86,7 @@ export type exchangeDataType = {
 };
 
 export type calculateSavingDataType = {
-  aimDate: Date;
+  aimDate: number;
   howManyDaysLeft: number;
   requiredSavingsPrice: number;
   requestedSavingsPrice: number;
@@ -87,7 +96,19 @@ export type calculateSavingDataType = {
 
 export type localStorageSessionType = {
   userId: string;
-  systemEnterDate: Date;
-  systemExpiresDate: Date;
+  systemEnterDate: number;
+  systemExpiresDate: number;
   rememberMe: boolean;
+};
+
+export type pieCharDataType = {
+  id: number;
+  value: number;
+  label: string;
+};
+
+export type savingComponentTextType = {
+  type: string;
+  placeholder: string;
+  afterText: string;
 };

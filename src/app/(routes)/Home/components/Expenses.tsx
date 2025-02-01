@@ -21,6 +21,10 @@ import {
   getUserExpensesByUserId,
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
+import {
+  capitalizeWords,
+  getFloatValueAsFixed2,
+} from "@/utils/helperFunctions";
 export const Expenses = () => {
   const dispatch = useDispatch();
 
@@ -31,21 +35,21 @@ export const Expenses = () => {
   >([]);
 
   useEffect(() => {
-    if (globalSlice.userId) {
-      getExpenses();
+    if (homePageSlice.currentExpenseData.length > 0) {
+      setExpensesData(homePageSlice.currentExpenseData);
     }
   }, []);
 
   useEffect(() => {
-    if (homePageSlice.expenseDataChanged == true) {
+    if (homePageSlice.expenseDataChanged) {
       getExpenses();
       dispatch(setExpenseDataChanged(false));
     }
   }, [homePageSlice.expenseDataChanged]);
 
   useEffect(() => {
-    getExpenses();
-  }, [globalSlice.userId]);
+    setExpensesData(homePageSlice.currentExpenseData);
+  }, [homePageSlice.currentExpenseData]);
 
   const getExpenses = async () => {
     await getUserExpensesByUserId(globalSlice.userId).then(
@@ -61,15 +65,15 @@ export const Expenses = () => {
   return (
     <div className={`${globalSlice.isDarkMode && "dark"}`}>
       <div
-        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-black  `}
+        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground  `}
       >
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 relative dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
+              className=" w-[35%] h-[35%] m-5 flex flex-wrap   border border-blue-950 relative dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
               key={eachData.documentId}
             >
-              <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center ">
+              <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
                 {eachData.amount} x
               </div>
               <div className="  w-full h-[60%] flex justify-center">
@@ -84,9 +88,22 @@ export const Expenses = () => {
               </div>
               <div className="w-full flex justify-center  ">
                 <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white  ">
-                  <p>İsim: {eachData.name}</p>
+                  <p>İsim: {capitalizeWords(eachData.name)}</p>
                   <p>İhtiyaç mı: {eachData.isRequired ? "Evet" : "Hayır"}</p>
-                  <p>Ücret: {eachData.price}$</p>
+                  <p>
+                    Ücret:{" "}
+                    {(
+                      eachData.price *
+                      parseInt(homePageSlice.currentExchangeRates.dollar.Alış) *
+                      eachData.amount
+                    ).toFixed(0)}
+                    TL ({" "}
+                    {(
+                      eachData.price *
+                      parseInt(homePageSlice.currentExchangeRates.dollar.Alış)
+                    ).toFixed(0)}{" "}
+                    x {eachData.amount})
+                  </p>
                   <p>Ne kadar İstiyorsun: {eachData.rate}/10</p>
                 </div>
                 <div className="h-full flex flex-col dark:text-white ">
@@ -94,6 +111,7 @@ export const Expenses = () => {
                   <Checkbox
                     className="dark:text-white "
                     checked={eachData.isCalculating}
+                    color="success"
                     onChange={async (e) => {
                       await updateExpenseDataByDocumentId(eachData.documentId, {
                         amount: eachData.amount,

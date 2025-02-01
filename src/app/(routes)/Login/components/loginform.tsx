@@ -51,8 +51,8 @@ const LoginForm = (): JSX.Element => {
 
       var session = JSON.stringify({
         userId: userData.userId,
-        systemEnterDate: new Date(),
-        systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        systemEnterDate: new Date().getTime(),
+        systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24).getTime(),
         rememberMe: values.checkbox,
       });
       localStorage.setItem("session", session);

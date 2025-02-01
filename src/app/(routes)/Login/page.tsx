@@ -5,7 +5,7 @@ import Image from "next/image";
 import ModeButton from "@/components/modeButton";
 import myScaryGirl from "@/../public/myScaryGirl.png";
 import { JSX, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { getIsDarkMode } from "@/utils/helperFunctions";
 import { get } from "http";
@@ -15,14 +15,19 @@ const LoginPage = (): JSX.Element => {
   const darkMode = useSelector(
     (state: RootState) => state.globalSlice.isDarkMode
   );
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (getIsDarkMode()) {
+      dispatch(setModeToRedux(true));
+    }
+  }, []);
   const setDarkModeProp = (mode: boolean) => {
     setModeToRedux(!darkMode);
   };
 
   return (
-    <div className={` dark:bg-black  ${darkMode && "dark"} slideIn `}>
-      <div className="w-screen h-screen bg-white flex justify-center items-center relative dark:bg-black ">
+    <div className={` dark:bg-darkBackground  ${darkMode && "dark"} slideIn `}>
+      <div className="w-screen h-screen bg-white flex justify-center items-center relative dark:bg-darkBackground ">
         <div className="w-[40%] h-[50%]  flex  border p-5 rounded-lg ">
           <div className="w-[50%] h-full   ">
             <LoginForm />

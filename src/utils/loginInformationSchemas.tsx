@@ -10,7 +10,7 @@ export const loginInformationSchema = yup.object().shape({
 });
 
 export const updateExpensesSchema = yup.object().shape({
-  amount: yup.number().integer("Amount alanı sayı olmalıdır"),
+  amount: yup.number().integer("Amount alanı sayı olmalıdır").min(0).required(),
   imageUrl: yup.string().url("ImageUrl alanı url olmalıdır").required(),
   isRequired: yup.boolean(),
   name: yup.string().required("Name alanı boş bırakılamaz"),

@@ -36,7 +36,7 @@ const VerticalNavbar = (): JSX.Element => {
 
   return (
     <div className={` ${isDarkMode && "dark"} relative w-full h-full`}>
-      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center border-r-black dark:border-r-white border-r gap-y-10 z-50 dark:bg-black ">
+      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center border-r-black dark:border-r-white border-r gap-y-10 z-50 dark:bg-darkBackground ">
         {verticalNavbarData.map(
           (eachVerticalNavbarData: verticalNavbarType) => {
             return (
@@ -46,7 +46,7 @@ const VerticalNavbar = (): JSX.Element => {
                     setVisibleComponentId(eachVerticalNavbarData.id)
                   }
                   onMouseLeave={() => setVisibleComponentId(null)}
-                  className="w-full h-16 flex items-center text-xl text-white p-5 hover:bg-slate-600 rounded relative z-50"
+                  className="w-full h-16 flex items-center text-xl text-white p-5 hover:border rounded relative z-50"
                 >
                   <p className="ml-3 text-black dark:text-white">
                     {" "}
@@ -79,12 +79,12 @@ const VerticalNavbar = (): JSX.Element => {
               setVisibleComponentId(eachVerticalNavbarData.id)
             }
             onMouseLeave={() => setVisibleComponentId(null)}
-            className={` fixed top-0 left-[10vw] w-[70vw] h-screen bg-white text-black p-10 shadow-lg transition-all duration-500 ease-in-out ${
+            className={` fixed top-0 left-[10vw] w-[70vw] h-screen bg-white text-black  shadow-lg transition-all duration-500 ease-in-out ${
               isVisible
                 ? "translate-x-0 opacity-100"
                 : "-translate-x-full opacity-0"
             }`}
-            style={{ zIndex: 40 }} // Vertical Navbar'ın arkasında olacak şekilde z-index ayarlandı
+            style={{ zIndex: 40 }}
           >
             {eachVerticalNavbarData.contentComponent}
           </div>

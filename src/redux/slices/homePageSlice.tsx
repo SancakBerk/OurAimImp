@@ -2,9 +2,11 @@ import {
   exchangeDataType,
   expensesDataWithDocumentId,
   expensesType,
+  totalSavingTypeWithDocumentId,
 } from "@/types/types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { Action, PayloadAction } from "@reduxjs/toolkit";
+import { Timestamp } from "firebase/firestore";
 
 export interface isPopupOpenType {
   isPopupOpen: boolean;
@@ -17,6 +19,7 @@ export interface isDeleteConfirmPopUpType {
 }
 
 export interface InitialStateTypes {
+  totalSavingData: totalSavingTypeWithDocumentId;
   isPopupOpen: isPopupOpenType;
   deletePopUpConfirmation: isDeleteConfirmPopUpType;
   expenseDataChanged: boolean;
@@ -25,6 +28,22 @@ export interface InitialStateTypes {
 }
 
 const initialState: InitialStateTypes = {
+  totalSavingData: {
+    aimDate: 0,
+    documentId: "",
+    totalSavings: {
+      dollar: 0,
+      euro: 0,
+      gold14: 0,
+      gold18: 0,
+      gold22: 0,
+      gold24: 0,
+      fon: 0,
+      tl: 0,
+      hisse: 0,
+    },
+    userId: "",
+  },
   currentExchangeRates: {
     dollar: { Alış: "1", Tür: "USD", Satış: "1", Değişim: "1" },
     euro: { Alış: "1", Tür: "EUR", Satış: "1", Değişim: "1" },
@@ -45,6 +64,12 @@ export const homePageSlice = createSlice({
   name: "homePageSlice",
   initialState,
   reducers: {
+    setTotalSavingData: (
+      state,
+      action: PayloadAction<totalSavingTypeWithDocumentId>
+    ) => {
+      state.totalSavingData = action.payload;
+    },
     setCurrentExchangeRates: (
       state,
       action: PayloadAction<exchangeDataType>
@@ -84,6 +109,7 @@ export const {
   setExpenseDataChanged,
   setCurrentExchangeRates,
   setCurrentExpenseData,
+  setTotalSavingData,
 } = homePageSlice.actions;
 
 export default homePageSlice.reducer;

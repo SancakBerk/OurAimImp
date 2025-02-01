@@ -11,6 +11,7 @@ import {
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
 import { expensesType, serviceReturnType } from "@/types/types";
+import { getFloatValueAsFixed2 } from "@/utils/helperFunctions";
 import { updateExpensesSchema } from "@/utils/loginInformationSchemas";
 import { MenuItem, Select } from "@mui/material";
 import { useFormik } from "formik";
@@ -21,17 +22,27 @@ import { toast } from "react-toastify";
 export const UpdateAddPopUp = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
-  const expenseData = homePageSlice.isPopupOpen.expenseData;
+  const [reduxExpenseData, setReduxExpenseData] = useState(
+    homePageSlice.isPopupOpen.expenseData
+  );
   const dispatch = useDispatch();
+  useEffect(() => {
+    setReduxExpenseData(homePageSlice.isPopupOpen.expenseData);
+  }, [homePageSlice.isPopupOpen.expenseData]);
 
   const { handleChange, handleSubmit, values, errors } = useFormik({
     initialValues: {
-      amount: expenseData?.amount.toString() && "",
-      imageUrl: expenseData?.imageUrl && "",
-      name: expenseData?.name && "",
-      price: expenseData?.price.toString() && "",
-      rate: expenseData?.rate.toString() && "",
-      isRequired: expenseData?.isRequired ? 1 : 0 && "",
+      amount: reduxExpenseData ? reduxExpenseData.amount.toString() : "",
+      imageUrl: reduxExpenseData ? reduxExpenseData.imageUrl : "",
+      name: reduxExpenseData ? reduxExpenseData.name : "",
+      price: reduxExpenseData
+        ? (
+            reduxExpenseData.price *
+            parseInt(homePageSlice.currentExchangeRates.dollar.Alış)
+          ).toFixed(0)
+        : "",
+      rate: reduxExpenseData ? reduxExpenseData.rate.toString() : "",
+      isRequired: reduxExpenseData ? (reduxExpenseData.isRequired ? 1 : 0) : 0,
     },
     validationSchema: updateExpensesSchema,
     onSubmit: async (values) => {
@@ -39,15 +50,18 @@ export const UpdateAddPopUp = (): JSX.Element => {
         amount: Number(values.amount),
         imageUrl: values.imageUrl as string,
         name: values.name as string,
-        price: Number(values.price),
+        price: getFloatValueAsFixed2(
+          parseFloat(values.price) /
+            parseFloat(homePageSlice.currentExchangeRates.dollar.Alış)
+        ),
         rate: Number(values.rate),
         isRequired: values.isRequired == 1 ? true : false,
         userId: globalSlice.userId,
-        isCalculating: expenseData ? expenseData.isCalculating : true,
+        isCalculating: reduxExpenseData ? reduxExpenseData.isCalculating : true,
       };
       if (homePageSlice.isPopupOpen.isUpdate) {
         await updateExpenseDataByDocumentId(
-          expenseData!.documentId,
+          reduxExpenseData!.documentId,
           object
         ).then((res: serviceReturnType) => {
           if (res.statusCode === 200) {
@@ -59,7 +73,6 @@ export const UpdateAddPopUp = (): JSX.Element => {
               })
             );
             dispatch(setExpenseDataChanged(true));
-            toast.success("Updated Successfully");
           } else {
             console.log("error", res.message);
           }
@@ -87,7 +100,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
       <div className="w-screen h-screen fixed top-0 left-0 bg-gray-500 opacity-45 flex justify-center items-center   "></div>
       <div className="w-screen h-screen fixed top-0 left-0 flex justify-center items-center ">
         <form
-          className="w-[50%] h-[50%] flex flex-col gap-5 bg-white dark:bg-black  justify-center items-center rounded-md"
+          className="w-[50%] h-[50%] flex flex-col gap-5 bg-white dark:bg-darkBackground  justify-center items-center rounded-md"
           onSubmit={handleSubmit}
         >
           <InputComponent
@@ -96,23 +109,6 @@ export const UpdateAddPopUp = (): JSX.Element => {
             placeholder="Name"
             value={values.name}
             className={`${errors.name && "border-red-500"}`}
-            onChange={handleChange}
-          />
-          <InputComponent
-            name="amount"
-            parentClassName="w-[75%]"
-            placeholder="Amount"
-            value={values.amount}
-            className={`${errors.amount && "border-red-500"}`}
-            onChange={handleChange}
-          />
-
-          <InputComponent
-            name="imageUrl"
-            parentClassName="w-[75%]"
-            placeholder="Image Url"
-            className={`${errors.imageUrl && "border-red-500"}`}
-            value={values.imageUrl}
             onChange={handleChange}
           />
 
@@ -124,7 +120,23 @@ export const UpdateAddPopUp = (): JSX.Element => {
             value={values.price}
             onChange={handleChange}
           />
+          <InputComponent
+            name="imageUrl"
+            parentClassName="w-[75%]"
+            placeholder="Image Url"
+            className={`${errors.imageUrl && "border-red-500"}`}
+            value={values.imageUrl}
+            onChange={handleChange}
+          />
 
+          <InputComponent
+            name="amount"
+            parentClassName="w-[75%]"
+            placeholder="Amount"
+            value={values.amount}
+            className={`${errors.amount && "border-red-500"}`}
+            onChange={handleChange}
+          />
           <InputComponent
             name="rate"
             parentClassName="w-[75%]"

@@ -1,10 +1,12 @@
 import { db } from "@/lib/firebaseconfig";
 import {
+  perSavingsType,
   serviceReturnType,
   totalSavingsType,
   totalSavingTypeWithDocumentId,
 } from "@/types/types";
 import {
+  addDoc,
   collection,
   doc,
   DocumentData,
@@ -44,14 +46,62 @@ export const getTotalSavingDataById = async (
 
 export const UpdateTotalSavingsData = async (
   documentId: string,
-  updatedData: totalSavingsType
+  updatedAllData: totalSavingsType,
+  updatedPerSavings: perSavingsType[]
 ): Promise<serviceReturnType> => {
   const savingsCollectionRef = collection(db, "savings");
   try {
-    await updateDoc(doc(savingsCollectionRef, documentId), updatedData);
+    await updateDoc(doc(savingsCollectionRef, documentId), updatedAllData);
+    const perSavingsCollectionRef = collection(
+      doc(savingsCollectionRef, documentId),
+      "perSavings"
+    );
+    updatedPerSavings.map(async (each: perSavingsType) => {
+      await addDoc(perSavingsCollectionRef, each);
+    });
+
     return { statusCode: 200, message: "Added Successfully" };
   } catch (error) {
     console.log(error);
     return { statusCode: 500, message: "Error" };
+  }
+};
+export const getPerSavingsByUserId = async (
+  userId: string
+): Promise<serviceReturnType> => {
+  try {
+    // "savings" koleksiyonundaki tüm dokümanları al
+    const savingsCollectionRef = collection(db, "savings");
+    const perSavingsQuery = query(
+      savingsCollectionRef,
+      where("userId", "==", userId) // Kullanıcı ID'sine göre filtreleme
+    );
+
+    const querySnapshot = await getDocs(perSavingsQuery);
+    const perSavingsData: perSavingsType[] = [];
+
+    for (const doc of querySnapshot.docs) {
+      // Her dökümanın altındaki 'perSavings' koleksiyonunu al
+      const perSavingsCollectionRef = collection(doc.ref, "perSavings");
+      const perSavingsSnapshot = await getDocs(perSavingsCollectionRef);
+
+      perSavingsSnapshot.forEach((perSavingDoc) => {
+        perSavingsData.push({
+          ...(perSavingDoc.data() as perSavingsType),
+        });
+      });
+    }
+
+    return {
+      statusCode: 200,
+      message: "Success",
+      data: perSavingsData as perSavingsType[],
+    };
+  } catch (error) {
+    console.error("Error fetching perSavings data:", error);
+    return {
+      message: "Error fetching perSavings data",
+      statusCode: 500,
+    };
   }
 };

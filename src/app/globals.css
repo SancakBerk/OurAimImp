@@ -11,9 +11,6 @@
 input:focus {
   outline: none;
 }
-* {
-  font-family: Georgia, "Times New Roman", Times, serif;
-}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
