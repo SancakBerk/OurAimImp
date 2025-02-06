@@ -35,6 +35,7 @@ import {
   sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { createTheme, ThemeProvider } from "@mui/material";
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -53,9 +54,6 @@ export const SavingComponent = (): JSX.Element => {
     useState(true);
   const dispatch = useDispatch();
   const valueFormatter = (item: { value: number }) => ` ${item.value}% `;
-  useEffect(() => {
-    functionsWhenComponentMount();
-  }, []);
   useEffect(() => {
     functionsWhenComponentMount();
   }, [globalSlice.userId]);
@@ -155,6 +153,11 @@ export const SavingComponent = (): JSX.Element => {
       }
     );
   };
+  const theme = createTheme({
+    palette: {
+      mode: globalSlice.isDarkMode ? "dark" : "light",
+    },
+  });
 
   useEffect(() => {
     setPieChartData(calculatePieChartData());
@@ -330,43 +333,47 @@ export const SavingComponent = (): JSX.Element => {
 
         <div className=" w-[50%] h-full flex flex-col p-4">
           <div className="w-full h-[50%] dark:text-white  ">
-            <PieChart
-              title="Total Savings Ratio"
-              className=" text-black dark:text-white  "
-              series={
-                pieChartData.length > 0
-                  ? [
-                      {
-                        data: pieChartData,
-                        paddingAngle: 2,
-                        innerRadius: 30,
-                        outerRadius: 120,
-                        cornerRadius: 10,
-                        valueFormatter,
-                        startAngle: -45,
-                        highlightScope: { fade: "global", highlight: "item" },
-                        faded: {
+            <ThemeProvider theme={theme}>
+              <PieChart
+                title="Total Savings Ratio"
+                className=" text-black dark:text-white  "
+                series={
+                  pieChartData.length > 0
+                    ? [
+                        {
+                          data: pieChartData,
+                          paddingAngle: 2,
                           innerRadius: 30,
-                          additionalRadius: -30,
-                          color: "gray",
+                          outerRadius: 120,
+                          cornerRadius: 10,
+                          valueFormatter,
+                          startAngle: -45,
+                          highlightScope: { fade: "global", highlight: "item" },
+                          faded: {
+                            innerRadius: 30,
+                            additionalRadius: -30,
+                            color: "gray",
+                          },
                         },
-                      },
-                    ]
-                  : [
-                      {
-                        data: [{ id: 0, label: "No Data", value: 1 }],
-                      },
-                    ]
-              }
-            />
+                      ]
+                    : [
+                        {
+                          data: [{ id: 0, label: "No Data", value: 1 }],
+                        },
+                      ]
+                }
+              />
+            </ThemeProvider>
           </div>
           <div className=" w-full h-[50%] ">
-            <BarChart
-              className="w-full h-full  "
-              title="Savings Per Month"
-              series={barChartData}
-              xAxis={[{ data: monthNames(), scaleType: "band" }]}
-            />
+            <ThemeProvider theme={theme}>
+              <BarChart
+                className="w-full h-full  "
+                title="Savings Per Month"
+                series={barChartData}
+                xAxis={[{ data: monthNames(), scaleType: "band" }]}
+              />
+            </ThemeProvider>
           </div>
         </div>
       </div>

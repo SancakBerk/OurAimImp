@@ -1,7 +1,7 @@
 "use client";
 import { getIsDarkMode } from "@/utils/helperFunctions";
 import { useFormik } from "formik";
-import { JSX, use, useState } from "react";
+import { JSX, use, useEffect, useRef, useState } from "react";
 import { loginInformationSchema } from "@/utils/loginInformationSchemas";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -19,6 +19,11 @@ const LoginForm = (): JSX.Element => {
   const [isDarkMode, setisDarkMode] = useState(getIsDarkMode());
   const router = useRouter();
   const dispatch = useDispatch();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus;
+  }, []);
   const { handleChange, handleSubmit, values, errors } = useFormik({
     initialValues: {
       email: "",
@@ -78,6 +83,7 @@ const LoginForm = (): JSX.Element => {
         </label>
         <div className="w-[50%]">
           <InputComponent
+            ref={inputRef}
             id="email"
             name="email"
             type="email"

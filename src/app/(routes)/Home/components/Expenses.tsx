@@ -1,10 +1,6 @@
 "use client";
 import {} from "@/services/userService";
-import {
-  expensesDataWithDocumentId,
-  expensesType,
-  serviceReturnType,
-} from "@/types/types";
+import { expensesDataWithDocumentId, serviceReturnType } from "@/types/types";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ButtonComponent } from "@/components/ButtonComponent";
@@ -21,10 +17,7 @@ import {
   getUserExpensesByUserId,
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
-import {
-  capitalizeWords,
-  getFloatValueAsFixed2,
-} from "@/utils/helperFunctions";
+import { capitalizeWords } from "@/utils/helperFunctions";
 export const Expenses = () => {
   const dispatch = useDispatch();
 

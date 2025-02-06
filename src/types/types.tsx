@@ -85,7 +85,7 @@ export type exchangeDataType = {
   gold24: exchangeDataEachObjectType;
 };
 
-export type calculateSavingDataType = {
+export type calculateSpendingAndAimInformationDataType = {
   aimDate: number;
   howManyDaysLeft: number;
   requiredSavingsPrice: number;

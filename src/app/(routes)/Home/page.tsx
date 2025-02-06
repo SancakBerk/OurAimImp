@@ -1,5 +1,9 @@
 "use client";
-import { getIsDarkMode, isSessionExpired } from "@/utils/helperFunctions";
+import {
+  getIsDarkMode,
+  isSessionExpired,
+  removeNumberCommasAndDotThenReturnNumber,
+} from "@/utils/helperFunctions";
 import { JSX, ReactNode, useEffect, useState } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import Expenses from "./components/Expenses";
@@ -54,6 +58,16 @@ const HomePage = (): JSX.Element => {
             gold22: res.data?.["gram-altin"],
             gold24: res.data?.["gram-has-altin"],
           };
+          var removedCommaObject = Object.entries(object).map(
+            ([exchangeKey, value]) => {
+              var newValue = Object.entries(value).map(([key, value]) => {
+                var removeddata =
+                  removeNumberCommasAndDotThenReturnNumber(value) ?? 1;
+                return { [key]: removeddata };
+              });
+              return { [exchangeKey]: newValue };
+            }
+          );
           dispatch(setCurrentExchangeRates(object));
         }
       });

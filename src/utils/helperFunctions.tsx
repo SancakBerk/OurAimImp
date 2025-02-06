@@ -110,3 +110,11 @@ export const returnDescriotionFromKey = (key: string): string => {
   const label = savingRowInformations.find((each) => each.type === key);
   return label != undefined ? label.placeholder : "key";
 };
+
+export const getDaysBetweenDates = (
+  firstDateTime: number,
+  secondDateTime: number
+): number => {
+  const difference = Math.abs(firstDateTime - secondDateTime);
+  return Math.ceil(difference / (1000 * 60 * 60 * 24));
+};

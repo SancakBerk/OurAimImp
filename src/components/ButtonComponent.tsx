@@ -6,11 +6,13 @@ import { useSelector } from "react-redux";
 
 interface buttonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   parentClassName?: string;
-  text: string;
+  text?: string;
+  children?: React.ReactNode;
 }
 export const ButtonComponent: React.FC<buttonProps> = ({
   parentClassName,
   text,
+  children,
   ...props
 }): JSX.Element => {
   const isDarkMode = useSelector(
@@ -23,7 +25,7 @@ export const ButtonComponent: React.FC<buttonProps> = ({
         onClick={props.onClick}
         className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white dark:bg-darkBackground border `}
       >
-        <p className="dark:text-white  "> {text} </p>
+        <p className="dark:text-white  ">{children ? children : text}</p>
       </button>
     </div>
   );
