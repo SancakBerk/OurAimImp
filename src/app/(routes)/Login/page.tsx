@@ -4,11 +4,10 @@ import LoginForm from "./components/loginform";
 import Image from "next/image";
 import ModeButton from "@/components/modeButton";
 import myScaryGirl from "@/../public/myScaryGirl.png";
-import { JSX, useEffect, useState } from "react";
+import { JSX, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { getIsDarkMode } from "@/utils/helperFunctions";
-import { get } from "http";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
 
 const LoginPage = (): JSX.Element => {
@@ -21,7 +20,7 @@ const LoginPage = (): JSX.Element => {
       dispatch(setModeToRedux(true));
     }
   }, []);
-  const setDarkModeProp = (mode: boolean) => {
+  const setDarkModeProp = () => {
     setModeToRedux(!darkMode);
   };
 

@@ -1,11 +1,10 @@
 "use client";
-import React, { FC, JSX, useState } from "react";
+import React, { FC, JSX } from "react";
 import "./style.css";
 import Image from "next/image";
 
 import moonImage from "../../public/moon.png";
 import sunImage from "../../public/sun.png";
-import { getIsDarkMode } from "../utils/helperFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
@@ -14,10 +13,7 @@ interface modeButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   setDarkModeProp: (mode: boolean) => void;
 }
 
-const ModeButton: FC<modeButtonProps> = ({
-  setDarkModeProp,
-  ...props
-}): JSX.Element => {
+const ModeButton: FC<modeButtonProps> = ({ ...props }): JSX.Element => {
   const darkMode = useSelector(
     (state: RootState) => state.globalSlice.isDarkMode
   );

@@ -1,12 +1,10 @@
 import {
   exchangeDataType,
   expensesDataWithDocumentId,
-  expensesType,
   totalSavingTypeWithDocumentId,
 } from "@/types/types";
 import { createSlice } from "@reduxjs/toolkit";
-import type { Action, PayloadAction } from "@reduxjs/toolkit";
-import { Timestamp } from "firebase/firestore";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface isPopupOpenType {
   isPopupOpen: boolean;

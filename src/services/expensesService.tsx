@@ -20,17 +20,17 @@ import {
 export const getUserExpensesByUserId = async (
   userId: string
 ): Promise<serviceReturnType> => {
-  var expensesCollection = collection(db, "expenses");
-  var queryForExpensesCollection = query(
+  const expensesCollection = collection(db, "expenses");
+  const queryForExpensesCollection = query(
     expensesCollection,
     where("userId", "==", userId)
   );
   try {
-    var snapshot = (await getDocs(
+    const snapshot = (await getDocs(
       queryForExpensesCollection
     )) as QuerySnapshot<DocumentData>;
 
-    var allExpenses = snapshot.docs.map((eachExpenseData) => {
+    const allExpenses = snapshot.docs.map((eachExpenseData) => {
       return {
         ...eachExpenseData.data(),
         documentId: eachExpenseData.id,

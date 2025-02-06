@@ -1,7 +1,7 @@
 "use client";
-import { getIsDarkMode } from "@/utils/helperFunctions";
+
 import { useFormik } from "formik";
-import { JSX, use, useEffect, useRef, useState } from "react";
+import { JSX, useEffect, useRef } from "react";
 import { loginInformationSchema } from "@/utils/loginInformationSchemas";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,14 +14,15 @@ import { useDispatch } from "react-redux";
 import { InputComponent } from "@/components/InputComponent";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { Checkbox } from "@mui/material";
-require("dotenv").config();
 const LoginForm = (): JSX.Element => {
   const router = useRouter();
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus;
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, []);
   const { handleChange, handleSubmit, values, errors } = useFormik({
     initialValues: {
@@ -30,7 +31,7 @@ const LoginForm = (): JSX.Element => {
       checkbox: false,
     },
     validationSchema: loginInformationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       await checkLogin();
     },
   });
@@ -53,7 +54,7 @@ const LoginForm = (): JSX.Element => {
         return;
       }
 
-      var session = JSON.stringify({
+      const session = JSON.stringify({
         userId: userData.userId,
         systemEnterDate: new Date().getTime(),
         systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24).getTime(),

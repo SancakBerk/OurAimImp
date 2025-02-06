@@ -1,7 +1,6 @@
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { InputComponent } from "@/components/InputComponent";
 import {
-  isPopupOpenType,
   setExpenseDataChanged,
   setPopupOpen,
 } from "@/redux/slices/homePageSlice";
@@ -46,7 +45,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
     },
     validationSchema: updateExpensesSchema,
     onSubmit: async (values) => {
-      var object: expensesType = {
+      const object: expensesType = {
         amount: Number(values.amount),
         imageUrl: values.imageUrl as string,
         name: values.name as string,

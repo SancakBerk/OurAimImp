@@ -1,7 +1,6 @@
 "use client";
 import { RootState } from "@/redux/store";
-import { getIsDarkMode } from "@/utils/helperFunctions";
-import React, { JSX, useEffect, useState } from "react";
+import React, { JSX } from "react";
 import { useSelector } from "react-redux";
 
 interface buttonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

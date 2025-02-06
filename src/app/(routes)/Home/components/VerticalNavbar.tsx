@@ -5,7 +5,6 @@ import SavingComponent from "./Saving";
 import { FaBasketShopping } from "react-icons/fa6";
 import Spending from "./Spending";
 import ModeButton from "@/components/modeButton";
-import { getIsDarkMode } from "@/utils/helperFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
