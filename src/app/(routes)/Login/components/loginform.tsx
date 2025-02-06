@@ -16,7 +16,6 @@ import { ButtonComponent } from "@/components/ButtonComponent";
 import { Checkbox } from "@mui/material";
 require("dotenv").config();
 const LoginForm = (): JSX.Element => {
-  const [isDarkMode, setisDarkMode] = useState(getIsDarkMode());
   const router = useRouter();
   const dispatch = useDispatch();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,9 +73,7 @@ const LoginForm = (): JSX.Element => {
     <>
       <form
         onSubmit={handleSubmit}
-        className={`${
-          isDarkMode && "dark"
-        }  flex flex-col justify-center  w-full h-full gap-4  `}
+        className={`flex flex-col justify-center  w-full h-full gap-4  `}
       >
         <label htmlFor="email" className="   dark:text-white text-lg ">
           Email Address
