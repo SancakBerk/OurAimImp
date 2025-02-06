@@ -16,7 +16,7 @@ export type perSavingsType = {
   date: number;
 };
 export type barChartDataType = {
-  data: perSavingsType[];
+  data: number[];
   label: string;
 };
 export type expensesType = {

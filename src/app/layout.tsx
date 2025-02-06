@@ -13,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  require("dotenv").config();
+  dotenv.config();
   return (
     <html lang="en">
       <Providers>

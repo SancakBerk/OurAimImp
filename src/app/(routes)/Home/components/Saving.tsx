@@ -124,6 +124,7 @@ export const SavingComponent = (): JSX.Element => {
             (response: serviceReturnType) => {
               // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
               if (response.statusCode == 200) {
+                var barChartDataTypeTemp: barChartDataType[] = [];
                 Object.entries(homePageSlice.totalSavingData.totalSavings).map(
                   ([key, value]) => {
                     var array = new Array(12).fill(0);
@@ -138,14 +139,21 @@ export const SavingComponent = (): JSX.Element => {
                       var date = new Date(eachFindedSavingData.date);
                       array[date.getMonth()] += eachFindedSavingData.price;
                     });
-                    barChartData.push({
+                    console.log("data", array);
+                    console.log("label", returnDescriotionFromKey(key));
+
+                    barChartDataTypeTemp.push({
                       data: array,
                       label: returnDescriotionFromKey(key),
                     });
+                    console.log(
+                      "barchardatatypetemp after add",
+                      barChartDataTypeTemp
+                    );
                   }
                 );
 
-                setBarChartData(barChartData);
+                setBarChartData(barChartDataTypeTemp);
               }
             }
           );
@@ -259,6 +267,7 @@ export const SavingComponent = (): JSX.Element => {
   if (savingsData == undefined || savingsData.totalSavings == undefined) {
     return <p>Loading...</p>;
   }
+  console.log("barchardata", barChartData);
   return (
     <div className="w-full  h-full border flex flex-col dark:bg-darkBackground p-10 ">
       <div className="w-full h-full flex">

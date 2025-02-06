@@ -107,12 +107,12 @@ const LoginForm = (): JSX.Element => {
         {errors.password && <p className=" text-red-600">{errors.password}</p>}
 
         <div className="flex items-center gap-4 h-10 ">
-          <label htmlFor="checkbox" className="dark:text-white text-black">
+          <label htmlFor="checkbox" className="dark:text-white text-black ">
             Beni Hatırla
           </label>
           <Checkbox
             id="checkbox"
-            className="h-full w-5"
+            className="h-full w-5 dark:text-white"
             name="checkbox"
             onChange={handleChange}
             value={values.checkbox}
@@ -122,6 +122,7 @@ const LoginForm = (): JSX.Element => {
           <ButtonComponent
             text="Submit"
             type="submit"
+            parentClassName="w-[50%] "
             className="border p-2 dark:text-white"
           />
         </div>
