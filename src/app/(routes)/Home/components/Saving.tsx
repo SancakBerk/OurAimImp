@@ -9,7 +9,7 @@ import {
   totalSavingsType,
   totalSavingTypeWithDocumentId,
 } from "@/types/types";
-import React, { JSX, use, useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPerSavingsByUserId,
@@ -27,9 +27,7 @@ import { setTotalSavingData } from "@/redux/slices/homePageSlice";
 import {
   calculateSavingDataToTl,
   calculateTotalSavingsAsTlRateAndReturnObjects,
-  capitalizeWords,
   changeNumberToThreeDigitsAndReturn,
-  getFloatValueAsFixed2,
   removeNumberCommasAndDotThenReturnNumber,
   returnDescriotionFromKey,
   sortObjectAlphabetically,
@@ -41,13 +39,8 @@ export const SavingComponent = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
   const [pieChartData, setPieChartData] = useState<pieCharDataType[]>([]);
 
-  const [barChartData, setBarChartData] = useState<any[]>([]);
-  const [exchangeDatas, setExchangeDatas] = useState<exchangeDataType>(
-    homePageSlice.currentExchangeRates
-  );
-  const [totalSavingDataAsTl, settotalSavingDataAsTl] = useState<
-    pieCharDataType[]
-  >([]);
+  const [barChartData, setBarChartData] = useState<barChartDataType[]>([]);
+  const [, settotalSavingDataAsTl] = useState<pieCharDataType[]>([]);
   const [savingsData, setSavingsData] =
     useState<totalSavingTypeWithDocumentId | null>(null);
   const [isTotalSavingProcessAdding, setIsTotalSavingProcessAdding] =
@@ -58,11 +51,11 @@ export const SavingComponent = (): JSX.Element => {
     functionsWhenComponentMount();
   }, [globalSlice.userId]);
   const calculatePieChartData = (): pieCharDataType[] => {
-    var allSavingDataTotal = 0;
-    var totalSavingDataToTl: pieCharDataType[] = [];
+    let allSavingDataTotal = 0;
+    const totalSavingDataToTl: pieCharDataType[] = [];
     Object.entries(homePageSlice.totalSavingData.totalSavings).map(
-      ([key, value], index) => {
-        var exchangeRate =
+      ([key, value]) => {
+        const exchangeRate =
           homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
         const exchangeRateValue =
           exchangeRate && exchangeRate.Alış
@@ -72,16 +65,16 @@ export const SavingComponent = (): JSX.Element => {
       }
     );
 
-    var data = Object.entries(homePageSlice.totalSavingData.totalSavings).map(
+    const data = Object.entries(homePageSlice.totalSavingData.totalSavings).map(
       ([key, value], index) => {
-        var exchangeRate =
+        const exchangeRate =
           homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
-        var exchangeRateValue =
+        const exchangeRateValue =
           exchangeRate && exchangeRate.Alış
             ? removeNumberCommasAndDotThenReturnNumber(exchangeRate.Alış)
             : 1;
 
-        var label = savingRowInformations.find((each) => each.type === key);
+        const label = savingRowInformations.find((each) => each.type === key);
         totalSavingDataToTl.push({
           id: index,
           label: key,
@@ -105,14 +98,10 @@ export const SavingComponent = (): JSX.Element => {
   const functionsWhenComponentMount = () => {
     getTotalSavingDataById(globalSlice.userId).then(
       (res: serviceReturnType) => {
-        if (
-          res.statusCode === 200 &&
-          res.data != undefined &&
-          res.data.length != 0
-        ) {
-          var data = res.data[0] as totalSavingTypeWithDocumentId;
-          var sorted = sortObjectAlphabetically(data.totalSavings);
-          var obj: totalSavingTypeWithDocumentId = {
+        if (res.statusCode === 200 && res.data && res.data) {
+          const data = res.data[0] as totalSavingTypeWithDocumentId;
+          const sorted = sortObjectAlphabetically(data.totalSavings);
+          const obj: totalSavingTypeWithDocumentId = {
             aimDate: data.aimDate,
             userId: data.userId,
             documentId: data.documentId,
@@ -124,19 +113,19 @@ export const SavingComponent = (): JSX.Element => {
             (response: serviceReturnType) => {
               // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
               if (response.statusCode == 200) {
-                var barChartDataTypeTemp: barChartDataType[] = [];
+                const barChartDataTypeTemp: barChartDataType[] = [];
                 Object.entries(homePageSlice.totalSavingData.totalSavings).map(
-                  ([key, value]) => {
-                    var array = new Array(12).fill(0);
-                    var perSavings = response.data as perSavingsType[];
-                    var findedValues: perSavingsType[] = [];
+                  ([key]) => {
+                    const array = new Array(12).fill(0);
+                    const perSavings = response.data as perSavingsType[];
+                    const findedValues: perSavingsType[] = [];
                     perSavings.map((each) => {
                       if (each.type === key) {
                         findedValues.push(each);
                       }
                     });
                     findedValues.map((eachFindedSavingData: perSavingsType) => {
-                      var date = new Date(eachFindedSavingData.date);
+                      const date = new Date(eachFindedSavingData.date);
                       array[date.getMonth()] += eachFindedSavingData.price;
                     });
                     console.log("data", array);
@@ -189,7 +178,7 @@ export const SavingComponent = (): JSX.Element => {
     });
   };
   const calculateTotalSavingsAsTlRateAndReturnNumber = (): number => {
-    var total = 0;
+    let total = 0;
     calculateTotalSavingsAsTlRateAndReturnObjects(homePageSlice).map(
       (each: pieCharDataType) => {
         total += each.value;
@@ -215,28 +204,27 @@ export const SavingComponent = (): JSX.Element => {
       if (!savingsData) {
         return;
       }
-      var object: totalSavingsType = {
+      const object: totalSavingsType = {
         aimDate: savingsData?.aimDate,
         userId: savingsData?.userId,
         totalSavings: { ...savingsData.totalSavings } as totalSavingsObjectType,
       };
       Object.entries(values).map(([key, value]) => {
         if (value != 0) {
-          {
-            isTotalSavingProcessAdding
-              ? (object.totalSavings[key as keyof totalSavingsObjectType] +=
-                  value)
-              : object.totalSavings[key as keyof totalSavingsObjectType] -
-                  value >
-                0
-              ? (object.totalSavings[key as keyof totalSavingsObjectType] -=
-                  value)
-              : (object.totalSavings[key as keyof totalSavingsObjectType] = 0);
+          if (isTotalSavingProcessAdding) {
+            object.totalSavings[key as keyof totalSavingsObjectType] += value;
+          } else {
+            object.totalSavings[key as keyof totalSavingsObjectType] -=
+              value > 0
+                ? value
+                : (object.totalSavings[
+                    key as keyof totalSavingsObjectType
+                  ] = 0);
           }
         }
       });
 
-      var perObjectList: perSavingsType[] = [];
+      const perObjectList: perSavingsType[] = [];
       Object.entries(values).map(([key, value]) => {
         if (value != 0) {
           perObjectList.push({
@@ -276,7 +264,7 @@ export const SavingComponent = (): JSX.Element => {
           onSubmit={handleSubmit}
         >
           {Object.entries(savingsData.totalSavings).map(([key, value]) => {
-            var text = savingRowInformations.find(
+            const text = savingRowInformations.find(
               (eachObject) => eachObject.type === key
             );
             return (

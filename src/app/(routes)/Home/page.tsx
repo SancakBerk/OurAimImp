@@ -4,7 +4,7 @@ import {
   isSessionExpired,
   removeNumberCommasAndDotThenReturnNumber,
 } from "@/utils/helperFunctions";
-import { JSX, ReactNode, useEffect, useState } from "react";
+import { JSX, useEffect } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import Expenses from "./components/Expenses";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +24,6 @@ import {
   setCurrentExpenseData,
 } from "@/redux/slices/homePageSlice";
 import { getCurrentExchangeRates } from "@/services/globalService";
-import { getTotalSavingDataById } from "@/services/savingService";
 
 const HomePage = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -50,7 +49,7 @@ const HomePage = (): JSX.Element => {
     if (globalSlice.userId) {
       getCurrentExchangeRates().then((res: serviceReturnType) => {
         if (res.statusCode === 200) {
-          var object: exchangeDataType = {
+          const object: exchangeDataType = {
             dollar: res.data?.USD,
             gold14: res.data?.["14-ayar-altin"],
             euro: res.data?.EUR,
@@ -58,16 +57,14 @@ const HomePage = (): JSX.Element => {
             gold22: res.data?.["gram-altin"],
             gold24: res.data?.["gram-has-altin"],
           };
-          var removedCommaObject = Object.entries(object).map(
-            ([exchangeKey, value]) => {
-              var newValue = Object.entries(value).map(([key, value]) => {
-                var removeddata =
-                  removeNumberCommasAndDotThenReturnNumber(value) ?? 1;
-                return { [key]: removeddata };
-              });
-              return { [exchangeKey]: newValue };
-            }
-          );
+          Object.entries(object).map(([exchangeKey, value]) => {
+            const newValue = Object.entries(value).map(([key, value]) => {
+              const removeddata =
+                removeNumberCommasAndDotThenReturnNumber(value) ?? 1;
+              return { [key]: removeddata };
+            });
+            return { [exchangeKey]: newValue };
+          });
           dispatch(setCurrentExchangeRates(object));
         }
       });
@@ -75,8 +72,8 @@ const HomePage = (): JSX.Element => {
   };
   useEffect(() => {
     if (!isSessionExpired()) {
-      var localStorageData = localStorage.getItem("session");
-      var session = JSON.parse(localStorageData!) as localStorageSessionType;
+      const localStorageData = localStorage.getItem("session");
+      const session = JSON.parse(localStorageData!) as localStorageSessionType;
       dispatch(setUserIdToRedux(session.userId));
     }
     if (getIsDarkMode()) {

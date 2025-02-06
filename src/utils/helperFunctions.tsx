@@ -1,13 +1,10 @@
-import { useDispatch } from "react-redux";
 import { redirect } from "next/navigation";
 import {
   exchangeDataType,
   localStorageSessionType,
   pieCharDataType,
-  savingComponentTextType,
-  totalSavingTypeWithDocumentId,
 } from "@/types/types";
-import { setModeToRedux } from "@/redux/slices/globalSlice";
+
 import { InitialStateTypes } from "@/redux/slices/homePageSlice";
 import { savingRowInformations } from "./constants";
 
@@ -47,14 +44,14 @@ export const removeNumberCommasAndDotThenReturnNumber = (
 };
 
 export const sortObjectAlphabetically = (
-  obj: Record<string, any>
-): Record<string, any> => {
+  obj: Record<string, unknown>
+): Record<string, unknown> => {
   return Object.keys(obj)
     .sort()
     .reduce((acc, key) => {
       acc[key] = obj[key];
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, unknown>);
 };
 
 export const calculateSavingDataToTl = (
@@ -84,16 +81,16 @@ export const capitalizeWords = (str: string): string => {
 export const calculateTotalSavingsAsTlRateAndReturnObjects = (
   homePageSlice: InitialStateTypes
 ): pieCharDataType[] => {
-  var data = Object.entries(homePageSlice.totalSavingData.totalSavings).map(
+  const data = Object.entries(homePageSlice.totalSavingData.totalSavings).map(
     ([key, value], index) => {
-      var exchangeRate =
+      const exchangeRate =
         homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
-      var exchangeRateValue =
+      const exchangeRateValue =
         exchangeRate && exchangeRate.Alış
           ? removeNumberCommasAndDotThenReturnNumber(exchangeRate.Alış)
           : 1;
 
-      var label = savingRowInformations.find((each) => each.type === key);
+      const label = savingRowInformations.find((each) => each.type === key);
 
       return {
         id: index,
@@ -118,3 +115,6 @@ export const getDaysBetweenDates = (
   const difference = Math.abs(firstDateTime - secondDateTime);
   return Math.ceil(difference / (1000 * 60 * 60 * 24));
 };
+export function isType<T>(data: unknown, type: T): boolean {
+  return data !== null && typeof data === typeof type;
+}

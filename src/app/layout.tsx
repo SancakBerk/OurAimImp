@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import "./globals.css";
-import { store } from "../redux/store";
 import { Providers } from "../redux/reduxProvider";
 import dotenv from "dotenv";
 

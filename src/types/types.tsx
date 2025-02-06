@@ -1,6 +1,4 @@
-import { Timestamp } from "firebase/firestore";
 import { JSX } from "react";
-import { IconType } from "react-icons";
 export type verticalNavbarType = {
   id: number;
   title: string;
@@ -67,6 +65,7 @@ export type userTypeWithDocumentId = userType & {
 export type serviceReturnType = {
   statusCode: number;
   message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
 };
 

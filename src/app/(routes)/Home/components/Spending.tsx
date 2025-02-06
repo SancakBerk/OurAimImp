@@ -1,7 +1,4 @@
-import {
-  calculateSpendingAndAimInformationDataType,
-  verticalNavbarProps,
-} from "@/types/types";
+import { calculateSpendingAndAimInformationDataType } from "@/types/types";
 import React, { JSX, useEffect, useState } from "react";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { useSelector } from "react-redux";
@@ -15,26 +12,26 @@ import { FaRegEdit } from "react-icons/fa";
 const Spending = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
-  const [calculatedSavingInformations, setCalculatedSavingInformations] =
+  const [, setCalculatedSavingInformations] =
     useState<calculateSpendingAndAimInformationDataType>();
   useEffect(() => {
     calculateSpendingAndAimInformationData();
   }, [globalSlice.userId]);
 
   useEffect(() => {
-    var calculateSavingDataVar = calculateSpendingAndAimInformationData();
+    const calculateSavingDataVar = calculateSpendingAndAimInformationData();
     if (calculateSavingDataVar) {
       setCalculatedSavingInformations(calculateSavingDataVar);
     }
   }, [homePageSlice.currentExchangeRates, homePageSlice.currentExpenseData]);
   const calculateSpendingAndAimInformationData =
     (): calculateSpendingAndAimInformationDataType => {
-      var currentExpenseData = homePageSlice.currentExpenseData;
-      var totalRequestedDataCosts = 0;
-      var totalRequiredDataCosts = 0;
+      const currentExpenseData = homePageSlice.currentExpenseData;
+      let totalRequestedDataCosts = 0;
+      let totalRequiredDataCosts = 0;
       currentExpenseData.map((eachExpenseData) => {
         if (eachExpenseData.isCalculating) {
-          var exchangeDataToTl =
+          const exchangeDataToTl =
             eachExpenseData.price *
             removeNumberCommasAndDotThenReturnNumber(
               homePageSlice.currentExchangeRates.dollar.Alış
@@ -50,7 +47,7 @@ const Spending = (): JSX.Element => {
           }
         }
       });
-      var howManyDaysLeft = getDaysBetweenDates(
+      const howManyDaysLeft = getDaysBetweenDates(
         new Date().getTime(),
         homePageSlice.totalSavingData.aimDate
       );
