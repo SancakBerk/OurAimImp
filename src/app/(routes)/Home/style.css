@@ -10,3 +10,8 @@
 .-translate-x-full {
   transform: translateX(-100%); /* Tam ekran dışında başlangıç */
 }
+
+.jumping {
+  animation: bounce 2s;
+  animation-iteration-count: infinite;
+}

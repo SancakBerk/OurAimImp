@@ -1,6 +1,12 @@
+"use client";
+import { isSessionExpired } from "@/utils/helperFunctions";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 const Home = () => {
-  redirect("/Login");
+  useEffect(() => {
+    isSessionExpired();
+    redirect("/Home");
+  }, []);
 };
 export default Home;

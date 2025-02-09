@@ -18,6 +18,9 @@ import {
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
 import { capitalizeWords } from "@/utils/helperFunctions";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import "@/app/(routes)/Home/style.css";
+
 export const Expenses = () => {
   const dispatch = useDispatch();
 
@@ -152,8 +155,7 @@ export const Expenses = () => {
         <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
-              text="+"
-              parentClassName="w-20 h-10"
+              className="border-none text-[100px] jumping "
               onClick={() => {
                 dispatch(
                   setPopupOpen({
@@ -163,7 +165,9 @@ export const Expenses = () => {
                   })
                 );
               }}
-            />
+            >
+              <MdOutlineAddCircleOutline />
+            </ButtonComponent>
           </div>
         </div>
       </div>

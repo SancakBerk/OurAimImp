@@ -24,6 +24,10 @@ export const isSessionExpired = (): boolean => {
     return redirect("/Login");
   return false;
 };
+export const redirectAuth = (): void =>
+{
+  redirect("/Homepage");
+ }
 
 export const getFloatValueAsFixed2 = (number: number): number => {
   return parseFloat(number.toFixed(2));

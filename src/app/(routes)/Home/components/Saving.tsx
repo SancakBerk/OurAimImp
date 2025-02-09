@@ -94,11 +94,51 @@ export const SavingComponent = (): JSX.Element => {
     settotalSavingDataAsTl(totalSavingDataToTl);
     return data.length > 0 ? data : [{ id: 0, label: "No Data", value: 1 }];
   };
+  const calculateBarChartData = () => {
+    getPerSavingsByUserId(globalSlice.userId).then(
+      (response: serviceReturnType) => {
+        // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
+        if (response.statusCode == 200) {
+          const barChartDataTypeTemp: barChartDataType[] = [];
+          Object.entries(homePageSlice.totalSavingData.totalSavings).map(
+            ([key]) => {
+              const array = new Array(12).fill(0);
+              const perSavings = response.data as perSavingsType[];
+              const findedValues: perSavingsType[] = [];
+              perSavings.map((each) => {
+                if (each.type === key) {
+                  findedValues.push(each);
+                }
+              });
+              findedValues.map((eachFindedSavingData: perSavingsType) => {
+                const date = new Date(eachFindedSavingData.date);
+                array[date.getMonth()] += eachFindedSavingData.price;
+              });
+              console.log("data", array);
+              console.log("label", returnDescriotionFromKey(key));
+
+              barChartDataTypeTemp.push({
+                data: array,
+                label: returnDescriotionFromKey(key),
+              });
+              console.log(
+                "barchardatatypetemp after add",
+                barChartDataTypeTemp
+              );
+            }
+          );
+
+          setBarChartData(barChartDataTypeTemp);
+        }
+      }
+    );
+  };
 
   const functionsWhenComponentMount = () => {
     getTotalSavingDataById(globalSlice.userId).then(
       (res: serviceReturnType) => {
-        if (res.statusCode === 200 && res.data && res.data) {
+        if (res.statusCode === 200 && res.data && res.data[0]) {
+          console.log("res", res);
           const data = res.data[0] as totalSavingTypeWithDocumentId;
           const sorted = sortObjectAlphabetically(data.totalSavings);
           const obj: totalSavingTypeWithDocumentId = {
@@ -109,43 +149,7 @@ export const SavingComponent = (): JSX.Element => {
           };
           setSavingsData(obj);
           dispatch(setTotalSavingData(obj as totalSavingTypeWithDocumentId));
-          getPerSavingsByUserId(globalSlice.userId).then(
-            (response: serviceReturnType) => {
-              // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
-              if (response.statusCode == 200) {
-                const barChartDataTypeTemp: barChartDataType[] = [];
-                Object.entries(homePageSlice.totalSavingData.totalSavings).map(
-                  ([key]) => {
-                    const array = new Array(12).fill(0);
-                    const perSavings = response.data as perSavingsType[];
-                    const findedValues: perSavingsType[] = [];
-                    perSavings.map((each) => {
-                      if (each.type === key) {
-                        findedValues.push(each);
-                      }
-                    });
-                    findedValues.map((eachFindedSavingData: perSavingsType) => {
-                      const date = new Date(eachFindedSavingData.date);
-                      array[date.getMonth()] += eachFindedSavingData.price;
-                    });
-                    console.log("data", array);
-                    console.log("label", returnDescriotionFromKey(key));
-
-                    barChartDataTypeTemp.push({
-                      data: array,
-                      label: returnDescriotionFromKey(key),
-                    });
-                    console.log(
-                      "barchardatatypetemp after add",
-                      barChartDataTypeTemp
-                    );
-                  }
-                );
-
-                setBarChartData(barChartDataTypeTemp);
-              }
-            }
-          );
+          calculateBarChartData();
         }
       }
     );
@@ -214,12 +218,7 @@ export const SavingComponent = (): JSX.Element => {
           if (isTotalSavingProcessAdding) {
             object.totalSavings[key as keyof totalSavingsObjectType] += value;
           } else {
-            object.totalSavings[key as keyof totalSavingsObjectType] -=
-              value > 0
-                ? value
-                : (object.totalSavings[
-                    key as keyof totalSavingsObjectType
-                  ] = 0);
+            object.totalSavings[key as keyof totalSavingsObjectType] -= value;
           }
         }
       });
@@ -229,7 +228,7 @@ export const SavingComponent = (): JSX.Element => {
         if (value != 0) {
           perObjectList.push({
             type: key,
-            price: value,
+            price: isTotalSavingProcessAdding ? value : -value,
             date: Timestamp.now().toMillis(),
           } as perSavingsType);
         }
@@ -246,6 +245,7 @@ export const SavingComponent = (): JSX.Element => {
               documentId: savingsData.documentId,
             } as totalSavingTypeWithDocumentId)
           );
+          calculateBarChartData();
           clearValues();
         }
       });

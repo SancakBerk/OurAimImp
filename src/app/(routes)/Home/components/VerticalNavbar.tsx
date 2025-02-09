@@ -8,6 +8,8 @@ import ModeButton from "@/components/modeButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
+import { ButtonComponent } from "@/components/ButtonComponent";
+import { redirect } from "next/navigation";
 
 const VerticalNavbar = (): JSX.Element => {
   const [visibleComponentId, setVisibleComponentId] = useState<number | null>(
@@ -60,12 +62,22 @@ const VerticalNavbar = (): JSX.Element => {
             );
           }
         )}
-        <div className="absolute bottom-[10%] w-full  flex justify-center items-center  ">
+        <div className="absolute bottom-[10%] w-[40%]  flex justify-center items-center flex-col gap-y-10 ">
           <ModeButton
             setDarkModeProp={() => {
               dispatch(setModeToRedux(!isDarkMode));
             }}
           />
+          <ButtonComponent
+            parentClassName="w-full"
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("session");
+              redirect("/Login");
+            }}
+          >
+            Çıkış
+          </ButtonComponent>
         </div>
       </div>
       {verticalNavbarData.map((eachVerticalNavbarData: verticalNavbarType) => {
