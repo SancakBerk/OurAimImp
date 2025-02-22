@@ -49,8 +49,6 @@ export const UpdateTotalSavingsData = async (
   updatedAllData: totalSavingsType,
   updatedPerSavings: perSavingsType[]
 ): Promise<serviceReturnType> => {
-  console.log("updatedAllData", updatedAllData);
-  console.log("UpdateTotalSavingsData", updatedPerSavings);
   const savingsCollectionRef = collection(db, "savings");
   try {
     await updateDoc(doc(savingsCollectionRef, documentId), updatedAllData);

@@ -13,6 +13,7 @@ import UpdateAddPopUp from "./components/UpdateAddPopUp";
 import ConfirmDeletePopUp from "./components/ConfirmDeletePopUp";
 import { setModeToRedux, setUserIdToRedux } from "@/redux/slices/globalSlice";
 import {
+  exchangeDataResponseType,
   exchangeDataType,
   expensesDataWithDocumentId,
   localStorageSessionType,
@@ -24,6 +25,7 @@ import {
   setCurrentExpenseData,
 } from "@/redux/slices/homePageSlice";
 import { getCurrentExchangeRates } from "@/services/globalService";
+import { parse } from "path";
 
 const HomePage = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -49,7 +51,7 @@ const HomePage = (): JSX.Element => {
     if (globalSlice.userId) {
       getCurrentExchangeRates().then((res: serviceReturnType) => {
         if (res.statusCode === 200) {
-          const object: exchangeDataType = {
+          const object: exchangeDataResponseType = {
             dollar: res.data?.USD,
             gold14: res.data?.["14-ayar-altin"],
             euro: res.data?.EUR,
@@ -57,15 +59,27 @@ const HomePage = (): JSX.Element => {
             gold22: res.data?.["gram-altin"],
             gold24: res.data?.["gram-has-altin"],
           };
-          Object.entries(object).map(([exchangeKey, value]) => {
-            const newValue = Object.entries(value).map(([key, value]) => {
-              const removeddata =
-                removeNumberCommasAndDotThenReturnNumber(value) ?? 1;
-              return { [key]: removeddata };
-            });
-            return { [exchangeKey]: newValue };
-          });
-          dispatch(setCurrentExchangeRates(object));
+          const newData: any = {};
+          for (const key in object) {
+            const { Alış, Satış, Tür, ...rest } =
+              object[key as keyof exchangeDataResponseType];
+            if (!(Tür == "Altın")) {
+              newData[key] = {
+                ...rest,
+                Alış: removeNumberCommasAndDotThenReturnNumber(Alış),
+                Satış: removeNumberCommasAndDotThenReturnNumber(Satış),
+              };
+            } else {
+              newData[key] = {
+                ...rest,
+                Tür: Tür,
+                Alış: parseFloat(Alış.replace(".", "")),
+                Satış: parseFloat(Alış.replace(".", "")),
+              };
+            }
+          }
+
+          dispatch(setCurrentExchangeRates(newData));
         }
       });
     }
@@ -90,7 +104,7 @@ const HomePage = (): JSX.Element => {
 
   return (
     <div className={`${isDarkMode && "dark"}`}>
-      <div className="w-screen h-screen flex relative">
+      <div className={`w-screen h-screen flex relative  ${isDarkMode ?"bg-DarkModeImage" : "bg-LightModeImage" }`}>
         <div className="w-[10%] h-full">
           <VerticalNavbar />
         </div>

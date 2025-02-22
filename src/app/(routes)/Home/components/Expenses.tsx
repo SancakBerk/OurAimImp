@@ -61,12 +61,12 @@ export const Expenses = () => {
   return (
     <div className={`${globalSlice.isDarkMode && "dark"}`}>
       <div
-        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground  `}
+        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground opacity-90  `}
       >
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[35%] h-[35%] m-5 flex flex-wrap   border border-blue-950 relative dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
+              className=" w-[35%] h-[35%] m-5 flex flex-wrap   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
               key={eachData.documentId}
             >
               <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
@@ -84,19 +84,19 @@ export const Expenses = () => {
               </div>
               <div className="w-full flex justify-center  ">
                 <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white  ">
-                  <p>İsim: {capitalizeWords(eachData.name)}</p>
+                  <p>İsim: {eachData.name.toUpperCase()}</p>
                   <p>İhtiyaç mı: {eachData.isRequired ? "Evet" : "Hayır"}</p>
                   <p>
                     Ücret:{" "}
                     {(
                       eachData.price *
-                      parseInt(homePageSlice.currentExchangeRates.dollar.Alış) *
+                      homePageSlice.currentExchangeRates.dollar.Alış *
                       eachData.amount
                     ).toFixed(0)}
                     TL ({" "}
                     {(
                       eachData.price *
-                      parseInt(homePageSlice.currentExchangeRates.dollar.Alış)
+                      homePageSlice.currentExchangeRates.dollar.Alış
                     ).toFixed(0)}{" "}
                     x {eachData.amount})
                   </p>
@@ -126,6 +126,7 @@ export const Expenses = () => {
               </div>
               <div className=" w-full h-[10%]   flex justify-center gap-5  ">
                 <ButtonComponent
+                  className="bg-opacity-20"
                   onClick={() => {
                     dispatch(
                       setDeletePopUpConfirmation({
@@ -137,6 +138,7 @@ export const Expenses = () => {
                   text="Sil"
                 />
                 <ButtonComponent
+                  className="bg-opacity-20"
                   onClick={() => {
                     dispatch(
                       setPopupOpen({

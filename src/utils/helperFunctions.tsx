@@ -18,16 +18,14 @@ export const getIsDarkMode = (): boolean => {
 
 export const isSessionExpired = (): boolean => {
   const session = localStorage.getItem("session");
-  if (session === null) redirect("/Login");
+  if (session === null) return true;
   const sessionObj = JSON.parse(session) as localStorageSessionType;
-  if (sessionObj.systemExpiresDate < new Date().getTime())
-    return redirect("/Login");
+  if (sessionObj.systemExpiresDate < new Date().getTime()) return true;
   return false;
 };
-export const redirectAuth = (): void =>
-{
+export const redirectAuth = (): void => {
   redirect("/Homepage");
- }
+};
 
 export const getFloatValueAsFixed2 = (number: number): number => {
   return parseFloat(number.toFixed(2));
@@ -43,8 +41,8 @@ export const getDaysBetweenTimestamps = (
 export const removeNumberCommasAndDotThenReturnNumber = (
   string: string
 ): number => {
-  const number = string.split(",")[0].split(".").join("");
-  return parseInt(number);
+  const number = parseFloat(string.replace(",", "."));
+  return number;
 };
 
 export const sortObjectAlphabetically = (
@@ -66,9 +64,8 @@ export const calculateSavingDataToTl = (
     homePageSlice.currentExchangeRates[key as keyof exchangeDataType] !=
     undefined
   ) {
-    return removeNumberCommasAndDotThenReturnNumber(
-      homePageSlice.currentExchangeRates[key as keyof exchangeDataType].Alış
-    );
+    return homePageSlice.currentExchangeRates[key as keyof exchangeDataType]
+      .Alış;
   } else {
     return 1;
   }
@@ -90,9 +87,7 @@ export const calculateTotalSavingsAsTlRateAndReturnObjects = (
       const exchangeRate =
         homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
       const exchangeRateValue =
-        exchangeRate && exchangeRate.Alış
-          ? removeNumberCommasAndDotThenReturnNumber(exchangeRate.Alış)
-          : 1;
+        exchangeRate && exchangeRate.Alış ? exchangeRate.Alış : 1;
 
       const label = savingRowInformations.find((each) => each.type === key);
 

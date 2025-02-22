@@ -43,12 +43,12 @@ const initialState: InitialStateTypes = {
     userId: "",
   },
   currentExchangeRates: {
-    dollar: { Alış: "1", Tür: "USD", Satış: "1", Değişim: "1" },
-    euro: { Alış: "1", Tür: "EUR", Satış: "1", Değişim: "1" },
-    gold14: { Alış: "1", Tür: "14-ayar-altin", Satış: "1", Değişim: "1" },
-    gold18: { Alış: "1", Tür: "18-ayar-altin", Satış: "1", Değişim: "1" },
-    gold22: { Alış: "1", Tür: "gram-altin", Satış: "1", Değişim: "1" },
-    gold24: { Alış: "1", Tür: "gram-has-altin", Satış: "1", Değişim: "1" },
+    dollar: { Alış: 1, Tür: "USD", Satış: 1, Değişim: "1" },
+    euro: { Alış: 1, Tür: "EUR", Satış: 1, Değişim: "1" },
+    gold14: { Alış: 1, Tür: "14-ayar-altin", Satış: 1, Değişim: "1" },
+    gold18: { Alış: 1, Tür: "18-ayar-altin", Satış: 1, Değişim: "1" },
+    gold22: { Alış: 1, Tür: "gram-altin", Satış: 1, Değişim: "1" },
+    gold24: { Alış: 1, Tür: "gram-has-altin", Satış: 1, Değişim: "1" },
   },
   isPopupOpen: { isPopupOpen: false, isUpdate: false },
   deletePopUpConfirmation: {

@@ -5,8 +5,10 @@ import { useEffect } from "react";
 
 const Home = () => {
   useEffect(() => {
-    isSessionExpired();
-    redirect("/Home");
+    if (!isSessionExpired()) {
+      redirect("/Home");
+    }
+    redirect("/Login");
   }, []);
 };
 export default Home;

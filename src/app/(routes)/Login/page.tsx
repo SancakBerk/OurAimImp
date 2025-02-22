@@ -7,8 +7,9 @@ import myScaryGirl from "@/../public/myScaryGirl.png";
 import { JSX, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { getIsDarkMode } from "@/utils/helperFunctions";
+import { getIsDarkMode, isSessionExpired } from "@/utils/helperFunctions";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
+import { redirect } from "next/navigation";
 
 const LoginPage = (): JSX.Element => {
   const darkMode = useSelector(
@@ -16,6 +17,9 @@ const LoginPage = (): JSX.Element => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
+    if (!isSessionExpired()) {
+      redirect("/Home");
+    }
     if (getIsDarkMode()) {
       dispatch(setModeToRedux(true));
     }

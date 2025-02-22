@@ -70,10 +70,24 @@ export type serviceReturnType = {
 };
 
 export type exchangeDataEachObjectType = {
+  Alış: number;
+  Tür: string;
+  Satış: number;
+  Değişim: string;
+};
+export type exchangeDataEachObjectResponseType = {
   Alış: string;
   Tür: string;
   Satış: string;
   Değişim: string;
+};
+export type exchangeDataResponseType = {
+  dollar: exchangeDataEachObjectResponseType;
+  euro: exchangeDataEachObjectResponseType;
+  gold14: exchangeDataEachObjectResponseType;
+  gold18: exchangeDataEachObjectResponseType;
+  gold22: exchangeDataEachObjectResponseType;
+  gold24: exchangeDataEachObjectResponseType;
 };
 export type exchangeDataType = {
   dollar: exchangeDataEachObjectType;
@@ -85,11 +99,11 @@ export type exchangeDataType = {
 };
 
 export type calculateSpendingAndAimInformationDataType = {
-  aimDate: number;
+  aimDate: Date;
   howManyDaysLeft: number;
-  requiredSavingsPrice: number;
-  requestedSavingsPrice: number;
-  totalSavingMoney: number;
+  requestedExpensePrice: number;
+  requeiredExpensePrice: number;
+  totalExpensePrice: number;
   monthlyNeededMoney: number;
 };
 

@@ -28,7 +28,7 @@ import {
   calculateSavingDataToTl,
   calculateTotalSavingsAsTlRateAndReturnObjects,
   changeNumberToThreeDigitsAndReturn,
-  removeNumberCommasAndDotThenReturnNumber,
+  getFloatValueAsFixed2,
   returnDescriotionFromKey,
   sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
@@ -58,9 +58,7 @@ export const SavingComponent = (): JSX.Element => {
         const exchangeRate =
           homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
         const exchangeRateValue =
-          exchangeRate && exchangeRate.Alış
-            ? removeNumberCommasAndDotThenReturnNumber(exchangeRate.Alış)
-            : 1;
+          exchangeRate && exchangeRate.Alış ? exchangeRate.Alış : 1;
         allSavingDataTotal += Math.round(value * exchangeRateValue);
       }
     );
@@ -70,9 +68,7 @@ export const SavingComponent = (): JSX.Element => {
         const exchangeRate =
           homePageSlice.currentExchangeRates[key as keyof exchangeDataType];
         const exchangeRateValue =
-          exchangeRate && exchangeRate.Alış
-            ? removeNumberCommasAndDotThenReturnNumber(exchangeRate.Alış)
-            : 1;
+          exchangeRate && exchangeRate.Alış ? exchangeRate.Alış : 1;
 
         const label = savingRowInformations.find((each) => each.type === key);
         totalSavingDataToTl.push({
@@ -114,17 +110,11 @@ export const SavingComponent = (): JSX.Element => {
                 const date = new Date(eachFindedSavingData.date);
                 array[date.getMonth()] += eachFindedSavingData.price;
               });
-              console.log("data", array);
-              console.log("label", returnDescriotionFromKey(key));
 
               barChartDataTypeTemp.push({
                 data: array,
                 label: returnDescriotionFromKey(key),
               });
-              console.log(
-                "barchardatatypetemp after add",
-                barChartDataTypeTemp
-              );
             }
           );
 
@@ -138,7 +128,6 @@ export const SavingComponent = (): JSX.Element => {
     getTotalSavingDataById(globalSlice.userId).then(
       (res: serviceReturnType) => {
         if (res.statusCode === 200 && res.data && res.data[0]) {
-          console.log("res", res);
           const data = res.data[0] as totalSavingTypeWithDocumentId;
           const sorted = sortObjectAlphabetically(data.totalSavings);
           const obj: totalSavingTypeWithDocumentId = {
@@ -188,7 +177,7 @@ export const SavingComponent = (): JSX.Element => {
         total += each.value;
       }
     );
-    return total;
+    return getFloatValueAsFixed2(total);
   };
 
   const { handleChange, handleSubmit, errors, values, setValues } = useFormik({
@@ -255,10 +244,10 @@ export const SavingComponent = (): JSX.Element => {
   if (savingsData == undefined || savingsData.totalSavings == undefined) {
     return <p>Loading...</p>;
   }
-  console.log("barchardata", barChartData);
+
   return (
-    <div className="w-full  h-full border flex flex-col dark:bg-darkBackground p-10 ">
-      <div className="w-full h-full flex">
+    <div className="w-full  h-full border flex  flex-col  bg-white  dark:bg-darkBackground   ">
+      <div className="w-full h-full flex ">
         <form
           className="w-[50%] h-full flex justify-between flex-col"
           onSubmit={handleSubmit}
@@ -291,7 +280,9 @@ export const SavingComponent = (): JSX.Element => {
                 <div className=" w-[25%] h-full flex  items-center dark:text-white">
                   <p>
                     {changeNumberToThreeDigitsAndReturn(
-                      value * calculateSavingDataToTl(key, homePageSlice)
+                      getFloatValueAsFixed2(
+                        value * calculateSavingDataToTl(key, homePageSlice)
+                      )
                     )}
                     TL
                   </p>

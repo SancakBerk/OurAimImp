@@ -37,7 +37,7 @@ const VerticalNavbar = (): JSX.Element => {
 
   return (
     <div className={` ${isDarkMode && "dark"} relative w-full h-full`}>
-      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center border-r-black dark:border-r-white border-r gap-y-10 z-50 dark:bg-darkBackground ">
+      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center gap-y-10 z-50  dark:bg-darkBackground opacity-90 ">
         {verticalNavbarData.map(
           (eachVerticalNavbarData: verticalNavbarType) => {
             return (
@@ -47,7 +47,7 @@ const VerticalNavbar = (): JSX.Element => {
                     setVisibleComponentId(eachVerticalNavbarData.id)
                   }
                   onMouseLeave={() => setVisibleComponentId(null)}
-                  className="w-full h-16 flex items-center text-xl text-white p-5 hover:border rounded relative z-50"
+                  className="w-full bg-white  dark:bg-opacity-0 h-16 flex bg-opacity-60 items-center text-xl text-white p-5 hover:border rounded relative z-50"
                 >
                   <p className="ml-3 text-black dark:text-white">
                     {" "}
@@ -70,6 +70,7 @@ const VerticalNavbar = (): JSX.Element => {
           />
           <ButtonComponent
             parentClassName="w-full"
+            className="bg-opacity-60"
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("session");
@@ -90,7 +91,7 @@ const VerticalNavbar = (): JSX.Element => {
               setVisibleComponentId(eachVerticalNavbarData.id)
             }
             onMouseLeave={() => setVisibleComponentId(null)}
-            className={` fixed top-0 left-[10vw] w-[70vw] h-screen bg-white text-black  shadow-lg transition-all duration-500 ease-in-out ${
+            className={` fixed top-0 left-[10vw] w-[70vw] h-screen text-black  shadow-lg transition-all duration-500 ease-in-out ${
               isVisible
                 ? "translate-x-0 opacity-100"
                 : "-translate-x-full opacity-0"
