@@ -6,7 +6,6 @@ import { RootState } from "@/redux/store";
 import {
   getDaysBetweenDates,
   getFloatValueAsFixed2,
-  removeNumberCommasAndDotThenReturnNumber,
 } from "@/utils/helperFunctions";
 import { FaRegEdit } from "react-icons/fa";
 

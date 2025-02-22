@@ -34,6 +34,7 @@ import {
 } from "@/utils/helperFunctions";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { createTheme, ThemeProvider } from "@mui/material";
+
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);

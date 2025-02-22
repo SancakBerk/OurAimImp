@@ -25,7 +25,6 @@ import {
   setCurrentExpenseData,
 } from "@/redux/slices/homePageSlice";
 import { getCurrentExchangeRates } from "@/services/globalService";
-import { parse } from "path";
 
 const HomePage = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -59,18 +58,27 @@ const HomePage = (): JSX.Element => {
             gold22: res.data?.["gram-altin"],
             gold24: res.data?.["gram-has-altin"],
           };
-          const newData: any = {};
+          const newData: exchangeDataType = {
+            dollar: { Alış: 0, Satış: 0, Tür: "Dolar", Değişim: "" },
+            gold14: { Alış: 0, Satış: 0, Tür: "Altın", Değişim: "" },
+            euro: { Alış: 0, Satış: 0, Tür: "Euro", Değişim: "" },
+            gold18: { Alış: 0, Satış: 0, Tür: "Altın", Değişim: "" },
+            gold22: { Alış: 0, Satış: 0, Tür: "Altın", Değişim: "" },
+            gold24: { Alış: 0, Satış: 0, Tür: "Altın", Değişim: "" },
+          };
           for (const key in object) {
+            const typedKey = key as keyof exchangeDataType;
             const { Alış, Satış, Tür, ...rest } =
-              object[key as keyof exchangeDataResponseType];
+              object[typedKey as keyof exchangeDataResponseType];
             if (!(Tür == "Altın")) {
-              newData[key] = {
+              newData[typedKey] = {
                 ...rest,
+                Tür: Tür,
                 Alış: removeNumberCommasAndDotThenReturnNumber(Alış),
                 Satış: removeNumberCommasAndDotThenReturnNumber(Satış),
               };
             } else {
-              newData[key] = {
+              newData[typedKey] = {
                 ...rest,
                 Tür: Tür,
                 Alış: parseFloat(Alış.replace(".", "")),
@@ -104,7 +112,11 @@ const HomePage = (): JSX.Element => {
 
   return (
     <div className={`${isDarkMode && "dark"}`}>
-      <div className={`w-screen h-screen flex relative  ${isDarkMode ?"bg-DarkModeImage" : "bg-LightModeImage" }`}>
+      <div
+        className={`w-screen h-screen flex relative  ${
+          isDarkMode ? "bg-DarkModeImage" : "bg-LightModeImage"
+        }`}
+      >
         <div className="w-[10%] h-full">
           <VerticalNavbar />
         </div>

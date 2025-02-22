@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import BouncingCircles from "@/../public/bouncing-circles.svg";
 
 const loadingInterface = (): JSX.Element => {
   return (

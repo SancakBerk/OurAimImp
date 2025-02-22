@@ -17,7 +17,6 @@ import {
   getUserExpensesByUserId,
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
-import { capitalizeWords } from "@/utils/helperFunctions";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import "@/app/(routes)/Home/style.css";
 
