@@ -82,7 +82,7 @@ export const Expenses = () => {
                 />
               </div>
               <div className="w-full flex justify-center  ">
-                <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white  ">
+                <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white font-semibold  ">
                   <p>İsim: {eachData.name.toUpperCase()}</p>
                   <p>İhtiyaç mı: {eachData.isRequired ? "Evet" : "Hayır"}</p>
                   <p>
@@ -101,7 +101,7 @@ export const Expenses = () => {
                   </p>
                   <p>Ne kadar İstiyorsun: {eachData.rate}/10</p>
                 </div>
-                <div className="h-full flex flex-col dark:text-white ">
+                <div className="h-full flex flex-col dark:text-white font-semibold ">
                   <p>Hesapla:</p>
                   <Checkbox
                     className="dark:text-white "
@@ -125,7 +125,7 @@ export const Expenses = () => {
               </div>
               <div className=" w-full h-[10%]   flex justify-center gap-5  ">
                 <ButtonComponent
-                  className="bg-opacity-20"
+                  className="bg-opacity-20  "
                   onClick={() => {
                     dispatch(
                       setDeletePopUpConfirmation({
@@ -134,8 +134,9 @@ export const Expenses = () => {
                       })
                     );
                   }}
-                  text="Sil"
-                />
+                >
+                  <p className="text-red-600 ">Sil</p>
+                </ButtonComponent>
                 <ButtonComponent
                   className="bg-opacity-20"
                   onClick={() => {

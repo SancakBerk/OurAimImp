@@ -108,7 +108,7 @@ const HomePage = (): JSX.Element => {
   useEffect(() => {
     getExpenses();
     savingComponentRequests();
-  }, [globalSlice.userId]);
+  }, [globalSlice.userId, homePageSlice.expenseDataChanged]);
 
   return (
     <div className={`${isDarkMode && "dark"}`}>

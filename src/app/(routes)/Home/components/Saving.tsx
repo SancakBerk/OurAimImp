@@ -26,7 +26,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { setTotalSavingData } from "@/redux/slices/homePageSlice";
 import {
   calculateSavingDataToTl,
-  calculateTotalSavingsAsTlRateAndReturnObjects,
+  calculateTotalSavingsAsTlRateAndReturnNumber,
   changeNumberToThreeDigitsAndReturn,
   getFloatValueAsFixed2,
   returnDescriotionFromKey,
@@ -171,15 +171,6 @@ export const SavingComponent = (): JSX.Element => {
       hisse: 0,
     });
   };
-  const calculateTotalSavingsAsTlRateAndReturnNumber = (): number => {
-    let total = 0;
-    calculateTotalSavingsAsTlRateAndReturnObjects(homePageSlice).map(
-      (each: pieCharDataType) => {
-        total += each.value;
-      }
-    );
-    return getFloatValueAsFixed2(total);
-  };
 
   const { handleChange, handleSubmit, errors, values, setValues } = useFormik({
     initialValues: {
@@ -313,7 +304,7 @@ export const SavingComponent = (): JSX.Element => {
             </div>
             <div className="w-[25%] flex  items-center underline underline-offset-8 dark:text-white">
               {changeNumberToThreeDigitsAndReturn(
-                calculateTotalSavingsAsTlRateAndReturnNumber()
+                calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
               )}
               {" TL"}
             </div>

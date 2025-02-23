@@ -7,10 +7,12 @@ interface buttonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   parentClassName?: string;
   text?: string;
   children?: React.ReactNode;
+  textStyle?: string;
 }
 export const ButtonComponent: React.FC<buttonProps> = ({
   parentClassName,
   text,
+  textStyle,
   children,
   ...props
 }): JSX.Element => {
@@ -24,7 +26,9 @@ export const ButtonComponent: React.FC<buttonProps> = ({
         onClick={props.onClick}
         className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white   dark:bg-darkBackground border border-black dark:border-white ${props.className} `}
       >
-        <p className="dark:text-white  ">{children ? children : text}</p>
+        <p className={`dark:text-white   ${textStyle}  `}>
+          {children ? children : text}
+        </p>
       </button>
     </div>
   );

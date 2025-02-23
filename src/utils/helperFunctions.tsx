@@ -117,3 +117,14 @@ export const getDaysBetweenDates = (
 export function isType<T>(data: unknown, type: T): boolean {
   return data !== null && typeof data === typeof type;
 }
+export const calculateTotalSavingsAsTlRateAndReturnNumber = (
+  homePageSlice: InitialStateTypes
+): number => {
+  let total = 0;
+  calculateTotalSavingsAsTlRateAndReturnObjects(homePageSlice).map(
+    (each: pieCharDataType) => {
+      total += each.value;
+    }
+  );
+  return getFloatValueAsFixed2(total);
+};
