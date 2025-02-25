@@ -71,14 +71,14 @@ export const Expenses = () => {
               <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
                 {eachData.amount} x
               </div>
-              <div className="  w-full h-[60%] flex justify-center">
+              <div className="  w-full h-[60%] flex justify-center overflow-hidden  ">
                 <Image
                   src={eachData.imageUrl}
                   alt="Image"
                   blurDataURL={eachData.imageUrl}
                   width={500}
                   height={300}
-                  className=" bg-contain bg-center bg-no-repeat h-full rounded-md "
+                  className=" bg-contain bg-center bg-no-repeat h-full rounded-md hover:scale-105 transition-transform duration-1000    "
                 />
               </div>
               <div className="w-full flex justify-center  ">
@@ -104,7 +104,6 @@ export const Expenses = () => {
                 <div className="h-full flex flex-col dark:text-white font-semibold ">
                   <p>Hesapla:</p>
                   <Checkbox
-                    className="dark:text-white "
                     checked={eachData.isCalculating}
                     color="success"
                     onChange={async (e) => {
@@ -154,10 +153,10 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-blue-950 dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center ">
+        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
-              className="border-none text-[100px] jumping "
+              className=" text-[100px] jumping "
               onClick={() => {
                 dispatch(
                   setPopupOpen({
@@ -168,7 +167,7 @@ export const Expenses = () => {
                 );
               }}
             >
-              <MdOutlineAddCircleOutline />
+              <MdOutlineAddCircleOutline className=" dark:text-white" />
             </ButtonComponent>
           </div>
         </div>

@@ -13,14 +13,13 @@ import React, { JSX, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPerSavingsByUserId,
-  getTotalSavingDataById,
   UpdateTotalSavingsData,
 } from "@/services/savingService";
 import { InputComponent } from "@/components/InputComponent";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { useFormik } from "formik";
 import { addSavingsSchema } from "@/utils/loginInformationSchemas";
-import { monthNames, savingRowInformations } from "@/utils/constants";
+import { monthNames, savingRowInformations, theme } from "@/utils/constants";
 import { Timestamp } from "firebase/firestore";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { setTotalSavingData } from "@/redux/slices/homePageSlice";
@@ -30,10 +29,9 @@ import {
   changeNumberToThreeDigitsAndReturn,
   getFloatValueAsFixed2,
   returnDescriotionFromKey,
-  sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
@@ -49,7 +47,8 @@ export const SavingComponent = (): JSX.Element => {
   const dispatch = useDispatch();
   const valueFormatter = (item: { value: number }) => ` ${item.value}% `;
   useEffect(() => {
-    functionsWhenComponentMount();
+    setSavingsData(homePageSlice.totalSavingData);
+    calculateBarChartData();
   }, [globalSlice.userId]);
   const calculatePieChartData = (): pieCharDataType[] => {
     let allSavingDataTotal = 0;
@@ -124,31 +123,6 @@ export const SavingComponent = (): JSX.Element => {
       }
     );
   };
-
-  const functionsWhenComponentMount = () => {
-    getTotalSavingDataById(globalSlice.userId).then(
-      (res: serviceReturnType) => {
-        if (res.statusCode === 200 && res.data && res.data[0]) {
-          const data = res.data[0] as totalSavingTypeWithDocumentId;
-          const sorted = sortObjectAlphabetically(data.totalSavings);
-          const obj: totalSavingTypeWithDocumentId = {
-            aimDate: data.aimDate,
-            userId: data.userId,
-            documentId: data.documentId,
-            totalSavings: sorted as totalSavingsObjectType,
-          };
-          setSavingsData(obj);
-          dispatch(setTotalSavingData(obj as totalSavingTypeWithDocumentId));
-          calculateBarChartData();
-        }
-      }
-    );
-  };
-  const theme = createTheme({
-    palette: {
-      mode: globalSlice.isDarkMode ? "dark" : "light",
-    },
-  });
 
   useEffect(() => {
     setPieChartData(calculatePieChartData());
@@ -275,7 +249,7 @@ export const SavingComponent = (): JSX.Element => {
                       getFloatValueAsFixed2(
                         value * calculateSavingDataToTl(key, homePageSlice)
                       )
-                    )}
+                    )}{" "}
                     TL
                   </p>
                 </div>
@@ -312,11 +286,11 @@ export const SavingComponent = (): JSX.Element => {
         </form>
 
         <div className=" w-[50%] h-full flex flex-col p-4">
-          <div className="w-full h-[50%] dark:text-white  ">
+          <div className="w-full h-[50%] dark:text-white flex justify-center items-center border-b-4   ">
             <ThemeProvider theme={theme}>
               <PieChart
                 title="Total Savings Ratio"
-                className=" text-black dark:text-white  "
+                className=" text-black dark:text-white  w-auto h-auto "
                 series={
                   pieChartData.length > 0
                     ? [

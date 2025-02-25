@@ -95,7 +95,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
   });
 
   return (
-    <div>
+    <div className=" smoothVisible ">
       <div className="w-screen h-screen fixed top-0 left-0 bg-gray-500 opacity-45 flex justify-center items-center    "></div>
       <div className="w-screen h-screen fixed top-0 left-0 flex justify-center items-center z-50  ">
         <form

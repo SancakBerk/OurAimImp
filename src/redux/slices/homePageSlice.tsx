@@ -23,6 +23,7 @@ export interface InitialStateTypes {
   expenseDataChanged: boolean;
   currentExpenseData: expensesDataWithDocumentId[];
   currentExchangeRates: exchangeDataType;
+  totalSavingsDataChanged: boolean;
 }
 
 const initialState: InitialStateTypes = {
@@ -56,6 +57,7 @@ const initialState: InitialStateTypes = {
   },
   expenseDataChanged: false,
   currentExpenseData: [],
+  totalSavingsDataChanged: false,
 };
 
 export const homePageSlice = createSlice({
@@ -67,6 +69,9 @@ export const homePageSlice = createSlice({
       action: PayloadAction<totalSavingTypeWithDocumentId>
     ) => {
       state.totalSavingData = action.payload;
+    },
+    setTotalSavingsDataChanged: (state, action: PayloadAction<boolean>) => {
+      state.totalSavingsDataChanged = action.payload;
     },
     setCurrentExchangeRates: (
       state,
@@ -108,6 +113,7 @@ export const {
   setCurrentExchangeRates,
   setCurrentExpenseData,
   setTotalSavingData,
+  setTotalSavingsDataChanged,
 } = homePageSlice.actions;
 
 export default homePageSlice.reducer;

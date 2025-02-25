@@ -3,6 +3,7 @@ import {
   getIsDarkMode,
   isSessionExpired,
   removeNumberCommasAndDotThenReturnNumber,
+  sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
 import { JSX, useEffect } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
@@ -18,13 +19,18 @@ import {
   expensesDataWithDocumentId,
   localStorageSessionType,
   serviceReturnType,
+  totalSavingsObjectType,
+  totalSavingTypeWithDocumentId,
 } from "@/types/types";
 import { getUserExpensesByUserId } from "@/services/expensesService";
 import {
   setCurrentExchangeRates,
   setCurrentExpenseData,
+  setTotalSavingData,
+  setTotalSavingsDataChanged,
 } from "@/redux/slices/homePageSlice";
 import { getCurrentExchangeRates } from "@/services/globalService";
+import { getTotalSavingDataById } from "@/services/savingService";
 
 const HomePage = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -46,6 +52,25 @@ const HomePage = (): JSX.Element => {
     );
   };
 
+  const getTotalSavingDataByIdRequest = () => {
+    getTotalSavingDataById(globalSlice.userId).then(
+      (res: serviceReturnType) => {
+        if (res.statusCode === 200 && res.data && res.data[0]) {
+          const data = res.data[0] as totalSavingTypeWithDocumentId;
+          const sorted = sortObjectAlphabetically(data.totalSavings);
+          const obj: totalSavingTypeWithDocumentId = {
+            aimDate: data.aimDate,
+            userId: data.userId,
+            documentId: data.documentId,
+            totalSavings: sorted as totalSavingsObjectType,
+          };
+
+          dispatch(setTotalSavingData(obj as totalSavingTypeWithDocumentId));
+          dispatch(setTotalSavingsDataChanged(false));
+        }
+      }
+    );
+  };
   const savingComponentRequests = () => {
     if (globalSlice.userId) {
       getCurrentExchangeRates().then((res: serviceReturnType) => {
@@ -103,11 +128,22 @@ const HomePage = (): JSX.Element => {
     }
     getExpenses();
     savingComponentRequests();
+    getTotalSavingDataByIdRequest();
   }, []);
+  useEffect(() => {
+    if (homePageSlice.totalSavingsDataChanged) {
+      console.log(
+        "homePageSlice.totalSavingsDataChanged true",
+        homePageSlice.totalSavingsDataChanged
+      );
+      getTotalSavingDataByIdRequest();
+    }
+  }, [homePageSlice.totalSavingsDataChanged]);
 
   useEffect(() => {
     getExpenses();
     savingComponentRequests();
+    getTotalSavingDataByIdRequest();
   }, [globalSlice.userId, homePageSlice.expenseDataChanged]);
 
   return (
@@ -117,10 +153,10 @@ const HomePage = (): JSX.Element => {
           isDarkMode ? "bg-DarkModeImage" : "bg-LightModeImage"
         }`}
       >
-        <div className="w-[10%] h-full">
+        <div className="w-[10%] h-full fixed top-0 left-0 bottom-0 z-50">
           <VerticalNavbar />
         </div>
-        <div className="w-full h-screen">
+        <div className=" w-[100%] h-screen">
           <Expenses />
         </div>
         {homePageSlice.isPopupOpen.isPopupOpen && <UpdateAddPopUp />}

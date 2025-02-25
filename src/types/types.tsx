@@ -55,7 +55,6 @@ export type totalSavingTypeWithDocumentId = totalSavingsType & {
 export type userType = {
   email: string;
   password: string;
-  userAimDate: number;
   userId: string;
 };
 export type userTypeWithDocumentId = userType & {
@@ -124,4 +123,9 @@ export type savingComponentTextType = {
   type: string;
   placeholder: string;
   afterText: string;
+};
+
+export type globalDialogEachButtonType = {
+  text: string;
+  onClick: () => void;
 };

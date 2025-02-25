@@ -1,4 +1,7 @@
+import { globalSlice } from "@/redux/slices/globalSlice";
 import { savingComponentTextType } from "@/types/types";
+import { createTheme } from "@mui/material";
+const state = globalSlice.getInitialState();
 
 export const savingRowInformations: savingComponentTextType[] = [
   {
@@ -64,3 +67,8 @@ export const monthNames = (): string[] => {
     "Aralık",
   ];
 };
+export const theme = createTheme({
+  palette: {
+    mode: state.isDarkMode ? "dark" : "light",
+  },
+});

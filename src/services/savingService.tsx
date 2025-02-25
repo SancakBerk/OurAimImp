@@ -105,3 +105,32 @@ export const getPerSavingsByUserId = async (
     };
   }
 };
+export async function updateAimDate(
+  userId: string,
+  newAimDate: number
+): Promise<serviceReturnType> {
+  try {
+    const savingsCollection = collection(db, "savings");
+    const savingsQuery = query(
+      savingsCollection,
+      where("userId", "==", userId)
+    );
+    const snapshot = (await getDocs(
+      savingsQuery
+    )) as QuerySnapshot<DocumentData>;
+
+    if (snapshot.empty) {
+      return { statusCode: 404, message: "Kullanıcıya ait kayıt bulunamadı" };
+    }
+
+    const firstDoc = snapshot.docs[0];
+    const docRef = doc(db, "savings", firstDoc.id);
+
+    await updateDoc(docRef, { aimDate: newAimDate });
+
+    return { statusCode: 200, message: "AimDate güncellendi" };
+  } catch (error) {
+    console.error("Error updating AimDate:", error);
+    return { statusCode: 500, message: "AimDate güncelleme hatası" };
+  }
+}

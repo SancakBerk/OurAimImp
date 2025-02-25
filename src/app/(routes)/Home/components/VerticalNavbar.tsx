@@ -37,7 +37,7 @@ const VerticalNavbar = (): JSX.Element => {
 
   return (
     <div className={` ${isDarkMode && "dark"} relative w-full h-full`}>
-      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center gap-y-10 z-50  dark:bg-darkBackground opacity-90 ">
+      <div className="w-[10vw] fixed top-0 left-0 bottom-0 flex flex-col pt-40 items-center gap-y-10 z-50  border-r-2 border-black dark:border-white opacity-90 ">
         {verticalNavbarData.map(
           (eachVerticalNavbarData: verticalNavbarType) => {
             return (
@@ -76,9 +76,8 @@ const VerticalNavbar = (): JSX.Element => {
               localStorage.removeItem("session");
               redirect("/Login");
             }}
-          >
-            Çıkış
-          </ButtonComponent>
+            text="Çıkış"
+          ></ButtonComponent>
         </div>
       </div>
       {verticalNavbarData.map((eachVerticalNavbarData: verticalNavbarType) => {
