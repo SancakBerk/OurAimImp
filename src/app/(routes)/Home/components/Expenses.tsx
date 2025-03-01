@@ -58,17 +58,17 @@ export const Expenses = () => {
   };
 
   return (
-    <div className={`${globalSlice.isDarkMode && "dark"}`}>
+    <div className={`${globalSlice.isDarkMode && "dark"}  `}>
       <div
-        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground opacity-90  `}
+        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground opacity-90 pl-[10vw]  `}
       >
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[35%] h-[35%] m-5 flex flex-wrap   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center "
+              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  "
               key={eachData.documentId}
             >
-              <div className="absolute top-3 right-3 w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
+              <div className="absolute top-3 right-3 gap- w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
                 {eachData.amount} x
               </div>
               <div className="  w-full h-[60%] flex justify-center overflow-hidden  ">
@@ -81,7 +81,7 @@ export const Expenses = () => {
                   className=" bg-contain bg-center bg-no-repeat h-full rounded-md hover:scale-105 transition-transform duration-1000    "
                 />
               </div>
-              <div className="w-full flex justify-center  ">
+              <div className="w-full  flex justify-center  ">
                 <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white font-semibold  ">
                   <p>İsim: {eachData.name.toUpperCase()}</p>
                   <p>İhtiyaç mı: {eachData.isRequired ? "Evet" : "Hayır"}</p>
@@ -122,7 +122,7 @@ export const Expenses = () => {
                   />
                 </div>
               </div>
-              <div className=" w-full h-[10%]   flex justify-center gap-5  ">
+              <div className=" w-full   flex justify-center gap-5  ">
                 <ButtonComponent
                   className="bg-opacity-20  "
                   onClick={() => {
@@ -153,7 +153,7 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center ">
+        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
               className=" text-[100px] jumping "

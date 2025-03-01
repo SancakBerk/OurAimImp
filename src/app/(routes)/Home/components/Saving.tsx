@@ -243,8 +243,8 @@ export const SavingComponent = (): JSX.Element => {
                   name={key}
                   onChange={handleChange}
                 />
-                <div className=" w-[25%] h-full flex  items-center dark:text-white">
-                  <p>
+                <div className=" w-[25%] h-full flex  items-center dark:text-white text-end ">
+                  <p className=" w-full text-end">
                     {changeNumberToThreeDigitsAndReturn(
                       getFloatValueAsFixed2(
                         value * calculateSavingDataToTl(key, homePageSlice)
@@ -277,10 +277,12 @@ export const SavingComponent = (): JSX.Element => {
               />
             </div>
             <div className="w-[25%] flex  items-center underline underline-offset-8 dark:text-white">
-              {changeNumberToThreeDigitsAndReturn(
-                calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
-              )}
-              {" TL"}
+              <p className=" w-full text-end">
+                {changeNumberToThreeDigitsAndReturn(
+                  calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
+                )}{" "}
+                TL
+              </p>
             </div>
           </div>
         </form>

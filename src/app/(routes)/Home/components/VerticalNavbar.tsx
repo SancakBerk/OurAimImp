@@ -47,14 +47,14 @@ const VerticalNavbar = (): JSX.Element => {
                     setVisibleComponentId(eachVerticalNavbarData.id)
                   }
                   onMouseLeave={() => setVisibleComponentId(null)}
-                  className="w-full bg-white  dark:bg-opacity-0 h-16 flex bg-opacity-60 items-center text-xl text-white p-5 hover:border rounded relative z-50"
+                  className="w-full bg-white gap-2  dark:bg-opacity-0 h-16 flex bg-opacity-60 items-center text-xl text-white p-5 hover:border rounded relative z-50"
                 >
-                  <p className="ml-3 text-black dark:text-white">
+                  <p className=" text-black dark:text-white">
                     {" "}
                     {eachVerticalNavbarData.icon}
                   </p>
 
-                  <p className="ml-3 text-black dark:text-white">
+                  <p className=" text-black dark:text-white">
                     {eachVerticalNavbarData.title}
                   </p>
                 </div>

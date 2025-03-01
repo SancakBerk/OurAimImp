@@ -31,7 +31,7 @@ const LoginPage = (): JSX.Element => {
   return (
     <div className={` dark:bg-darkBackground  ${darkMode && "dark"} slideIn `}>
       <div className="w-screen h-screen bg-white flex justify-center items-center relative dark:bg-darkBackground ">
-        <div className="w-[40%] h-[50%]  flex  border p-5 rounded-lg ">
+        <div className="w-[40%] h-[50%]  flex  border p-5 border-black dark:border-white rounded-lg ">
           <div className="w-[50%] h-full   ">
             <LoginForm />
           </div>

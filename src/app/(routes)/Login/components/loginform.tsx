@@ -13,7 +13,6 @@ import { setUserIdToRedux } from "@/redux/slices/globalSlice";
 import { useDispatch } from "react-redux";
 import { InputComponent } from "@/components/InputComponent";
 import { ButtonComponent } from "@/components/ButtonComponent";
-import { Checkbox } from "@mui/material";
 const LoginForm = (): JSX.Element => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -28,7 +27,6 @@ const LoginForm = (): JSX.Element => {
     initialValues: {
       email: "",
       password: "",
-      checkbox: false,
     },
     validationSchema: loginInformationSchema,
     onSubmit: async () => {
@@ -58,7 +56,6 @@ const LoginForm = (): JSX.Element => {
         userId: userData.userId,
         systemEnterDate: new Date().getTime(),
         systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24).getTime(),
-        rememberMe: values.checkbox,
       });
       localStorage.setItem("session", session);
 
@@ -107,18 +104,6 @@ const LoginForm = (): JSX.Element => {
         </div>
         {errors.password && <p className=" text-red-600">{errors.password}</p>}
 
-        <div className="flex items-center gap-4 h-10 ">
-          <label htmlFor="checkbox" className="dark:text-white text-black ">
-            Beni Hatırla
-          </label>
-          <Checkbox
-            id="checkbox"
-            className="h-full w-5 dark:text-white"
-            name="checkbox"
-            onChange={handleChange}
-            value={values.checkbox}
-          />
-        </div>
         <div>
           <ButtonComponent
             text="Submit"

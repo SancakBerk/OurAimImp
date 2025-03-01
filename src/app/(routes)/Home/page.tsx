@@ -132,10 +132,6 @@ const HomePage = (): JSX.Element => {
   }, []);
   useEffect(() => {
     if (homePageSlice.totalSavingsDataChanged) {
-      console.log(
-        "homePageSlice.totalSavingsDataChanged true",
-        homePageSlice.totalSavingsDataChanged
-      );
       getTotalSavingDataByIdRequest();
     }
   }, [homePageSlice.totalSavingsDataChanged]);

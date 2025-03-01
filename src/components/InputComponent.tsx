@@ -9,6 +9,7 @@ export const InputComponent = forwardRef<HTMLInputElement, inputProps>(
     return (
       <div className={` ${parentClassName} `}>
         <input
+          disabled={args.disabled}
           ref={ref}
           type={args.type}
           typeof={args.typeof}

@@ -70,20 +70,19 @@ const Spending = (): JSX.Element => {
   const calculateProgressBarValue = (): string => {
     if (CalculatedSavingInformations) {
       return (
-        (calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice) /
-          CalculatedSavingInformations.totalExpensePrice) *
-        100
-      ).toFixed(2);
+        (
+          (calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice) /
+            CalculatedSavingInformations.totalExpensePrice) *
+          100
+        ).toFixed(2) + "%"
+      );
     } else {
       return "";
     }
   };
   useEffect(() => {
     const newObj = calculateSpendingAndAimInformationData();
-    console.log(
-      "veri değiştir function  calculateSpendingAndAimInformationData() worked again",
-      newObj
-    );
+
     setCalculatedSavingInformations(newObj);
   }, [
     homePageSlice.currentExchangeRates,
@@ -160,9 +159,9 @@ const Spending = (): JSX.Element => {
 
       <div className="w-full h-[80%] flex gap-5 ">
         <div className=" w-[50%] h-full flex flex-col gap-8 dark:text-white p-10 text-2xl border ">
-          <div className="flex gap-x-5">
-            <h1>Gerekli Ürünlerin Ücreti:</h1>
-            <h2>
+          <div className="flex gap-x-5 w-full">
+            <h1 className="w-[60%] ">Gerekli Ürünlerin Ücreti:</h1>
+            <h2 className="w-[30%] text-end">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations.requeiredExpensePrice
               )}{" "}
@@ -170,33 +169,52 @@ const Spending = (): JSX.Element => {
             </h2>
           </div>
           <div className="flex gap-x-5">
-            <h1>İstek Ürünlerin Ücreti:</h1>
-            <h2>
+            <h1 className="w-[60%] ">İstek Ürünlerin Ücreti:</h1>
+            <h2 className="w-[30%] text-end">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations.requestedExpensePrice
               )}{" "}
               TL
             </h2>
           </div>
+          <hr />
           <div className="flex gap-x-5 font-bold">
-            <h1>Tüm Ürünlerin Ücreti:</h1>
-            <h2>
+            <h1 className="w-[60%] ">Tüm Ürünlerin Ücreti:</h1>
+            <h2 className="w-[30%] text-end">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations?.totalExpensePrice
               )}{" "}
               TL
             </h2>
           </div>
+
+          <div className="flex gap-x-5">
+            <h1 className="w-[60%] ">Biriktirilen Para:</h1>
+            <h2 className="w-[30%] text-end">
+              {changeNumberToThreeDigitsAndReturn(
+                calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
+              )}
+              TL
+            </h2>
+          </div>
+
           <div className="flex gap-x-5 font-bold">
-            <h1>Aylık Biriktirilmesi Gereken Miktar</h1>
-            {changeNumberToThreeDigitsAndReturn(
-              CalculatedSavingInformations.monthlyNeededMoney
+            {CalculatedSavingInformations.monthlyNeededMoney > 0 ? (
+              <h1 className="text-blue-500 w-[60%]">Aylık Gereken Para:</h1>
+            ) : (
+              <h1 className="text-green-500  w-[60%]">Aylık Fazla Para:</h1>
             )}
-            <h2> TL</h2>
+            <h2 className="w-[30%] text-end">
+              {changeNumberToThreeDigitsAndReturn(
+                Math.abs(CalculatedSavingInformations.monthlyNeededMoney)
+              )}{" "}
+              TL
+            </h2>
           </div>
           <div className="w-full flex ">
             <ProgressBar
-              className="w-[50%]  "
+              height="30px"
+              className="w-full  "
               completed={calculateProgressBarValue()}
             />
           </div>

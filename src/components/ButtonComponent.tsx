@@ -24,7 +24,7 @@ export const ButtonComponent: React.FC<buttonProps> = ({
       <button
         type={props.type}
         onClick={props.onClick}
-        className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white   dark:bg-darkBackground border border-black dark:border-white  ${props.className} `}
+        className={`text-xl focus:outline-none p-2 rounded-lg w-full  bg-white   dark:bg-darkBackground border border-black dark:border-white  ${props.className}  `}
       >
         {children ? (
           children
