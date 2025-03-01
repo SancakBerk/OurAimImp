@@ -153,7 +153,7 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 ">
+        <div className=" w-[35%] h-[35%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
               className=" text-[100px] jumping "
