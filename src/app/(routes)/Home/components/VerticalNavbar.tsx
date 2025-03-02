@@ -41,13 +41,13 @@ const VerticalNavbar = (): JSX.Element => {
         {verticalNavbarData.map(
           (eachVerticalNavbarData: verticalNavbarType) => {
             return (
-              <div key={eachVerticalNavbarData.id}>
+              <div className="w-full p-4" key={eachVerticalNavbarData.id}>
                 <div
                   onMouseEnter={() =>
                     setVisibleComponentId(eachVerticalNavbarData.id)
                   }
                   onMouseLeave={() => setVisibleComponentId(null)}
-                  className="w-full bg-white gap-2  dark:bg-opacity-0 h-16 flex bg-opacity-60 items-center text-xl text-white p-5 hover:border rounded relative z-50"
+                  className="w-full justify-center bg-white gap-2  dark:bg-opacity-0 h-16 flex bg-opacity-60 items-center text-xl text-white p-5 hover:border rounded relative z-50"
                 >
                   <p className=" text-black dark:text-white">
                     {" "}

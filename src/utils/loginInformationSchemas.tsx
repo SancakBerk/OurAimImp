@@ -6,7 +6,21 @@ export const loginInformationSchema = yup.object().shape({
     .email("Email formatında olması")
     .required("Email alanı boş bırakılamaz"),
   password: yup.string().min(5).max(20).required("Şifre alanı boş bırakılamaz"),
-  checkbox: yup.boolean(),
+  passwordCheck: yup
+    .string()
+    .min(5, "Şifre tekrar en az 5 karakter olmalıdır.")
+    .max(20, "Şifre tekrar en fazla 20 karakter olabilir.")
+    .test(
+      "password-check",
+      "Şifre tekrar alanı boş bırakılamaz",
+      function (value) {
+        const { isRegistering } = this.parent;
+        if (isRegistering) {
+          return !!value && value.length > 0; // Eğer isRegistering true ise, passwordCheck zorunlu olur
+        }
+        return true; // Eğer isRegistering false ise, passwordCheck zorunlu değildir
+      }
+    ),
 });
 
 export const updateExpensesSchema = yup.object().shape({
