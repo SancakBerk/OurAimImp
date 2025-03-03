@@ -65,7 +65,7 @@ export const Expenses = () => {
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  "
+              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear "
               key={eachData.documentId}
             >
               <div className="absolute top-3 right-3 gap- w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
@@ -153,7 +153,7 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[45%] h-[45%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground ">
+        <div className=" w-[45%] h-[45%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
               className=" text-[100px] jumping "
