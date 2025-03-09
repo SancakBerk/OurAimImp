@@ -138,16 +138,16 @@ const Spending = (): JSX.Element => {
   }
   return (
     <div
-      className={`w-full h-full border bg-white dark:bg-darkBackground flex flex-col dark:text-white relative `}
+      className={`w-full h-full border bg-white dark:bg-darkBackground flex flex-col dark:text-white relative max-xl:text-sm  `}
     >
-      <div className="w-full h-[20%] flex justify-center items-center flex-col border-b-4 ">
+      <div className="w-full h-[20%] flex justify-center items-center flex-col border-b-4  ">
         <ButtonComponent
           onClick={() => {
             setShowPopUpUpdateAımDate(true);
           }}
           className="text-lg"
         >
-          <h1 className="text-6xl">
+          <h1 className="text-6xl max-xl:text-2xl  max-sm:text-xl">
             Hedef Tarih:{" "}
             {CalculatedSavingInformations?.aimDate.getDate().toString()} {" / "}
             {CalculatedSavingInformations?.aimDate.getMonth().toString()}
@@ -158,19 +158,23 @@ const Spending = (): JSX.Element => {
       </div>
 
       <div className="w-full h-[80%] flex gap-5 ">
-        <div className=" w-[50%] h-full flex flex-col gap-8 dark:text-white p-10 text-2xl border ">
-          <div className="flex gap-x-5 w-full">
-            <h1 className="w-[60%] ">Gerekli Ürünlerin Ücreti:</h1>
-            <h2 className="w-[30%] text-end">
+        <div className=" w-[50%] h-full flex flex-col gap-8 dark:text-white p-10 text-2xl border max-sm:p-2 ">
+          <div className="flex gap-x-5 w-full  max-xl:text-base max-xl:gap-x-2 max-sm:text-xs  max-sm:flex-col ">
+            <h1 className="w-[60%] text-center max-sm:w-full ">
+              Gerekli Ürünlerin Ücreti:
+            </h1>
+            <h2 className="w-[40%] text-end max-sm:text-center max-sm:w-full ">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations.requeiredExpensePrice
               )}{" "}
               TL
             </h2>
           </div>
-          <div className="flex gap-x-5">
-            <h1 className="w-[60%] ">İstek Ürünlerin Ücreti:</h1>
-            <h2 className="w-[30%] text-end">
+          <div className="flex gap-x-5 max-xl:text-base max-xl:gap-x-2 max-sm:text-xs   max-sm:flex-col">
+            <h1 className="w-[60%] text-center max-sm:w-full ">
+              İstek Ürünlerin Ücreti:
+            </h1>
+            <h2 className="w-[40%] text-end max-sm:text-center max-sm:w-full ">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations.requestedExpensePrice
               )}{" "}
@@ -178,9 +182,11 @@ const Spending = (): JSX.Element => {
             </h2>
           </div>
           <hr />
-          <div className="flex gap-x-5 font-bold">
-            <h1 className="w-[60%] ">Tüm Ürünlerin Ücreti:</h1>
-            <h2 className="w-[30%] text-end">
+          <div className="flex gap-x-5 font-bold max-xl:text-base max-xl:gap-x-2 max-sm:text-xs   max-sm:flex-col">
+            <h1 className="w-[60%] text-center max-sm:w-full ">
+              Tüm Ürünlerin Ücreti:
+            </h1>
+            <h2 className="w-[40%] text-end max-sm:text-center max-sm:w-full ">
               {changeNumberToThreeDigitsAndReturn(
                 CalculatedSavingInformations?.totalExpensePrice
               )}{" "}
@@ -188,9 +194,11 @@ const Spending = (): JSX.Element => {
             </h2>
           </div>
 
-          <div className="flex gap-x-5">
-            <h1 className="w-[60%] ">Biriktirilen Para:</h1>
-            <h2 className="w-[30%] text-end">
+          <div className="flex gap-x-5 font-bold max-xl:text-base max-xl:gap-x-2 max-sm:text-xs   max-sm:flex-col ">
+            <h1 className="w-[60%] text-center max-sm:w-full ">
+              Biriktirilen Para:
+            </h1>
+            <h2 className="w-[40%] text-end max-sm:text-center max-sm:w-full ">
               {changeNumberToThreeDigitsAndReturn(
                 calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
               )}
@@ -198,13 +206,17 @@ const Spending = (): JSX.Element => {
             </h2>
           </div>
 
-          <div className="flex gap-x-5 font-bold">
+          <div className="flex gap-x-5 font-bold max-xl:text-base max-xl:gap-x-2 max-sm:text-xs   max-sm:flex-col">
             {CalculatedSavingInformations.monthlyNeededMoney > 0 ? (
-              <h1 className="text-blue-500 w-[60%]">Aylık Gereken Para:</h1>
+              <h1 className="text-blue-500 w-[60%] max-sm:w-full text-center ">
+                Aylık Gereken Para:
+              </h1>
             ) : (
-              <h1 className="text-green-500  w-[60%]">Aylık Fazla Para:</h1>
+              <h1 className="text-green-500  w-[60%] max-sm:w-full text-center ">
+                Aylık Fazla Para:
+              </h1>
             )}
-            <h2 className="w-[30%] text-end">
+            <h2 className="w-[40%] text-end max-sm:text-center max-sm:w-full ">
               {changeNumberToThreeDigitsAndReturn(
                 Math.abs(CalculatedSavingInformations.monthlyNeededMoney)
               )}{" "}
@@ -233,13 +245,10 @@ const Spending = (): JSX.Element => {
                   label="Tarih Seç"
                   value={updateAimDateValue}
                   onChange={(newValue) => setupdateAimDateValue(newValue)}
-                  sx={{
-                    width: "200px",
-                  }}
                   slotProps={{
                     textField: {
                       sx: {
-                        width: "200px",
+                        width: "full",
                         // Text rengi
                         "& .MuiInputBase-input": {
                           color: globalSlice.isDarkMode ? "#fff" : "#000",

@@ -114,7 +114,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
       <div className="w-screen h-screen fixed top-0 left-0 bg-gray-500 opacity-45 flex justify-center items-center"></div>
       <div className="w-screen h-screen fixed top-0 left-0 flex justify-center items-center z-50  ">
         <form
-          className="w-[50%] h-[50%] flex flex-col gap-5 bg-white dark:bg-darkBackground  justify-center items-center rounded-md"
+          className="w-[50%] h-[50%] flex flex-col gap-5 bg-white dark:bg-darkBackground  justify-center items-center rounded-md max-sm:w-[80%] max-sm:h-[80%] "
           onSubmit={handleSubmit}
         >
           <InputComponent

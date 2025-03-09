@@ -31,7 +31,7 @@ import {
   returnDescriotionFromKey,
 } from "@/utils/helperFunctions";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
@@ -42,6 +42,7 @@ export const SavingComponent = (): JSX.Element => {
   const [, settotalSavingDataAsTl] = useState<pieCharDataType[]>([]);
   const [savingsData, setSavingsData] =
     useState<totalSavingTypeWithDocumentId | null>(null);
+  const [themeState, setThemeState] = useState(theme);
   const [isTotalSavingProcessAdding, setIsTotalSavingProcessAdding] =
     useState(true);
   const dispatch = useDispatch();
@@ -50,6 +51,19 @@ export const SavingComponent = (): JSX.Element => {
     setSavingsData(homePageSlice.totalSavingData);
     calculateBarChartData();
   }, [globalSlice.userId]);
+  useEffect(() => {
+    console.log("is dark mode handled", globalSlice.isDarkMode);
+
+    theme.palette.mode = globalSlice.isDarkMode ? "dark" : "light";
+    setThemeState(
+      createTheme({
+        palette: {
+          mode: globalSlice.isDarkMode ? "dark" : "light",
+          text: { primary: globalSlice.isDarkMode ? "#ffffff" : "#000000" },
+        },
+      })
+    );
+  }, [globalSlice.isDarkMode]);
   const calculatePieChartData = (): pieCharDataType[] => {
     let allSavingDataTotal = 0;
     const totalSavingDataToTl: pieCharDataType[] = [];
@@ -212,10 +226,10 @@ export const SavingComponent = (): JSX.Element => {
   }
 
   return (
-    <div className="w-full  h-full border flex  flex-col  bg-white  dark:bg-darkBackground   ">
-      <div className="w-full h-full flex ">
+    <div className="w-full  h-full border flex  flex-col  bg-white  dark:bg-darkBackground max-xl:text-sm   ">
+      <div className="w-full h-full flex max-sm:flex-col p-2 max-sm:p-1  ">
         <form
-          className="w-[50%] h-full flex justify-between flex-col"
+          className="w-[50%] h-full flex  flex-col max-sm:w-full justify-center "
           onSubmit={handleSubmit}
         >
           {Object.entries(savingsData.totalSavings).map(([key, value]) => {
@@ -224,27 +238,29 @@ export const SavingComponent = (): JSX.Element => {
             );
             return (
               <div
-                className="flex p-4 w-full items-center justify-between   border-b-4 "
+                className="flex p-4 w-full items-center justify-center   border-b-2  max-sm:p-1"
                 key={key}
               >
                 <div
-                  className={` rounded flex flex-col justify-center items-center  w-[40%] h-full dark:text-white`}
+                  className={` rounded flex flex-col justify-center items-center  w-[40%] h-full dark:text-white `}
                 >
-                  <p>
+                  <p className="max-sm:text-xs">
                     {text?.placeholder}: {value.toString()} {text?.afterText}
                   </p>
-                </div>
+                </div>  
                 <InputComponent
                   type="number"
                   value={values[key as keyof totalSavingsObjectType]}
                   placeholder={text?.placeholder}
                   parentClassName="w-[25%]"
-                  className={`${errors.gold14 && "border-red-500"} text-center`}
+                  className={`${
+                    errors.gold14 && "border-red-500"
+                  } text-center  `}
                   name={key}
                   onChange={handleChange}
                 />
                 <div className=" w-[25%] h-full flex  items-center dark:text-white text-end ">
-                  <p className=" w-full text-end">
+                  <p className=" w-full text-end max-sm:text-xs">
                     {changeNumberToThreeDigitsAndReturn(
                       getFloatValueAsFixed2(
                         value * calculateSavingDataToTl(key, homePageSlice)
@@ -257,8 +273,8 @@ export const SavingComponent = (): JSX.Element => {
             );
           })}
 
-          <div className="flex p-4 w-full justify-center items-center gap-x-5  ">
-            <div className=" w-[75%] flex items-center justify-center gap-x-8">
+          <div className="flex p-4 w-full justify-center items-center  max-sm:p-2  ">
+            <div className="  flex items-center justify-center gap-x-8  max-xl:gap-2 w-[75%] max-sm:gap-x-4 ">
               <ButtonComponent
                 parentClassName=" w-20 "
                 type="submit"
@@ -276,8 +292,8 @@ export const SavingComponent = (): JSX.Element => {
                 }}
               />
             </div>
-            <div className="w-[25%] flex  items-center underline underline-offset-8 dark:text-white">
-              <p className=" w-full text-end">
+            <div className="flex  items-center underline underline-offset-8 dark:text-white end  w-[25%] ">
+              <p className=" w-full text-end max-sm:text-xs ">
                 {changeNumberToThreeDigitsAndReturn(
                   calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
                 )}{" "}
@@ -287,12 +303,12 @@ export const SavingComponent = (): JSX.Element => {
           </div>
         </form>
 
-        <div className=" w-[50%] h-full flex flex-col p-4">
-          <div className="w-full h-[50%] dark:text-white flex justify-center items-center border-b-4   ">
-            <ThemeProvider theme={theme}>
+        <div className=" w-[50%] h-full flex flex-col p-4 max-sm:w-full ">
+          <div className="w-full h-[50%] dark:text-white flex justify-center items-center border-b-4 max-sm:hidden   ">
+            <ThemeProvider theme={themeState}>
               <PieChart
                 title="Total Savings Ratio"
-                className=" text-black dark:text-white  w-auto h-auto "
+                className=" text-black dark:text-white   "
                 series={
                   pieChartData.length > 0
                     ? [
@@ -321,8 +337,8 @@ export const SavingComponent = (): JSX.Element => {
               />
             </ThemeProvider>
           </div>
-          <div className=" w-full h-[50%] ">
-            <ThemeProvider theme={theme}>
+          <div className=" w-full h-[50%] max-sm:h-full ">
+            <ThemeProvider theme={themeState}>
               <BarChart
                 className="w-full h-full  "
                 title="Savings Per Month"

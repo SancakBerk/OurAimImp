@@ -102,10 +102,13 @@ const LoginForm = (): JSX.Element => {
     <>
       <form
         onSubmit={handleSubmit}
-        className={`flex  justify-center items-center  w-full h-full gap-4  `}
+        className={`flex  justify-center items-center  w-full h-full gap-4  max-md:gap-0  `}
       >
-        <div className=" w-1/2 h-full justify-center gap-4  flex flex-col ">
-          <label htmlFor="email" className="   dark:text-white text-lg ">
+        <div className=" w-1/2 h-full justify-center gap-4  flex flex-col max-2xl:gap-1 max-2xl:w-[80%] max-md:w-full ">
+          <label
+            htmlFor="email"
+            className="   dark:text-white text-lg max-2xl:text-sm "
+          >
             Email
           </label>
           <div className="w-[100%]">
@@ -154,7 +157,7 @@ const LoginForm = (): JSX.Element => {
           {touched.password && errors.passwordCheck && isRegistering && (
             <p className=" text-red-600">{errors.password}</p>
           )}
-          <div className=" flex gap-5 dark:text-white ">
+          <div className=" flex gap-5 dark:text-white max-2xl:text-sm max-sm:flex-col ">
             <button className=" text-gray-500 " disabled>
               <p>Şifremi Unuttum</p>
             </button>

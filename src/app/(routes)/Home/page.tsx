@@ -149,7 +149,7 @@ const HomePage = (): JSX.Element => {
           isDarkMode ? "bg-DarkModeImage" : "bg-LightModeImage"
         }`}
       >
-        <div className="w-[10%] h-full fixed top-0 left-0 bottom-0 z-50">
+        <div className="w-[10%] h-full fixed top-0 left-0  z-50  max-sm:w-full max-sm:h-[10vh]  ">
           <VerticalNavbar />
         </div>
         <div className=" w-[100%] h-screen">

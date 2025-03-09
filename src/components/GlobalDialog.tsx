@@ -18,15 +18,15 @@ const GlobalDialog: React.FC<globalDialogProps> = ({
     >
       <div className=" w-[70%] h-[70%] bg-white border rounded-md border-black dark:bg-darkBackground dark:text-white flex flex-col justify-center items-center dark:border dark:border-white p-10 ">
         <div className="w-full h-[15%] ">
-          <span className="w-full h-[15%] font-semibold text-xl ">
+          <span className="w-full h-[15%] font-semibold text-xl max-sm:text-sm ">
             {" "}
             {title}{" "}
           </span>
         </div>
-        <div className="  w-full h-[75%] flex flex-col justify-center items-center    ">
+        <div className="  w-full h-[75%] flex flex-col justify-center items-center     ">
           {children}
         </div>
-        <div className="w-full h-[10%] flex justify-end items-center ">
+        <div className="w-full h-[10%] flex justify-end items-center  ">
           {buttons &&
             buttons.map((eachButton: globalDialogEachButtonType, index) => {
               return (

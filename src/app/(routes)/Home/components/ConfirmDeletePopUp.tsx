@@ -26,8 +26,8 @@ export const ConfirmDeletePopUp = (): JSX.Element => {
           globalSlice.isDarkMode && "dark"
         } `}
       >
-        <div className="w-[50%] h-[50%] flex justify-center items-center flex-col border  border-black rounded-lg bg-white gap-y-10 dark:bg-darkBackground  ">
-          <p className=" text-2xl dark:text-white ">
+        <div className="w-[50%] h-[50%] flex justify-center items-center flex-col border  border-black rounded-lg bg-white gap-y-10 dark:bg-darkBackground max-sm:w-[80%] max-sm:h-[80%] ">
+          <p className=" text-2xl dark:text-white max-sm:text-sm text-center ">
             {" "}
             Silmek istediğine emin misin?{" "}
           </p>

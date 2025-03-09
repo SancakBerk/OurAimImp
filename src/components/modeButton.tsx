@@ -26,23 +26,25 @@ const ModeButton: FC<modeButtonProps> = ({ ...props }): JSX.Element => {
 
   return (
     <button
-      className={`w-28 h-14 rounded-lg border  ${
+      className={`h-14 rounded-lg border  ${
         darkMode ? "lightModeBackGround" : "darkModeBackGround"
-      } flex ${props.className}  `}
+      } flex ${props.className} max-xl:flex-col justify-center items-center   `}
       onClick={handleMode}
     >
-      <div className={`w-[50%] h-full p-1 `}>
+      <div className={`w-[50%] h-full p-1 max-xl:p-0 `}>
         <Image
           src={darkMode ? sunImage : moonImage}
           alt="Moon_Sun Images"
-          className="h-full  "
+          className="h-full"
         />
       </div>
-      <div className={`w-[50%] h-full p-1 flex justify-center items-center `}>
+      <div
+        className={`w-[50%] h-full p-1 flex justify-center items-center max-xl:p-0 `}
+      >
         <p
           className={`${
             darkMode ? "text-yellow-300" : "text-white"
-          } font-bold `}
+          } font-bold max:xl:text-sm  `}
         >
           {darkMode ? "Light" : "Dark"}
         </p>

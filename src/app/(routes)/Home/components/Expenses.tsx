@@ -58,21 +58,24 @@ export const Expenses = () => {
   };
 
   return (
-    <div className={`${globalSlice.isDarkMode && "dark"}  `}>
+    <div
+      className={`${
+        globalSlice.isDarkMode && "dark"
+      } relative  w-screen h-screen  `}
+    >
+      {/* <div className="scrollWatch"></div> */}
       <div
-        className={`flex flex-row flex-wrap justify-center w-full h-screen overflow-x-hidden p-10 relative dark:bg-darkBackground opacity-90 pl-[10vw]  `}
+        className={`flex   flex-wrap justify-center w-full h-screen overflow-y-scroll  p-10 relative dark:bg-darkBackground opacity-90 pl-[10vw]    max-sm:pt-[10vh] max-sm:px-0   `}
       >
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear "
+              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%]  "
               key={eachData.documentId}
             >
-              <div className="absolute top-3 right-3 gap- w-[10%] h-[5%] flex justify-center items-center dark:text-white ">
-                {eachData.amount} x
-              </div>
-              <div className="  w-full h-[60%] flex justify-center overflow-hidden  ">
+              <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2  ">
                 <Image
+                  loading="lazy"
                   src={eachData.imageUrl}
                   alt="Image"
                   blurDataURL={eachData.imageUrl}
@@ -82,26 +85,38 @@ export const Expenses = () => {
                 />
               </div>
               <div className="w-full  flex justify-center  ">
-                <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white font-semibold  ">
-                  <p>İsim: {eachData.name.toUpperCase()}</p>
-                  <p>İhtiyaç mı: {eachData.isRequired ? "Evet" : "Hayır"}</p>
-                  <p>
-                    Ücret:{" "}
-                    {(
-                      eachData.price *
-                      homePageSlice.currentExchangeRates.dollar.Alış *
-                      eachData.amount
-                    ).toFixed(0)}
-                    TL ({" "}
-                    {(
-                      eachData.price *
-                      homePageSlice.currentExchangeRates.dollar.Alış
-                    ).toFixed(0)}{" "}
-                    x {eachData.amount})
-                  </p>
-                  <p>Ne kadar İstiyorsun: {eachData.rate}/10</p>
+                <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white font-semibold  gap-x-2 max-2xl:text-sm   max-sm:text-sm ">
+                  <div className="flex max-sm:flex-col text-center  ">
+                    <p>İsim: </p>
+                    <p>{eachData.name.toUpperCase()} </p>
+                  </div>
+                  <div className="flex max-sm:flex-col text-center  ">
+                    <p>İhtiyaç mı: </p>
+                    <p>{eachData.isRequired ? "Evet" : "Hayır"}</p>
+                  </div>
+                  <div className="flex max-sm:flex-col text-center ">
+                    <p>Ücret: </p>
+                    <p>
+                      {" "}
+                      {(
+                        eachData.price *
+                        homePageSlice.currentExchangeRates.dollar.Alış *
+                        eachData.amount
+                      ).toFixed(0)}
+                      TL ({" "}
+                      {(
+                        eachData.price *
+                        homePageSlice.currentExchangeRates.dollar.Alış
+                      ).toFixed(0)}{" "}
+                      x {eachData.amount})
+                    </p>
+                  </div>
+                  <div className="flex max-sm:flex-col text-center  ">
+                    <p>Ne kadar İstiyorsun: </p>
+                    <p>{eachData.rate}/10</p>
+                  </div>
                 </div>
-                <div className="h-full flex flex-col dark:text-white font-semibold ">
+                <div className="h-full flex flex-col dark:text-white font-semibold  max-sm:text-sm ">
                   <p>Hesapla:</p>
                   <Checkbox
                     checked={eachData.isCalculating}
@@ -122,7 +137,7 @@ export const Expenses = () => {
                   />
                 </div>
               </div>
-              <div className=" w-full   flex justify-center gap-5  ">
+              <div className=" w-full h-auto  flex justify-center gap-5  ">
                 <ButtonComponent
                   className="bg-opacity-20  "
                   onClick={() => {
@@ -153,7 +168,7 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[45%] h-[45%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear ">
+        <div className=" w-[45%] h-[45%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear max-xl:w-[100%] ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
               className=" text-[100px] jumping "
