@@ -157,7 +157,7 @@ const LoginForm = (): JSX.Element => {
           {touched.password && errors.passwordCheck && isRegistering && (
             <p className=" text-red-600">{errors.password}</p>
           )}
-          <div className=" flex gap-5 dark:text-white max-2xl:text-sm max-sm:flex-col ">
+          <div className=" flex gap-5 dark:text-white max-2xl:text-sm ">
             <button className=" text-gray-500 " disabled>
               <p>Şifremi Unuttum</p>
             </button>

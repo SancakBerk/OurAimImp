@@ -61,7 +61,7 @@ export const Expenses = () => {
     <div
       className={`${
         globalSlice.isDarkMode && "dark"
-      } relative  w-screen h-screen  `}
+      } relative  w-screen h-screen   `}
     >
       {/* <div className="scrollWatch"></div> */}
       <div
@@ -70,10 +70,10 @@ export const Expenses = () => {
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%]  "
+              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]  "
               key={eachData.documentId}
             >
-              <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2  ">
+              <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2 max-sm:mb-0 ">
                 <Image
                   loading="lazy"
                   src={eachData.imageUrl}
@@ -85,16 +85,16 @@ export const Expenses = () => {
                 />
               </div>
               <div className="w-full  flex justify-center  ">
-                <div className="grid w-[70%] grid-cols-2 grid-rows-2 dark:text-white font-semibold  gap-x-2 max-2xl:text-sm   max-sm:text-sm ">
-                  <div className="flex max-sm:flex-col text-center  ">
+                <div className="flex flex-wrap flex-col gap-4 w-[70%]  dark:text-white font-semibold  gap-x-2 max-2xl:text-sm max-sm:gap-0   max-sm:text-xs max-sm:w-[100%] max-sm:gap-y-1 ">
+                  <div className="flex text-center  ">
                     <p>İsim: </p>
                     <p>{eachData.name.toUpperCase()} </p>
                   </div>
-                  <div className="flex max-sm:flex-col text-center  ">
+                  <div className="flex text-center  ">
                     <p>İhtiyaç mı: </p>
                     <p>{eachData.isRequired ? "Evet" : "Hayır"}</p>
                   </div>
-                  <div className="flex max-sm:flex-col text-center ">
+                  <div className="flex  text-center ">
                     <p>Ücret: </p>
                     <p>
                       {" "}
@@ -111,12 +111,12 @@ export const Expenses = () => {
                       x {eachData.amount})
                     </p>
                   </div>
-                  <div className="flex max-sm:flex-col text-center  ">
+                  <div className="flex text-center  ">
                     <p>Ne kadar İstiyorsun: </p>
                     <p>{eachData.rate}/10</p>
                   </div>
                 </div>
-                <div className="h-full flex flex-col dark:text-white font-semibold  max-sm:text-sm ">
+                <div className="h-full flex flex-col dark:text-white font-semibold  max-sm:text-xs ">
                   <p>Hesapla:</p>
                   <Checkbox
                     checked={eachData.isCalculating}

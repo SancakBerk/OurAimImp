@@ -33,6 +33,8 @@ import {
 import { BarChart } from "@mui/x-charts/BarChart";
 import { createTheme, ThemeProvider } from "@mui/material";
 
+const monthNamesShort = monthNames().map((each: string) => each.slice(0, 3));
+
 export const SavingComponent = (): JSX.Element => {
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -229,7 +231,7 @@ export const SavingComponent = (): JSX.Element => {
     <div className="w-full  h-full border flex  flex-col  bg-white  dark:bg-darkBackground max-xl:text-sm   ">
       <div className="w-full h-full flex max-sm:flex-col p-2 max-sm:p-1  ">
         <form
-          className="w-[50%] h-full flex  flex-col max-sm:w-full justify-center "
+          className="w-[50%] h-full flex  flex-col max-sm:w-full justify-evenly "
           onSubmit={handleSubmit}
         >
           {Object.entries(savingsData.totalSavings).map(([key, value]) => {
@@ -238,16 +240,16 @@ export const SavingComponent = (): JSX.Element => {
             );
             return (
               <div
-                className="flex p-4 w-full items-center justify-center   border-b-2  max-sm:p-1"
+                className="flex p-4 w-full items-center justify-center   border-b-2  max-sm:p-0"
                 key={key}
               >
                 <div
-                  className={` rounded flex flex-col justify-center items-center  w-[40%] h-full dark:text-white `}
+                  className={` rounded flex flex-col justify-center     w-[40%] h-full dark:text-white `}
                 >
-                  <p className="max-sm:text-xs">
+                  <p className="max-sm:text-xs ">
                     {text?.placeholder}: {value.toString()} {text?.afterText}
                   </p>
-                </div>  
+                </div>
                 <InputComponent
                   type="number"
                   value={values[key as keyof totalSavingsObjectType]}
@@ -255,7 +257,7 @@ export const SavingComponent = (): JSX.Element => {
                   parentClassName="w-[25%]"
                   className={`${
                     errors.gold14 && "border-red-500"
-                  } text-center  `}
+                  } text-center max-sm:h-1 max-sm:p-2  `}
                   name={key}
                   onChange={handleChange}
                 />
@@ -273,10 +275,10 @@ export const SavingComponent = (): JSX.Element => {
             );
           })}
 
-          <div className="flex p-4 w-full justify-center items-center  max-sm:p-2  ">
-            <div className="  flex items-center justify-center gap-x-8  max-xl:gap-2 w-[75%] max-sm:gap-x-4 ">
+          <div className="flex p-4 w-full justify-center items-center  max-sm:p-0  ">
+            <div className="  flex items-center justify-center gap-x-8 mt-1 max-xl:gap-2 w-[75%] max-sm:gap-x-4 ">
               <ButtonComponent
-                parentClassName=" w-20 "
+                parentClassName=" w-20  "
                 type="submit"
                 text="Çıkar"
                 onClick={() => {
@@ -303,7 +305,7 @@ export const SavingComponent = (): JSX.Element => {
           </div>
         </form>
 
-        <div className=" w-[50%] h-full flex flex-col p-4 max-sm:w-full ">
+        <div className=" w-[50%] h-full flex flex-col p-4 max-sm:w-full max-sm:p-0 ">
           <div className="w-full h-[50%] dark:text-white flex justify-center items-center border-b-4 max-sm:hidden   ">
             <ThemeProvider theme={themeState}>
               <PieChart
@@ -337,13 +339,30 @@ export const SavingComponent = (): JSX.Element => {
               />
             </ThemeProvider>
           </div>
-          <div className=" w-full h-[50%] max-sm:h-full ">
+          <div className=" w-full h-[50%] max-sm:h-full max-sm:text-xs  ">
             <ThemeProvider theme={themeState}>
               <BarChart
-                className="w-full h-full  "
                 title="Savings Per Month"
                 series={barChartData}
-                xAxis={[{ data: monthNames(), scaleType: "band" }]}
+                xAxis={[
+                  {
+                    data: monthNamesShort,
+                    scaleType: "band",
+                    tickLabelStyle: { fontSize: 10 },
+                  },
+                ]}
+                yAxis={[
+                  {
+                    tickLabelStyle: { fontSize: 10 },
+                  },
+                ]}
+                slotProps={{
+                  legend: {
+                    labelStyle: { fontSize: 10 },
+                    itemMarkHeight: 10,
+                    itemMarkWidth: 10,
+                  },
+                }}
               />
             </ThemeProvider>
           </div>
