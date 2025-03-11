@@ -42,7 +42,7 @@ const VerticalNavbar = (): JSX.Element => {
           (eachVerticalNavbarData: verticalNavbarType) => {
             return (
               <div
-                className="w-full h-full p-4 max-sm:h-full max-sm:w-auto max-sm:p-0 dark:border-white rounded-md  "
+                className="w-full  p-4 max-sm:h-full max-sm:w-auto max-sm:p-0 dark:border-white rounded-md  "
                 key={eachVerticalNavbarData.id}
               >
                 <div
