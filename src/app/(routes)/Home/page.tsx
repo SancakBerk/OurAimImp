@@ -35,6 +35,7 @@ import { getTotalSavingDataById } from "@/services/savingService";
 const HomePage = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
+
   const isDarkMode = useSelector(
     (state: RootState) => state.globalSlice.isDarkMode
   );
@@ -149,7 +150,7 @@ const HomePage = (): JSX.Element => {
           isDarkMode ? "bg-DarkModeImage" : "bg-LightModeImage"
         }`}
       >
-        <div className="w-[10%] h-full fixed top-0 left-0  z-50  max-sm:w-full max-sm:h-[10vh]  ">
+        <div className="w-[10%] h-full fixed top-0 left-0  z-50  max-sm:w-full max-sm:h-[8vh] ">
           <VerticalNavbar />
         </div>
         <div className=" w-[100%] h-screen">

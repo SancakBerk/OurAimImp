@@ -28,9 +28,7 @@ const ModeButton: FC<modeButtonProps> = ({ ...props }): JSX.Element => {
     <button
       className={`h-14 rounded-lg border  ${
         darkMode ? "lightModeBackGround" : "darkModeBackGround"
-      } flex  max-xl:flex-col justify-center items-center   ${
-        props.className
-      }  `}
+      } flex   justify-center items-center   ${props.className}  `}
       onClick={handleMode}
     >
       <div className={`w-[50%] h-full p-1 max-xl:p-0 `}>

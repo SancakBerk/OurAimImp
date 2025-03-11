@@ -47,9 +47,9 @@ const LoginPage = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="absolute bottom-[5%] left-[5%] w-[5vw] h-[5vh] ">
+      <div className="absolute bottom-[5%] left-[5%] w-[5vw] h-[5vh] max-sm:w-[20vw] max-sm:h-[5vh] ">
         <ModeButton
-          className="w-full h-full"
+          className="w-full h-full max-sm:text-xs"
           setDarkModeProp={setDarkModeProp}
         />
       </div>

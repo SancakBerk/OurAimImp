@@ -70,7 +70,7 @@ export const Expenses = () => {
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[45%] h-[45%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]  "
+              className=" w-[45%] h-[50%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]   "
               key={eachData.documentId}
             >
               <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2 max-sm:mb-0 ">
@@ -84,7 +84,7 @@ export const Expenses = () => {
                   className=" bg-contain bg-center bg-no-repeat h-full rounded-md hover:scale-105 transition-transform duration-1000    "
                 />
               </div>
-              <div className="w-full  flex justify-center  ">
+              <div className="w-full h-[30%]  flex justify-center  ">
                 <div className="flex flex-wrap flex-col gap-4 w-[70%]  dark:text-white font-semibold  gap-x-2 max-2xl:text-sm max-sm:gap-0   max-sm:text-xs max-sm:w-[100%] max-sm:gap-y-1 ">
                   <div className="flex text-center  ">
                     <p>İsim: </p>
@@ -137,9 +137,9 @@ export const Expenses = () => {
                   />
                 </div>
               </div>
-              <div className=" w-full h-auto  flex justify-center gap-5  ">
+              <div className=" w-full h-[10%]  flex justify-center gap-5    ">
                 <ButtonComponent
-                  className="bg-opacity-20  "
+                  className="bg-opacity-20    "
                   onClick={() => {
                     dispatch(
                       setDeletePopUpConfirmation({
