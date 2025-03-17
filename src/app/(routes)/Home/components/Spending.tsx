@@ -138,7 +138,7 @@ const Spending = (): JSX.Element => {
   }
   return (
     <div
-      className={`w-full h-full border bg-white dark:bg-darkBackground flex flex-col dark:text-white relative max-xl:text-sm  `}
+      className={`w-full h-full border bg-opacity-40 dark:bg-opacity-40 backdrop-blur-3xl bg-gray-400  dark:bg-black  flex flex-col dark:text-white relative max-xl:text-sm  `}
     >
       <div className="w-full h-[20%] flex justify-center items-center flex-col border-b-4  ">
         <ButtonComponent

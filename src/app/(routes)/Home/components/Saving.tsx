@@ -228,7 +228,7 @@ export const SavingComponent = (): JSX.Element => {
   }
 
   return (
-    <div className="w-full  h-full border flex  flex-col  bg-white  dark:bg-darkBackground max-xl:text-sm   ">
+    <div className="w-full  h-full border flex  bg-opacity-40 dark:bg-opacity-40 backdrop-blur-3xl bg-gray-400  dark:bg-black     flex-col  max-xl:text-sm   ">
       <div className="w-full h-full flex max-sm:flex-col p-2 max-sm:p-1  ">
         <form
           className="w-[50%] h-full flex  flex-col max-sm:w-full justify-evenly "
