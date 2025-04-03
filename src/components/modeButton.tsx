@@ -10,10 +10,16 @@ import { RootState } from "@/redux/store";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
 
 interface modeButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+  width?: string;
+  height?: string;
   setDarkModeProp: (mode: boolean) => void;
 }
 
-const ModeButton: FC<modeButtonProps> = ({ ...props }): JSX.Element => {
+const ModeButton: FC<modeButtonProps> = ({
+  height,
+  width,
+  ...props
+}): JSX.Element => {
   const darkMode = useSelector(
     (state: RootState) => state.globalSlice.isDarkMode
   );
@@ -26,7 +32,7 @@ const ModeButton: FC<modeButtonProps> = ({ ...props }): JSX.Element => {
 
   return (
     <button
-      className={`h-14 rounded-lg border  ${
+      className={`h-14 w-14 ${width} ${height}   rounded-lg border  ${
         darkMode ? "lightModeBackGround" : "darkModeBackGround"
       } flex   justify-center items-center   ${props.className}  `}
       onClick={handleMode}

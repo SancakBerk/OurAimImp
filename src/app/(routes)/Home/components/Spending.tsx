@@ -147,7 +147,7 @@ const Spending = (): JSX.Element => {
           }}
           className="text-lg"
         >
-          <h1 className="text-6xl max-xl:text-2xl  max-sm:text-xl">
+          <h1 className="  text-6xl max-xl:text-2xl  max-sm:text-xl">
             Hedef Tarih:{" "}
             {CalculatedSavingInformations?.aimDate.getDate().toString()} {" / "}
             {CalculatedSavingInformations?.aimDate.getMonth().toString()}
@@ -158,7 +158,7 @@ const Spending = (): JSX.Element => {
       </div>
 
       <div className="w-full h-[80%] flex gap-5 ">
-        <div className=" w-[50%] h-full flex flex-col gap-8 dark:text-white p-10 text-2xl border max-sm:p-2 ">
+        <div className=" w-[50%] h-full flex flex-col gap-8 dark:text-white p-10 text-2xl  max-sm:p-2 ">
           <div className="flex gap-x-5 w-full  max-xl:text-base max-xl:gap-x-2 max-sm:text-xs  max-sm:flex-col ">
             <h1 className="w-[60%] text-center max-sm:w-full ">
               Gerekli Ürünlerin Ücreti:

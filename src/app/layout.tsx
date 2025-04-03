@@ -4,7 +4,7 @@ import { Providers } from "../redux/reduxProvider";
 import dotenv from "dotenv";
 
 export const metadata: Metadata = {
-  title: "Hey YOU <3",
+  title: "Expense / Save Tracker",
 };
 
 export default function RootLayout({

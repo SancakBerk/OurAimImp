@@ -278,7 +278,7 @@ export const SavingComponent = (): JSX.Element => {
           <div className="flex p-4 w-full justify-center items-center  max-sm:p-0  ">
             <div className="  flex items-center justify-center gap-x-8 mt-1 max-xl:gap-2 w-[75%] max-sm:gap-x-4 ">
               <ButtonComponent
-                parentClassName=" w-20  "
+                width="w-20"
                 type="submit"
                 text="Çıkar"
                 onClick={() => {
@@ -286,7 +286,7 @@ export const SavingComponent = (): JSX.Element => {
                 }}
               />
               <ButtonComponent
-                parentClassName=" w-20 "
+                width="w-20"
                 type="submit"
                 text="Ekle"
                 onClick={() => {
@@ -306,7 +306,7 @@ export const SavingComponent = (): JSX.Element => {
         </form>
 
         <div className=" w-[50%] h-full flex flex-col p-4 max-sm:w-full max-sm:p-0 ">
-          <div className="w-full h-[50%] dark:text-white flex justify-center items-center border-b-4 max-sm:hidden   ">
+          <div className="w-full h-[50%] dark:text-white flex justify-center items-center max-sm:hidden   ">
             <ThemeProvider theme={themeState}>
               <PieChart
                 title="Total Savings Ratio"
@@ -339,7 +339,8 @@ export const SavingComponent = (): JSX.Element => {
               />
             </ThemeProvider>
           </div>
-          <div className=" w-full h-[50%] max-sm:h-full max-sm:text-xs  ">
+          <hr />
+          <div className=" w-full h-[50%] max-sm:h-full max-sm:text-xs   ">
             <ThemeProvider theme={themeState}>
               <BarChart
                 title="Savings Per Month"

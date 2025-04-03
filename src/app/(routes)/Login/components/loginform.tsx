@@ -104,7 +104,7 @@ const LoginForm = (): JSX.Element => {
         onSubmit={handleSubmit}
         className={`flex  justify-center items-center  w-full h-full gap-4  max-md:gap-0  `}
       >
-        <div className=" w-1/2 h-full justify-center gap-4  flex flex-col max-2xl:gap-1 max-2xl:w-[80%] max-md:w-full ">
+        <div className="  w-1/2 h-full justify-center gap-4  flex flex-col max-2xl:gap-1 max-2xl:w-[80%] max-md:w-full ">
           <label
             htmlFor="email"
             className="   dark:text-white text-lg max-2xl:text-sm "
@@ -161,14 +161,16 @@ const LoginForm = (): JSX.Element => {
             <button className=" text-gray-500 " disabled>
               <p>Şifremi Unuttum</p>
             </button>
-            <button
+
+            <ButtonComponent
               type="button"
               onClick={() => {
                 setisRegistering(!isRegistering);
               }}
+              className="border-none"
             >
               <p> {isRegistering ? "Giriş Yap" : "Kayıt ol"} </p>
-            </button>
+            </ButtonComponent>
           </div>
 
           <div>

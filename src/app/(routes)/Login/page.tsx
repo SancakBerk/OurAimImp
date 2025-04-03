@@ -16,6 +16,7 @@ const LoginPage = (): JSX.Element => {
     (state: RootState) => state.globalSlice.isDarkMode
   );
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!isSessionExpired()) {
       redirect("/Home");
@@ -24,32 +25,47 @@ const LoginPage = (): JSX.Element => {
       dispatch(setModeToRedux(true));
     }
   }, []);
+
   const setDarkModeProp = () => {
-    setModeToRedux(!darkMode);
+    dispatch(setModeToRedux(!darkMode));
   };
 
   return (
-    <div className={` dark:bg-darkBackground  ${darkMode && "dark"}  `}>
-      <div className="w-screen h-screen bg-white flex justify-center items-center relative dark:bg-darkBackground ">
-        <div className="w-[40%] h-[50%]  flex  border p-10 border-black dark:border-white rounded-lg slideIn max-2xl:flex-col justify-evenly  max-md:p-3 max-sm:w-[70%] max-sm:h-[70%] ">
-          <div className="w-[50%] h-full flex justify-center items-center  max-2xl:w-full max-2xl:h-auto">
-            <LoginForm />
+    <div className={`min-h-screen w-full ${darkMode && "dark"}`}>
+      <div className="relative min-h-screen w-full bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 flex justify-center items-center p-4">
+        {/* Background pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" />
+
+        {/* Main container */}
+        <div className="relative w-full max-w-6xl h-auto min-h-[600px] flex flex-col lg:flex-row gap-8 p-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/30 transition-all duration-500 ease-in-out">
+          {/* Left side - Login Form */}
+          <div className=" flex-1 flex flex-col justify-center items-center lg:items-start p-4 lg:p-8">
+            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-white text-center lg:text-left">
+              Welcome Back
+            </h1>
+            <div className="w-full max-w-md">
+              <LoginForm />
+            </div>
           </div>
-          <div className="w-[50%] h-full flex justify-center items-center max-2xl:w-full max-2xl:h-auto ">
-            <Image
-              src={TrackImage}
-              className=" rounded-lg "
-              alt="myScaryGirl"
-              width={522}
-              height={520}
-            />
+
+          {/* Right side - Image */}
+          <div className="flex-1 flex justify-center items-center p-4 lg:p-8">
+            <div className="relative w-full max-w-lg aspect-square rounded-2xl overflow-hidden shadow-xl transition-transform hover:scale-[1.02] duration-500">
+              <Image
+                src={TrackImage}
+                alt="Expense Tracking Illustration"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="absolute bottom-[5%] left-[5%] w-[5vw] h-[5vh] max-sm:w-[20vw] max-sm:h-[5vh] ">
+        {/* Mode Button */}
         <ModeButton
-          className="w-full h-full max-sm:text-xs"
+          className=" shadow-lg hover:scale-110 transition-transform duration-300 fixed bottom-6 left-6 z-50"
+          width={"w-40"}
           setDarkModeProp={setDarkModeProp}
         />
       </div>

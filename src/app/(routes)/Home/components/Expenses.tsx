@@ -19,7 +19,7 @@ import {
 } from "@/services/expensesService";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import "@/app/(routes)/Home/style.css";
-
+import { motion } from "framer-motion";
 export const Expenses = () => {
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ export const Expenses = () => {
         {expensesData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <div
-              className=" w-[45%] h-[50%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-3 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]   "
+              className="  box_shadow w-[45%] h-[50%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-6 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]   "
               key={eachData.documentId}
             >
               <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2 max-sm:mb-0 ">
@@ -85,15 +85,16 @@ export const Expenses = () => {
                 />
               </div>
               <div className="w-full h-[30%]  flex justify-center  ">
-                <div className="flex flex-wrap flex-col gap-4 w-[70%]  dark:text-white font-semibold  gap-x-2 max-2xl:text-sm max-sm:gap-0   max-sm:text-xs max-sm:w-[100%] max-sm:gap-y-1 ">
+                <div className="flex flex-wrap flex-col gap-4 w-[70%] h-full justify-evenly  dark:text-white font-semibold  gap-x-2 max-2xl:text-sm max-sm:gap-0   max-sm:text-xs max-sm:w-[100%] max-sm:gap-y-1 ">
                   <div className="flex text-center  ">
                     <p>İsim: </p>
                     <p>{eachData.name.toUpperCase()} </p>
                   </div>
                   <div className="flex text-center  ">
-                    <p>İhtiyaç mı: </p>
-                    <p>{eachData.isRequired ? "Evet" : "Hayır"}</p>
+                    <p>Ne kadar İstiyorsun: </p>
+                    <p>{eachData.rate}/10</p>
                   </div>
+
                   <div className="flex  text-center ">
                     <p>Ücret: </p>
                     <p>
@@ -111,10 +112,15 @@ export const Expenses = () => {
                       x {eachData.amount})
                     </p>
                   </div>
-                  <div className="flex text-center  ">
-                    <p>Ne kadar İstiyorsun: </p>
-                    <p>{eachData.rate}/10</p>
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className={`${
+                      eachData.isRequired ? "bg-blue-500" : "bg-gray-500"
+                    } flex text-center w-24  justify-center items-center rounded-full h-11`}
+                  >
+                    <p>{eachData.isRequired ? "İhtiyaç" : "İstek"}</p>
+                  </motion.div>
                 </div>
                 <div className="h-full flex flex-col dark:text-white font-semibold  max-sm:text-xs ">
                   <p>Hesapla:</p>
@@ -140,6 +146,7 @@ export const Expenses = () => {
               <div className=" w-full h-[10%]  flex justify-center gap-5    ">
                 <ButtonComponent
                   className="bg-opacity-20    "
+                  width="w-[20%]"
                   onClick={() => {
                     dispatch(
                       setDeletePopUpConfirmation({
@@ -153,6 +160,7 @@ export const Expenses = () => {
                 </ButtonComponent>
                 <ButtonComponent
                   className="bg-opacity-20"
+                  width="w-[20%]"
                   onClick={() => {
                     dispatch(
                       setPopupOpen({
@@ -168,10 +176,11 @@ export const Expenses = () => {
             </div>
           );
         })}
-        <div className=" w-[45%] h-[50%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear max-xl:w-[100%] ">
+        <div className="box_shadow w-[45%] h-[50%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear max-xl:w-[100%] ">
           <div className="w-full h-full  flex justify-center items-center">
             <ButtonComponent
               className=" text-[100px] jumping "
+              width="w-[10%]"
               onClick={() => {
                 dispatch(
                   setPopupOpen({
