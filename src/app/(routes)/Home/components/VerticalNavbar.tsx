@@ -67,7 +67,7 @@ const VerticalNavbar = (): JSX.Element => {
         )}
         <div className="absolute bottom-[10vh] w-[70%]  flex justify-center items-center flex-col gap-y-10 max-sm:top-0    max-sm:right-0  max-sm:bottom-auto max-sm:w-[40%] max-sm:h-[8vh] max-sm:flex-row  max-sm:gap-x-2  ">
           <ModeButton
-            className="w-[70%]  max-sm:h-full "
+            className="w-[70%] "
             width={"max-sm:w-20"}
             height={"max-sm:h-14"}
             setDarkModeProp={() => {
@@ -77,7 +77,7 @@ const VerticalNavbar = (): JSX.Element => {
           <ButtonComponent
             width="w-[70%] max-sm:w-auto"
             height=" max-sm:h-14"
-            className="bg-opacity-60  max-sm:h-full "
+            className="bg-opacity-60   "
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("session");
