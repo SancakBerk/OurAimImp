@@ -3,12 +3,12 @@ import axios, { AxiosResponse } from "axios";
 export const getCurrentExchangeRates = async (): Promise<serviceReturnType> => {
   try {
     const res: AxiosResponse = await axios.get(
-      "https://finans.truncgil.com/today.json"
+      "/api/exchange-rates"
     );
     return {
-      statusCode: 200,
-      message: "success",
-      data: res.data as exchangeDataType,
+      statusCode: res.data.statusCode,
+      message: res.data.message,
+      data: res.data.data as exchangeDataType,
     };
   } catch (error) {
     console.error("error", error);

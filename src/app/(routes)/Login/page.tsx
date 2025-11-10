@@ -10,6 +10,7 @@ import { RootState } from "@/redux/store";
 import { getIsDarkMode, isSessionExpired } from "@/utils/helperFunctions";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
 import { redirect } from "next/navigation";
+import { getCurrentExchangeRates } from "@/services/globalService";
 
 const LoginPage = (): JSX.Element => {
   const darkMode = useSelector(
@@ -26,6 +27,11 @@ const LoginPage = (): JSX.Element => {
     }
   }, []);
 
+  useEffect(() => {
+    getCurrentExchangeRates().then((res) => {
+      console.log(res);
+    });
+  }, []);
   const setDarkModeProp = () => {
     dispatch(setModeToRedux(!darkMode));
   };
