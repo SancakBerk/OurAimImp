@@ -1,7 +1,7 @@
 "use client";
 import {} from "@/services/userService";
 import { expensesDataWithDocumentId, serviceReturnType } from "@/types/types";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import {
@@ -43,18 +43,29 @@ export const Expenses = () => {
   const [filterType, setFilterType] = useState<"all" | "need" | "want">("all");
   const [showFilters, setShowFilters] = useState(false);
 
+  const getExpenses = useCallback(async () => {
+    await getUserExpensesByUserId(globalSlice.userId).then(
+      (data: serviceReturnType) => {
+        if (data.statusCode == 200) {
+          setCurrentExpenseData(data.data as expensesDataWithDocumentId[]);
+          setExpensesData(data.data as expensesDataWithDocumentId[]);
+        }
+      }
+    );
+  }, [globalSlice.userId]);
+
   useEffect(() => {
     if (homePageSlice.currentExpenseData.length > 0) {
       setExpensesData(homePageSlice.currentExpenseData);
     }
-  }, []);
+  }, [homePageSlice.currentExpenseData]);
 
   useEffect(() => {
     if (homePageSlice.expenseDataChanged) {
       getExpenses();
       dispatch(setExpenseDataChanged(false));
     }
-  }, [homePageSlice.expenseDataChanged]);
+  }, [homePageSlice.expenseDataChanged, getExpenses, dispatch]);
 
   useEffect(() => {
     setExpensesData(homePageSlice.currentExpenseData);
@@ -97,17 +108,6 @@ export const Expenses = () => {
 
     setFilteredData(result);
   }, [searchQuery, sortBy, sortOrder, filterType, expensesData, homePageSlice.currentExchangeRates]);
-
-  const getExpenses = async () => {
-    await getUserExpensesByUserId(globalSlice.userId).then(
-      (data: serviceReturnType) => {
-        if (data.statusCode == 200) {
-          setCurrentExpenseData(data.data as expensesDataWithDocumentId[]);
-          setExpensesData(data.data as expensesDataWithDocumentId[]);
-        }
-      }
-    );
-  };
 
   return (
     <div
@@ -156,7 +156,7 @@ export const Expenses = () => {
                   <BiSortAlt2 className="text-gray-600 dark:text-gray-400" />
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
+                    onChange={(e) => setSortBy(e.target.value as "name" | "price" | "rate")}
                     className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="name">{t('expenses.sortByName') || 'İsme Göre'}</option>

@@ -124,11 +124,7 @@ const Spending = (): JSX.Element => {
         ),
       };
     },
-    [
-      homePageSlice.currentExchangeRates,
-      homePageSlice.currentExpenseData,
-      homePageSlice.totalSavingData,
-    ]
+    [homePageSlice]
   );
 
   useEffect(() => {
