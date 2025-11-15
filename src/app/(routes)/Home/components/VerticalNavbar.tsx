@@ -3,7 +3,7 @@ import { verticalNavbarType } from "@/types/types";
 import React, { JSX, useState } from "react";
 import { FaDollarSign } from "react-icons/fa";
 import SavingComponent from "./Saving";
-import { FaBasketShopping } from "react-icons/fa6";
+import { FaBasketShopping, FaRightFromBracket } from "react-icons/fa6";
 import Spending from "./Spending";
 import ModeButton from "@/components/modeButton";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -72,6 +72,14 @@ const VerticalNavbar = (): JSX.Element => {
                   onMouseLeave={() => setVisibleComponentId(null)}
                 >
                   <button
+                    onClick={() => {
+                      // Mobilde tıklayınca aç/kapat
+                      if (window.innerWidth < 640) {
+                        setVisibleComponentId(
+                          isActive ? null : eachVerticalNavbarData.id
+                        );
+                      }
+                    }}
                     className={`w-full flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200
                       ${
                         isActive
@@ -127,18 +135,27 @@ const VerticalNavbar = (): JSX.Element => {
             }}
           />
           <LanguageSelector />
-          <ButtonComponent
-            variant="danger"
-            className="text-xs px-3 py-2"
+          <button
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("session");
               redirect("/Login");
             }}
-            text={t('common.logout')}
-          />
+            className="w-10 h-10 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+            title={t('common.logout')}
+          >
+            <FaRightFromBracket className="text-lg" />
+          </button>
         </div>
       </div>
+
+      {/* Mobile Overlay */}
+      {visibleComponentId !== null && (
+        <div
+          className="hidden max-sm:block fixed inset-0 bg-black/50 z-20"
+          onClick={() => setVisibleComponentId(null)}
+        />
+      )}
 
       {/* Slide-out Panels */}
       {verticalNavbarData.map((eachVerticalNavbarData: verticalNavbarType) => {

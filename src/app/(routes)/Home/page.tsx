@@ -5,11 +5,12 @@ import {
   removeNumberCommasAndDotThenReturnNumber,
   sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
-import { JSX, useCallback, useEffect } from "react";
+import { JSX, useCallback, useEffect, useState } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import Expenses from "./components/Expenses";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
 import UpdateAddPopUp from "./components/UpdateAddPopUp";
 import ConfirmDeletePopUp from "./components/ConfirmDeletePopUp";
 import { setModeToRedux, setUserIdToRedux } from "@/redux/slices/globalSlice";
@@ -40,6 +41,8 @@ const HomePage = (): JSX.Element => {
     (state: RootState) => state.globalSlice.isDarkMode
   );
   const dispatch = useDispatch();
+  const router = useRouter();
+  const [isInitializing, setIsInitializing] = useState(true);
 
   const getExpenses = useCallback(async () => {
     await getUserExpensesByUserId(globalSlice.userId).then(
@@ -120,18 +123,57 @@ const HomePage = (): JSX.Element => {
     }
   }, [globalSlice.userId, dispatch]);
   useEffect(() => {
-    if (!isSessionExpired()) {
-      const localStorageData = localStorage.getItem("session");
-      const session = JSON.parse(localStorageData!) as localStorageSessionType;
-      dispatch(setUserIdToRedux(session.userId));
-    }
+    console.log('🔍 Home - Loading userId from localStorage...');
+    
+    const initializeUser = async () => {
+      if (!isSessionExpired()) {
+        const localStorageData = localStorage.getItem("session");
+        console.log('🔍 Home - localStorage session:', localStorageData);
+        
+        if (!localStorageData) {
+          console.error('❌ Home - No session data found! Redirecting to login...');
+          router.push('/Login');
+          return;
+        }
+        
+        const session = JSON.parse(localStorageData!) as localStorageSessionType;
+        console.log('🔍 Home - Parsed session userId:', session.userId);
+        
+        if (!session.userId || session.userId.trim() === '') {
+          console.error('❌ Home - userId is missing in session! Redirecting to login...');
+          localStorage.removeItem('session');
+          router.push('/Login');
+          return;
+        }
+        
+        dispatch(setUserIdToRedux(session.userId));
+        console.log('✅ Home - userId dispatched to Redux:', session.userId);
+        setIsInitializing(false);
+      } else {
+        console.error('❌ Home - Session expired! Redirecting to login...');
+        localStorage.removeItem('session');
+        router.push('/Login');
+      }
+    };
+    
+    initializeUser();
+    
     if (getIsDarkMode()) {
       dispatch(setModeToRedux(true));
     }
-    getExpenses();
-    savingComponentRequests();
-    getTotalSavingDataByIdRequest();
-  }, [dispatch, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
+  }, [dispatch, router]);
+  useEffect(() => {
+    console.log('🔍 Home - globalSlice.userId changed:', globalSlice.userId);
+    if (globalSlice.userId) {
+      console.log('✅ Home - userId is valid, calling API functions...');
+      getExpenses();
+      savingComponentRequests();
+      getTotalSavingDataByIdRequest();
+    } else {
+      console.warn('⚠️ Home - userId is empty, skipping API calls');
+    }
+  }, [globalSlice.userId, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
+
   useEffect(() => {
     if (homePageSlice.totalSavingsDataChanged) {
       getTotalSavingDataByIdRequest();
@@ -139,10 +181,25 @@ const HomePage = (): JSX.Element => {
   }, [homePageSlice.totalSavingsDataChanged, getTotalSavingDataByIdRequest]);
 
   useEffect(() => {
-    getExpenses();
-    savingComponentRequests();
-    getTotalSavingDataByIdRequest();
-  }, [globalSlice.userId, homePageSlice.expenseDataChanged, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
+    if (globalSlice.userId && homePageSlice.expenseDataChanged) {
+      getExpenses();
+      savingComponentRequests();
+      getTotalSavingDataByIdRequest();
+    }
+  }, [homePageSlice.expenseDataChanged, globalSlice.userId, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
+
+  if (isInitializing) {
+    return (
+      <div className={`${isDarkMode && "dark"}`}>
+        <div className="w-full h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <div className="text-center">
+            <div className="loader mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${isDarkMode && "dark"}`}>

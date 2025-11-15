@@ -48,12 +48,19 @@ export const SavingComponent = (): JSX.Element => {
   const [themeState, setThemeState] = useState(theme);
   const [isTotalSavingProcessAdding, setIsTotalSavingProcessAdding] =
     useState(true);
+  const [showMonthlyChart, setShowMonthlyChart] = useState(false);
+  const [showChartsOnMobile, setShowChartsOnMobile] = useState(false);
   const dispatch = useDispatch();
   const valueFormatter = (item: { value: number }) => ` ${item.value}% `;
   const leftScrollRef = useDragScroll();
   const rightScrollRef = useDragScroll();
   
   const calculateBarChartData = useCallback(() => {
+    if (!globalSlice.userId || globalSlice.userId.trim() === '') {
+      console.warn('⚠️ Saving - userId is empty, skipping calculateBarChartData');
+      return;
+    }
+    
     getPerSavingsByUserId(globalSlice.userId).then(
       (response: serviceReturnType) => {
         // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
@@ -236,18 +243,29 @@ export const SavingComponent = (): JSX.Element => {
     <div className="w-full h-full glass-effect flex flex-col overflow-hidden">
       <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden">
         {/* Left Side - Form */}
-        <div ref={leftScrollRef} className="w-full lg:w-1/2 h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+        <div ref={leftScrollRef} className="w-full lg:w-2/3 h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700">
           <form
             className="p-6 space-y-4"
             onSubmit={handleSubmit}
           >
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Birikim Yönetimi
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Birikimlerinizi ekleyin veya çıkarın
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Birikim Yönetimi
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Birikimlerinizi ekleyin veya çıkarın
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowChartsOnMobile(!showChartsOnMobile)}
+                  className="lg:hidden px-3 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium transition-colors"
+                >
+                  {showChartsOnMobile ? '📊 Gizle' : '📊 Grafikler'}
+                </button>
+              </div>
             </div>
 
             {/* Savings Inputs */}
@@ -343,7 +361,7 @@ export const SavingComponent = (): JSX.Element => {
         </div>
 
         {/* Right Side - Charts */}
-        <div ref={rightScrollRef} className="w-full lg:w-1/2 h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
+        <div ref={rightScrollRef} className={`${showChartsOnMobile ? 'block' : 'hidden'} lg:block lg:w-1/3 w-full h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50`}>
           <div className="space-y-6">
             {/* Pie Chart */}
             <div className="card p-6 hidden lg:block">
@@ -381,34 +399,45 @@ export const SavingComponent = (): JSX.Element => {
 
             {/* Bar Chart */}
             <div className="card p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Aylık Birikim Grafiği
-              </h3>
-              <ThemeProvider theme={themeState}>
-                <BarChart
-                  height={300}
-                  series={barChartData}
-                  xAxis={[
-                    {
-                      data: monthNamesShort,
-                      scaleType: "band",
-                      tickLabelStyle: { fontSize: 11 },
-                    },
-                  ]}
-                  yAxis={[
-                    {
-                      tickLabelStyle: { fontSize: 11 },
-                    },
-                  ]}
-                  slotProps={{
-                    legend: {
-                      labelStyle: { fontSize: 11 },
-                      itemMarkHeight: 12,
-                      itemMarkWidth: 12,
-                    },
-                  }}
-                />
-              </ThemeProvider>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Aylık Birikim Grafiği
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowMonthlyChart(!showMonthlyChart)}
+                  className="lg:hidden px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+                >
+                  {showMonthlyChart ? 'Gizle' : 'Göster'}
+                </button>
+              </div>
+              <div className={`${showMonthlyChart ? 'block' : 'hidden'} lg:block`}>
+                <ThemeProvider theme={themeState}>
+                  <BarChart
+                    height={300}
+                    series={barChartData}
+                    xAxis={[
+                      {
+                        data: monthNamesShort,
+                        scaleType: "band",
+                        tickLabelStyle: { fontSize: 11 },
+                      },
+                    ]}
+                    yAxis={[
+                      {
+                        tickLabelStyle: { fontSize: 11 },
+                      },
+                    ]}
+                    slotProps={{
+                      legend: {
+                        labelStyle: { fontSize: 11 },
+                        itemMarkHeight: 12,
+                        itemMarkWidth: 12,
+                      },
+                    }}
+                  />
+                </ThemeProvider>
+              </div>
             </div>
           </div>
         </div>

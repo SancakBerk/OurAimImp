@@ -44,6 +44,8 @@ export const Expenses = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const getExpenses = useCallback(async () => {
+    if (!globalSlice.userId) return;
+    
     await getUserExpensesByUserId(globalSlice.userId).then(
       (data: serviceReturnType) => {
         if (data.statusCode == 200) {
@@ -117,29 +119,29 @@ export const Expenses = () => {
     >
       <div ref={scrollRef} className="w-full h-screen overflow-y-scroll relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         {/* Search and Filter Bar */}
-        <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 p-4">
-          <div className="max-w-7xl mx-auto space-y-4">
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 p-2 sm:p-4">
+          <div className="max-w-7xl mx-auto space-y-3 sm:space-y-4">
             {/* Search Bar */}
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-2 sm:gap-3 items-center">
               <div className="flex-1 relative">
-                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                <FiSearch className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg sm:text-xl" />
                 <input
                   type="text"
                   placeholder={t('expenses.search') || 'Ürün ara...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="search-input w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-sm sm:text-base rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 />
               </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`p-3 rounded-lg border transition-all ${
+                className={`p-2 sm:p-3 rounded-lg border transition-all ${
                   showFilters
                     ? 'bg-blue-500 border-blue-500 text-white'
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
-                <FiFilter className="text-xl" />
+                <FiFilter className="text-lg sm:text-xl" />
               </button>
             </div>
 
@@ -179,10 +181,10 @@ export const Expenses = () => {
                 </div>
 
                 {/* Filter Type */}
-                <div className="flex gap-2">
+                <div className="flex gap-1.5 sm:gap-2">
                   <button
                     onClick={() => setFilterType('all')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                       filterType === 'all'
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
@@ -192,7 +194,7 @@ export const Expenses = () => {
                   </button>
                   <button
                     onClick={() => setFilterType('need')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                       filterType === 'need'
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
@@ -202,7 +204,7 @@ export const Expenses = () => {
                   </button>
                   <button
                     onClick={() => setFilterType('want')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                       filterType === 'want'
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
@@ -223,18 +225,18 @@ export const Expenses = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="flex flex-wrap justify-center p-6 lg:p-10 max-sm:px-4 gap-6">
+        <div className="flex flex-wrap justify-center p-6 lg:p-10 sm:px-4 px-2 gap-6 sm:gap-4">
         {filteredData.map((eachData: expensesDataWithDocumentId) => {
           return (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] h-auto max-h-[600px] p-6 flex flex-col gap-4"
+              className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] h-auto max-h-[600px] p-4 sm:p-6 flex flex-col gap-3 sm:gap-4"
               key={eachData.documentId}
             >
               {/* Image Section */}
-              <div className="relative w-full h-64 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
+              <div className="relative w-full h-48 sm:h-64 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
                 <Image
                   loading="lazy"
                   src={eachData.imageUrl}
@@ -247,7 +249,7 @@ export const Expenses = () => {
               {/* Content Section */}
               <div className="flex-1 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
+                  <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
                     {eachData.name.toUpperCase()}
                   </h3>
                   <motion.div
@@ -257,21 +259,21 @@ export const Expenses = () => {
                       eachData.isRequired
                         ? "bg-blue-500"
                         : "bg-gray-400 dark:bg-gray-600"
-                    } px-3 py-1 rounded-full text-white text-xs font-medium whitespace-nowrap`}
+                    } px-2 sm:px-3 py-1 rounded-full text-white text-[10px] sm:text-xs font-medium whitespace-nowrap`}
                   >
                     {eachData.isRequired ? "İhtiyaç" : "İstek"}
                   </motion.div>
                 </div>
 
-                <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div className="space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                  <div className="flex justify-between items-center p-1.5 sm:p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <span className="font-medium">İstek Derecesi:</span>
                     <span className="font-bold text-blue-600 dark:text-blue-400">
                       {eachData.rate}/10
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="flex justify-between items-center p-1.5 sm:p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <span className="font-medium">Toplam Ücret:</span>
                     <div className="text-right">
                       <span className="font-bold text-green-600 dark:text-green-400">
@@ -292,7 +294,7 @@ export const Expenses = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                     <span className="font-medium">Hesaplamaya Dahil:</span>
                     <Checkbox
                       checked={eachData.isCalculating}
@@ -320,7 +322,7 @@ export const Expenses = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex gap-2 sm:gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                 <ButtonComponent
                   className="flex-1 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-red-200 dark:border-red-800"
                   onClick={() => {
@@ -332,7 +334,7 @@ export const Expenses = () => {
                     );
                   }}
                 >
-                  <p className="text-red-600 dark:text-red-400 font-medium">
+                  <p className="text-red-600 dark:text-red-400 font-medium text-xs sm:text-sm">
                     Sil
                   </p>
                 </ButtonComponent>
@@ -348,7 +350,7 @@ export const Expenses = () => {
                     );
                   }}
                 >
-                  <p className="text-blue-600 dark:text-blue-400 font-medium">
+                  <p className="text-blue-600 dark:text-blue-400 font-medium text-xs sm:text-sm">
                     Güncelle
                   </p>
                 </ButtonComponent>
@@ -362,7 +364,7 @@ export const Expenses = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] h-[400px] flex items-center justify-center cursor-pointer group"
+          className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] min-h-[400px] flex items-center justify-center cursor-pointer group"
           onClick={() => {
             dispatch(
               setPopupOpen({
@@ -373,9 +375,9 @@ export const Expenses = () => {
             );
           }}
         >
-          <div className="text-center">
-            <MdOutlineAddCircleOutline className="text-8xl text-gray-400 dark:text-gray-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-            <p className="text-lg font-medium text-gray-600 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400">
+          <div className="text-center p-8">
+            <MdOutlineAddCircleOutline className="text-7xl sm:text-8xl text-gray-400 dark:text-gray-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+            <p className="text-base sm:text-lg font-medium text-gray-600 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400">
               Yeni Ürün Ekle
             </p>
           </div>

@@ -39,6 +39,10 @@ export const createUserService = async (
     const userRef = await addDoc(collection(db, "users"), userData);
     const userId = userRef.id;
 
+    // userId'yi user document'ine ekle
+    await setDoc(userRef, { ...userData, userId }, { merge: true });
+    console.log('✅ User created with userId:', userId);
+
     // Kullanıcıya ait savings verisini oluştur
     const savingsRef = doc(db, "savings", userId);
     await setDoc(savingsRef, {

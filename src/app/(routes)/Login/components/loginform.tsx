@@ -6,7 +6,7 @@ import { loginInformationSchema } from "@/utils/loginInformationSchemas";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebaseconfig";
 import { serviceReturnType, userType } from "@/types/types";
 import { setUserIdToRedux } from "@/redux/slices/globalSlice";
@@ -67,8 +67,11 @@ const LoginForm = (): JSX.Element => {
         return;
       }
 
+      const userDocId = userSnapshot.docs[0].id; // Document ID'yi al
+      const userDocRef = userSnapshot.docs[0].ref; // Document referansını al
       const userData = userSnapshot.docs[0].data() as userType;
       console.log('✅ User found:', userData.email);
+      console.log('🔍 User Document ID:', userDocId);
       
       if (userData.password !== values.password) {
         toast.error("Şifre hatalı!");
@@ -76,13 +79,33 @@ const LoginForm = (): JSX.Element => {
       }
 
       console.log('✅ Login successful!');
-      const session = JSON.stringify({
-        userId: userData.userId,
+      
+      // Eğer userId yoksa, document'e ekle (migration için)
+      if (!userData.userId) {
+        console.log('⚠️ userId missing, updating document...');
+        await setDoc(userDocRef, { userId: userDocId }, { merge: true });
+        console.log('✅ userId added to user document');
+      }
+      
+      const userId = userData.userId || userDocId;
+      console.log('🔍 Login - Final userId:', userId);
+      
+      const sessionData = {
+        userId: userId,
         systemEnterDate: new Date().getTime(),
         systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24).getTime(),
-      });
+      };
+      
+      console.log('🔍 Login - Session data to save:', sessionData);
+      const session = JSON.stringify(sessionData);
+      console.log('🔍 Login - Stringified session:', session);
+      
       localStorage.setItem("session", session);
-      dispatch(setUserIdToRedux(userData.userId));
+      console.log('✅ Login - Session saved to localStorage');
+      
+      dispatch(setUserIdToRedux(userId));
+      console.log('✅ Login - userId dispatched to Redux:', userId);
+      
       toast.success("Giriş başarılı!");
       
       setTimeout(() => {
@@ -111,14 +134,25 @@ const LoginForm = (): JSX.Element => {
       email: values.email,
       password: values.password,
     }).then((res: serviceReturnType) => {
-      console.log("res", res);
-      const session = JSON.stringify({
+      console.log("🔍 Register - Response:", res);
+      console.log("🔍 Register - userId:", res.data.userId);
+      
+      const sessionData = {
         userId: res.data.userId,
         systemEnterDate: new Date().getTime(),
         systemExpiresDate: new Date(Date.now() + 1000 * 60 * 60 * 24).getTime(),
-      });
+      };
+      
+      console.log('🔍 Register - Session data:', sessionData);
+      const session = JSON.stringify(sessionData);
+      console.log('🔍 Register - Stringified session:', session);
+      
       localStorage.setItem("session", session);
+      console.log('✅ Register - Session saved to localStorage');
+      
       dispatch(setUserIdToRedux(res.data.userId));
+      console.log('✅ Register - userId dispatched to Redux:', res.data.userId);
+      
       router.push("/Home");
     });
   };

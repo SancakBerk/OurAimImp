@@ -52,6 +52,16 @@ export const UpdateAddPopUp = (): JSX.Element => {
       },
       validationSchema: updateExpensesSchema,
       onSubmit: async (values) => {
+        console.log('🔍 UpdateAddPopUp - globalSlice.userId:', globalSlice.userId);
+        console.log('🔍 UpdateAddPopUp - userId type:', typeof globalSlice.userId);
+        console.log('🔍 UpdateAddPopUp - userId length:', globalSlice.userId?.length);
+        
+        if (!globalSlice.userId || globalSlice.userId.trim() === '') {
+          console.error('❌ userId is empty or undefined!');
+          toast.error("Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.");
+          return;
+        }
+        
         const object: expensesType = {
           amount: Number(values.amount),
           imageUrl: values.imageUrl as string,
