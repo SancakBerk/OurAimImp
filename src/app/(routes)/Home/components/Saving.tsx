@@ -9,7 +9,7 @@ import {
   totalSavingsType,
   totalSavingTypeWithDocumentId,
 } from "@/types/types";
-import React, { JSX, useEffect, useState } from "react";
+import React, { JSX, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPerSavingsByUserId,
@@ -32,6 +32,7 @@ import {
 } from "@/utils/helperFunctions";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 const monthNamesShort = monthNames().map((each: string) => each.slice(0, 3));
 
@@ -49,10 +50,47 @@ export const SavingComponent = (): JSX.Element => {
     useState(true);
   const dispatch = useDispatch();
   const valueFormatter = (item: { value: number }) => ` ${item.value}% `;
+  const leftScrollRef = useDragScroll();
+  const rightScrollRef = useDragScroll();
+  
+  const calculateBarChartData = useCallback(() => {
+    getPerSavingsByUserId(globalSlice.userId).then(
+      (response: serviceReturnType) => {
+        // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
+        if (response.statusCode == 200) {
+          const barChartDataTypeTemp: barChartDataType[] = [];
+          Object.entries(homePageSlice.totalSavingData.totalSavings).map(
+            ([key]) => {
+              const array = new Array(12).fill(0);
+              const perSavings = response.data as perSavingsType[];
+              const findedValues: perSavingsType[] = [];
+              perSavings.map((each) => {
+                if (each.type === key) {
+                  findedValues.push(each);
+                }
+              });
+              findedValues.map((eachFindedSavingData: perSavingsType) => {
+                const date = new Date(eachFindedSavingData.date);
+                array[date.getMonth()] += eachFindedSavingData.price;
+              });
+
+              barChartDataTypeTemp.push({
+                data: array,
+                label: returnDescriotionFromKey(key),
+              });
+            }
+          );
+
+          setBarChartData(barChartDataTypeTemp);
+        }
+      }
+    );
+  }, [globalSlice.userId, homePageSlice.totalSavingData]);
+
   useEffect(() => {
     setSavingsData(homePageSlice.totalSavingData);
     calculateBarChartData();
-  }, [globalSlice.userId]);
+  }, [globalSlice.userId, calculateBarChartData, homePageSlice.totalSavingData]);
   useEffect(() => {
     console.log("is dark mode handled", globalSlice.isDarkMode);
 
@@ -66,7 +104,7 @@ export const SavingComponent = (): JSX.Element => {
       })
     );
   }, [globalSlice.isDarkMode]);
-  const calculatePieChartData = (): pieCharDataType[] => {
+  const calculatePieChartData = useCallback((): pieCharDataType[] => {
     let allSavingDataTotal = 0;
     const totalSavingDataToTl: pieCharDataType[] = [];
     Object.entries(homePageSlice.totalSavingData.totalSavings).map(
@@ -105,48 +143,15 @@ export const SavingComponent = (): JSX.Element => {
 
     settotalSavingDataAsTl(totalSavingDataToTl);
     return data.length > 0 ? data : [{ id: 0, label: "No Data", value: 1 }];
-  };
-  const calculateBarChartData = () => {
-    getPerSavingsByUserId(globalSlice.userId).then(
-      (response: serviceReturnType) => {
-        // [{ data: [35, 15, 0, 25] }, { data: [51] }, { data: [15] }, { data: [60] }];
-        if (response.statusCode == 200) {
-          const barChartDataTypeTemp: barChartDataType[] = [];
-          Object.entries(homePageSlice.totalSavingData.totalSavings).map(
-            ([key]) => {
-              const array = new Array(12).fill(0);
-              const perSavings = response.data as perSavingsType[];
-              const findedValues: perSavingsType[] = [];
-              perSavings.map((each) => {
-                if (each.type === key) {
-                  findedValues.push(each);
-                }
-              });
-              findedValues.map((eachFindedSavingData: perSavingsType) => {
-                const date = new Date(eachFindedSavingData.date);
-                array[date.getMonth()] += eachFindedSavingData.price;
-              });
-
-              barChartDataTypeTemp.push({
-                data: array,
-                label: returnDescriotionFromKey(key),
-              });
-            }
-          );
-
-          setBarChartData(barChartDataTypeTemp);
-        }
-      }
-    );
-  };
+  }, [homePageSlice.totalSavingData, homePageSlice.currentExchangeRates]);
 
   useEffect(() => {
     setPieChartData(calculatePieChartData());
-  }, [homePageSlice.currentExchangeRates]);
+  }, [homePageSlice.currentExchangeRates, calculatePieChartData]);
   useEffect(() => {
     setSavingsData(homePageSlice.totalSavingData);
     setPieChartData(calculatePieChartData());
-  }, [homePageSlice.totalSavingData]);
+  }, [homePageSlice.totalSavingData, calculatePieChartData]);
 
   const clearValues = () => {
     setValues({
@@ -162,7 +167,7 @@ export const SavingComponent = (): JSX.Element => {
     });
   };
 
-  const { handleChange, handleSubmit, errors, values, setValues } = useFormik({
+  const { handleChange, handleSubmit, values, setValues } = useFormik({
     initialValues: {
       gold14: 0,
       gold18: 0,
@@ -231,7 +236,7 @@ export const SavingComponent = (): JSX.Element => {
     <div className="w-full h-full glass-effect flex flex-col overflow-hidden">
       <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden">
         {/* Left Side - Form */}
-        <div className="w-full lg:w-1/2 h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+        <div ref={leftScrollRef} className="w-full lg:w-1/2 h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700">
           <form
             className="p-6 space-y-4"
             onSubmit={handleSubmit}
@@ -338,7 +343,7 @@ export const SavingComponent = (): JSX.Element => {
         </div>
 
         {/* Right Side - Charts */}
-        <div className="w-full lg:w-1/2 h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
+        <div ref={rightScrollRef} className="w-full lg:w-1/2 h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
           <div className="space-y-6">
             {/* Pie Chart */}
             <div className="card p-6 hidden lg:block">

@@ -5,7 +5,7 @@ import {
   removeNumberCommasAndDotThenReturnNumber,
   sortObjectAlphabetically,
 } from "@/utils/helperFunctions";
-import { JSX, useEffect } from "react";
+import { JSX, useCallback, useEffect } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import Expenses from "./components/Expenses";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,7 +41,7 @@ const HomePage = (): JSX.Element => {
   );
   const dispatch = useDispatch();
 
-  const getExpenses = async () => {
+  const getExpenses = useCallback(async () => {
     await getUserExpensesByUserId(globalSlice.userId).then(
       (data: serviceReturnType) => {
         if (data.statusCode == 200) {
@@ -51,9 +51,9 @@ const HomePage = (): JSX.Element => {
         }
       }
     );
-  };
+  }, [globalSlice.userId, dispatch]);
 
-  const getTotalSavingDataByIdRequest = () => {
+  const getTotalSavingDataByIdRequest = useCallback(() => {
     getTotalSavingDataById(globalSlice.userId).then(
       (res: serviceReturnType) => {
         if (res.statusCode === 200 && res.data && res.data[0]) {
@@ -71,8 +71,9 @@ const HomePage = (): JSX.Element => {
         }
       }
     );
-  };
-  const savingComponentRequests = () => {
+  }, [globalSlice.userId, dispatch]);
+
+  const savingComponentRequests = useCallback(() => {
     if (globalSlice.userId) {
       getCurrentExchangeRates().then((res: serviceReturnType) => {
         if (res.statusCode === 200) {
@@ -117,7 +118,7 @@ const HomePage = (): JSX.Element => {
         }
       });
     }
-  };
+  }, [globalSlice.userId, dispatch]);
   useEffect(() => {
     if (!isSessionExpired()) {
       const localStorageData = localStorage.getItem("session");
@@ -130,18 +131,18 @@ const HomePage = (): JSX.Element => {
     getExpenses();
     savingComponentRequests();
     getTotalSavingDataByIdRequest();
-  }, []);
+  }, [dispatch, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
   useEffect(() => {
     if (homePageSlice.totalSavingsDataChanged) {
       getTotalSavingDataByIdRequest();
     }
-  }, [homePageSlice.totalSavingsDataChanged]);
+  }, [homePageSlice.totalSavingsDataChanged, getTotalSavingDataByIdRequest]);
 
   useEffect(() => {
     getExpenses();
     savingComponentRequests();
     getTotalSavingDataByIdRequest();
-  }, [globalSlice.userId, homePageSlice.expenseDataChanged]);
+  }, [globalSlice.userId, homePageSlice.expenseDataChanged, getExpenses, savingComponentRequests, getTotalSavingDataByIdRequest]);
 
   return (
     <div className={`${isDarkMode && "dark"}`}>

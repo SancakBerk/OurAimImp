@@ -1,7 +1,6 @@
 "use client";
 import React from 'react';
 import { useLocale } from '@/contexts/LocaleContext';
-import { motion } from 'framer-motion';
 
 export const LanguageSelector: React.FC<{ className?: string }> = ({ className }) => {
   const { locale, setLocale } = useLocale();

@@ -36,11 +36,11 @@ export const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[locale];
+    let value: Record<string, unknown> | string = translations[locale];
     
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
-        value = value[k];
+        value = (value as Record<string, unknown>)[k] as Record<string, unknown> | string;
       } else {
         console.warn(`Translation key not found: ${key}`);
         return key;

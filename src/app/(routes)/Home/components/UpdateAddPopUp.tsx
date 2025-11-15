@@ -107,7 +107,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
     if (values.isRequired == 1) {
       setFieldValue("rate", "10");
     }
-  }, [values.isRequired]); // isRequired değiştiğinde çalışır.
+  }, [values.isRequired, setFieldValue]); // isRequired değiştiğinde çalışır.
 
   return (
     <div className="smoothVisible">

@@ -88,15 +88,16 @@ const LoginForm = (): JSX.Element => {
       setTimeout(() => {
         router.push("/Home");
       }, 500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Login error:", error);
       
-      if (error.code === 'permission-denied') {
+      const err = error as { code?: string; message?: string };
+      if (err.code === 'permission-denied') {
         toast.error("Firebase bağlantı hatası. Lütfen Firebase ayarlarınızı kontrol edin.");
-      } else if (error.message?.includes('projectId')) {
+      } else if (err.message?.includes('projectId')) {
         toast.error("Firebase yapılandırması eksik. .env dosyanızı kontrol edin.");
       } else {
-        toast.error("Giriş yapılırken bir hata oluştu: " + (error.message || "Bilinmeyen hata"));
+        toast.error("Giriş yapılırken bir hata oluştu: " + (err.message || "Bilinmeyen hata"));
       }
     }
   };

@@ -25,7 +25,7 @@ const LoginPage = (): JSX.Element => {
     if (getIsDarkMode()) {
       dispatch(setModeToRedux(true));
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     getCurrentExchangeRates().then((res) => {

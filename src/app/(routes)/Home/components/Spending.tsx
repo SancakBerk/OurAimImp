@@ -3,8 +3,7 @@ import {
   globalDialogEachButtonType,
   serviceReturnType,
 } from "@/types/types";
-import React, { JSX, useEffect, useState } from "react";
-import { ButtonComponent } from "@/components/ButtonComponent";
+import React, { JSX, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
@@ -23,6 +22,7 @@ import { theme } from "@/utils/constants";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { updateAimDate } from "@/services/savingService";
 import { setTotalSavingsDataChanged } from "@/redux/slices/homePageSlice";
+import { useDragScroll } from "@/hooks/useDragScroll";
 
 const Spending = (): JSX.Element => {
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
@@ -31,6 +31,7 @@ const Spending = (): JSX.Element => {
     null
   );
   const dispatch = useDispatch();
+  const scrollRef = useDragScroll();
 
   const [showPopUpUpdateAımDate, setShowPopUpUpdateAımDate] =
     useState<boolean>(false);
@@ -80,16 +81,7 @@ const Spending = (): JSX.Element => {
       return "";
     }
   };
-  useEffect(() => {
-    const newObj = calculateSpendingAndAimInformationData();
-
-    setCalculatedSavingInformations(newObj);
-  }, [
-    homePageSlice.currentExchangeRates,
-    homePageSlice.currentExpenseData,
-    homePageSlice.totalSavingData,
-  ]);
-  const calculateSpendingAndAimInformationData =
+  const calculateSpendingAndAimInformationData = useCallback(
     (): calculateSpendingAndAimInformationDataType => {
       const currentExpenseData = homePageSlice.currentExpenseData;
       let totalRequestedDataCosts = 0;
@@ -131,7 +123,24 @@ const Spending = (): JSX.Element => {
             (howManyDaysLeft / 30)
         ),
       };
-    };
+    },
+    [
+      homePageSlice.currentExchangeRates,
+      homePageSlice.currentExpenseData,
+      homePageSlice.totalSavingData,
+    ]
+  );
+
+  useEffect(() => {
+    const newObj = calculateSpendingAndAimInformationData();
+
+    setCalculatedSavingInformations(newObj);
+  }, [
+    homePageSlice.currentExchangeRates,
+    homePageSlice.currentExpenseData,
+    homePageSlice.totalSavingData,
+    calculateSpendingAndAimInformationData,
+  ]);
 
   if (!CalculatedSavingInformations) {
     return <span className="loader"></span>;
@@ -175,7 +184,7 @@ const Spending = (): JSX.Element => {
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 overflow-y-auto p-6">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
