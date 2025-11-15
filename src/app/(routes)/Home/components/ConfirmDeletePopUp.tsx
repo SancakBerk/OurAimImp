@@ -20,9 +20,9 @@ export const ConfirmDeletePopUp = (): JSX.Element => {
 
   return (
     <div>
-      <div className="fixed top-0 left-0 w-screen h-screen bg-slate-600 opacity-80 z-50 flex justify-center items-center"></div>
+      <div className="fixed inset-0 bg-slate-600 opacity-80 z-50 flex justify-center items-center"></div>
       <div
-        className={`fixed top-0 left-0 w-screen h-screen z-50 flex justify-center items-center ${
+        className={`fixed inset-0 z-50 flex justify-center items-center ${
           globalSlice.isDarkMode && "dark"
         } `}
       >

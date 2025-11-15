@@ -46,6 +46,8 @@ const LoginForm = (): JSX.Element => {
   });
   const checkLogin = async (): Promise<void> => {
     try {
+      console.log('🔍 Attempting login for:', values.email);
+      
       const userCollection = collection(db, "users");
       const userQuery = query(
         userCollection,
@@ -53,16 +55,27 @@ const LoginForm = (): JSX.Element => {
       );
       const userSnapshot = await getDocs(userQuery);
 
-      if (userSnapshot.docs.length !== 1) {
-        toast.error("User not found or Duplicated");
+      console.log('📊 Users found:', userSnapshot.docs.length);
+
+      if (userSnapshot.docs.length === 0) {
+        toast.error("Kullanıcı bulunamadı. Lütfen kayıt olun.");
         return;
       }
-      const userData = userSnapshot.docs[0].data() as userType;
-      if (userData.password !== values.password) {
-        toast.error("Password is incorrect");
+      
+      if (userSnapshot.docs.length > 1) {
+        toast.error("Birden fazla kullanıcı bulundu. Lütfen yönetici ile iletişime geçin.");
         return;
       }
 
+      const userData = userSnapshot.docs[0].data() as userType;
+      console.log('✅ User found:', userData.email);
+      
+      if (userData.password !== values.password) {
+        toast.error("Şifre hatalı!");
+        return;
+      }
+
+      console.log('✅ Login successful!');
       const session = JSON.stringify({
         userId: userData.userId,
         systemEnterDate: new Date().getTime(),
@@ -70,10 +83,21 @@ const LoginForm = (): JSX.Element => {
       });
       localStorage.setItem("session", session);
       dispatch(setUserIdToRedux(userData.userId));
-      router.push("/Home");
-    } catch (error) {
-      console.error("Error finding user:", error);
-      throw error;
+      toast.success("Giriş başarılı!");
+      
+      setTimeout(() => {
+        router.push("/Home");
+      }, 500);
+    } catch (error: any) {
+      console.error("❌ Login error:", error);
+      
+      if (error.code === 'permission-denied') {
+        toast.error("Firebase bağlantı hatası. Lütfen Firebase ayarlarınızı kontrol edin.");
+      } else if (error.message?.includes('projectId')) {
+        toast.error("Firebase yapılandırması eksik. .env dosyanızı kontrol edin.");
+      } else {
+        toast.error("Giriş yapılırken bir hata oluştu: " + (error.message || "Bilinmeyen hata"));
+      }
     }
   };
 
@@ -120,6 +144,7 @@ const LoginForm = (): JSX.Element => {
               placeholder="Email Adresinizi Giriniz..."
               onChange={handleChange}
               value={values.email}
+              autoComplete="email"
             />
           </div>
           {touched.email && errors.email && (
@@ -137,6 +162,7 @@ const LoginForm = (): JSX.Element => {
               placeholder="Şifrenizi Giriniz..."
               onChange={handleChange}
               value={values.password}
+              autoComplete="current-password"
             />
           </div>
           {touched.password && errors.password && (
@@ -151,6 +177,7 @@ const LoginForm = (): JSX.Element => {
                 placeholder="Şifrenizi Tekrar Giriniz..."
                 onChange={handleChange}
                 value={values.passwordCheck}
+                autoComplete="new-password"
               />
             </div>
           )}
@@ -185,7 +212,19 @@ const LoginForm = (): JSX.Element => {
           </div>
         </div>
       </form>
-      <ToastContainer />
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        limit={3}
+        style={{ maxWidth: '400px' }}
+      />
     </>
   );
 };

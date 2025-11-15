@@ -228,144 +228,183 @@ export const SavingComponent = (): JSX.Element => {
   }
 
   return (
-    <div className="w-full  h-full border flex  bg-opacity-40 dark:bg-opacity-40 backdrop-blur-3xl bg-gray-400  dark:bg-black     flex-col  max-xl:text-sm   ">
-      <div className="w-full h-full flex max-sm:flex-col p-2 max-sm:p-1  ">
-        <form
-          className="w-[50%] h-full flex  flex-col max-sm:w-full justify-evenly "
-          onSubmit={handleSubmit}
-        >
-          {Object.entries(savingsData.totalSavings).map(([key, value]) => {
-            const text = savingRowInformations.find(
-              (eachObject) => eachObject.type === key
-            );
-            return (
-              <div
-                className="flex p-4 w-full items-center justify-center   border-b-2  max-sm:p-0"
-                key={key}
-              >
-                <div
-                  className={` rounded flex flex-col justify-center     w-[40%] h-full dark:text-white `}
-                >
-                  <p className="max-sm:text-xs ">
-                    {text?.placeholder}: {value.toString()} {text?.afterText}
-                  </p>
-                </div>
-                <InputComponent
-                  type="number"
-                  value={values[key as keyof totalSavingsObjectType]}
-                  placeholder={text?.placeholder}
-                  parentClassName="w-[25%]"
-                  className={`${
-                    errors.gold14 && "border-red-500"
-                  } text-center max-sm:h-1 max-sm:p-2  `}
-                  name={key}
-                  onChange={handleChange}
-                />
-                <div className=" w-[25%] h-full flex  items-center dark:text-white text-end ">
-                  <p className=" w-full text-end max-sm:text-xs">
-                    {changeNumberToThreeDigitsAndReturn(
-                      getFloatValueAsFixed2(
-                        value * calculateSavingDataToTl(key, homePageSlice)
-                      )
-                    )}{" "}
-                    TL
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-
-          <div className="flex p-4 w-full justify-center items-center  max-sm:p-0  ">
-            <div className="  flex items-center justify-center gap-x-8 mt-1 max-xl:gap-2 w-[75%] max-sm:gap-x-4 ">
-              <ButtonComponent
-                width="w-20"
-                type="submit"
-                text="Çıkar"
-                onClick={() => {
-                  setIsTotalSavingProcessAdding(false);
-                }}
-              />
-              <ButtonComponent
-                width="w-20"
-                type="submit"
-                text="Ekle"
-                onClick={() => {
-                  setIsTotalSavingProcessAdding(true);
-                }}
-              />
-            </div>
-            <div className="flex  items-center underline underline-offset-8 dark:text-white end  w-[25%] ">
-              <p className=" w-full text-end max-sm:text-xs ">
-                {changeNumberToThreeDigitsAndReturn(
-                  calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
-                )}{" "}
-                TL
+    <div className="w-full h-full glass-effect flex flex-col overflow-hidden">
+      <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden">
+        {/* Left Side - Form */}
+        <div className="w-full lg:w-1/2 h-full overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+          <form
+            className="p-6 space-y-4"
+            onSubmit={handleSubmit}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Birikim Yönetimi
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Birikimlerinizi ekleyin veya çıkarın
               </p>
             </div>
-          </div>
-        </form>
 
-        <div className=" w-[50%] h-full flex flex-col p-4 max-sm:w-full max-sm:p-0 ">
-          <div className="w-full h-[50%] dark:text-white flex justify-center items-center max-sm:hidden   ">
-            <ThemeProvider theme={themeState}>
-              <PieChart
-                title="Total Savings Ratio"
-                className=" text-black dark:text-white   "
-                series={
-                  pieChartData.length > 0
-                    ? [
-                        {
-                          data: pieChartData,
-                          paddingAngle: 2,
-                          innerRadius: 30,
-                          outerRadius: 120,
-                          cornerRadius: 10,
-                          valueFormatter,
-                          startAngle: -45,
-                          highlightScope: { fade: "global", highlight: "item" },
-                          faded: {
-                            innerRadius: 30,
-                            additionalRadius: -30,
-                            color: "gray",
-                          },
-                        },
-                      ]
-                    : [
-                        {
-                          data: [{ id: 0, label: "No Data", value: 1 }],
-                        },
-                      ]
-                }
-              />
-            </ThemeProvider>
-          </div>
-          <hr />
-          <div className=" w-full h-[50%] max-sm:h-full max-sm:text-xs   ">
-            <ThemeProvider theme={themeState}>
-              <BarChart
-                title="Savings Per Month"
-                series={barChartData}
-                xAxis={[
-                  {
-                    data: monthNamesShort,
-                    scaleType: "band",
-                    tickLabelStyle: { fontSize: 10 },
-                  },
-                ]}
-                yAxis={[
-                  {
-                    tickLabelStyle: { fontSize: 10 },
-                  },
-                ]}
-                slotProps={{
-                  legend: {
-                    labelStyle: { fontSize: 10 },
-                    itemMarkHeight: 10,
-                    itemMarkWidth: 10,
-                  },
-                }}
-              />
-            </ThemeProvider>
+            {/* Savings Inputs */}
+            <div className="space-y-3">
+              {Object.entries(savingsData.totalSavings).map(([key, value]) => {
+                const text = savingRowInformations.find(
+                  (eachObject) => eachObject.type === key
+                );
+                return (
+                  <div
+                    className="card p-4 hover:shadow-lg transition-shadow"
+                    key={key}
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Current Value */}
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                          {text?.placeholder}
+                        </p>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white">
+                          {value.toString()} {text?.afterText}
+                        </p>
+                      </div>
+
+                      {/* Input */}
+                      <div className="w-24">
+                        <InputComponent
+                          type="number"
+                          value={values[key as keyof totalSavingsObjectType]}
+                          placeholder="0"
+                          parentClassName="w-full"
+                          className="text-center text-sm py-2"
+                          name={key}
+                          onChange={handleChange}
+                        />
+                      </div>
+
+                      {/* TL Value */}
+                      <div className="w-28 text-right">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                          TL Değeri
+                        </p>
+                        <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                          {changeNumberToThreeDigitsAndReturn(
+                            getFloatValueAsFixed2(
+                              value * calculateSavingDataToTl(key, homePageSlice)
+                            )
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Total and Actions */}
+            <div className="card p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 sticky bottom-0">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Toplam Birikim
+                </span>
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  {changeNumberToThreeDigitsAndReturn(
+                    calculateTotalSavingsAsTlRateAndReturnNumber(homePageSlice)
+                  )}{" "}
+                  TL
+                </span>
+              </div>
+
+              <div className="flex gap-3">
+                <ButtonComponent
+                  variant="danger"
+                  type="submit"
+                  className="flex-1"
+                  text="Çıkar"
+                  onClick={() => {
+                    setIsTotalSavingProcessAdding(false);
+                  }}
+                />
+                <ButtonComponent
+                  variant="primary"
+                  type="submit"
+                  className="flex-1"
+                  text="Ekle"
+                  onClick={() => {
+                    setIsTotalSavingProcessAdding(true);
+                  }}
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+
+        {/* Right Side - Charts */}
+        <div className="w-full lg:w-1/2 h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50">
+          <div className="space-y-6">
+            {/* Pie Chart */}
+            <div className="card p-6 hidden lg:block">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Birikim Dağılımı
+              </h3>
+              <div className="flex justify-center">
+                <ThemeProvider theme={themeState}>
+                  <PieChart
+                    width={400}
+                    height={300}
+                    series={
+                      pieChartData.length > 0
+                        ? [
+                            {
+                              data: pieChartData,
+                              paddingAngle: 2,
+                              innerRadius: 40,
+                              outerRadius: 100,
+                              cornerRadius: 8,
+                              valueFormatter,
+                              highlightScope: { fade: "global", highlight: "item" },
+                            },
+                          ]
+                        : [
+                            {
+                              data: [{ id: 0, label: "Veri Yok", value: 1 }],
+                            },
+                          ]
+                    }
+                  />
+                </ThemeProvider>
+              </div>
+            </div>
+
+            {/* Bar Chart */}
+            <div className="card p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Aylık Birikim Grafiği
+              </h3>
+              <ThemeProvider theme={themeState}>
+                <BarChart
+                  height={300}
+                  series={barChartData}
+                  xAxis={[
+                    {
+                      data: monthNamesShort,
+                      scaleType: "band",
+                      tickLabelStyle: { fontSize: 11 },
+                    },
+                  ]}
+                  yAxis={[
+                    {
+                      tickLabelStyle: { fontSize: 11 },
+                    },
+                  ]}
+                  slotProps={{
+                    legend: {
+                      labelStyle: { fontSize: 11 },
+                      itemMarkHeight: 12,
+                      itemMarkWidth: 12,
+                    },
+                  }}
+                />
+              </ThemeProvider>
+            </div>
           </div>
         </div>
       </div>

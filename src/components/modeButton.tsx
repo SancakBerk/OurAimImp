@@ -32,28 +32,20 @@ const ModeButton: FC<modeButtonProps> = ({
 
   return (
     <button
-      className={`h-14 w-14 ${width} ${height}   rounded-lg border  ${
-        darkMode ? "lightModeBackGround" : "darkModeBackGround"
-      } flex   justify-center items-center   ${props.className}  `}
+      className={`h-10 w-10 ${width} ${height} rounded-lg border transition-all duration-200 ${
+        darkMode 
+          ? "bg-gray-800 border-gray-700 hover:bg-gray-700" 
+          : "bg-gray-100 border-gray-300 hover:bg-gray-200"
+      } flex justify-center items-center ${props.className}`}
       onClick={handleMode}
+      title={darkMode ? "Light Mode" : "Dark Mode"}
     >
-      <div className={`w-[50%] h-full p-1 max-xl:p-0 `}>
+      <div className="w-6 h-6">
         <Image
           src={darkMode ? sunImage : moonImage}
-          alt="Moon_Sun Images"
-          className="h-full"
+          alt={darkMode ? "Light Mode" : "Dark Mode"}
+          className="w-full h-full object-contain"
         />
-      </div>
-      <div
-        className={`w-[50%] h-full p-1 flex justify-center items-center max-xl:p-0 `}
-      >
-        <p
-          className={`${
-            darkMode ? "text-yellow-300" : "text-white"
-          } font-bold max:xl:text-sm  `}
-        >
-          {darkMode ? "Light" : "Dark"}
-        </p>
       </div>
     </button>
   );

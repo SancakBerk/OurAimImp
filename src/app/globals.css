@@ -2,12 +2,171 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  @apply transition-colors duration-300;
-  box-sizing: border-box;
-  margin: 0px;
-  padding: 0px;
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  }
+  
+  * {
+    @apply transition-colors duration-300;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+    html, body {
+    @apply antialiased;
+    overflow-x: hidden;
+    max-width: 100vw;
+    height: 100%;
+  }
+  
+  body {
+    overflow-y: auto;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>') 12 12, auto;
+  }
+  
+  .dark body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2360a5fa" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>') 12 12, auto;
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
+    border-radius: 10px;
+    border: 2px solid #f1f5f9;
+    transition: background 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  }
+  
+  /* Dark Mode Scrollbar */
+  .dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
+    border-color: #1e293b;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #60a5fa, #3b82f6);
+  }
+  
+  /* Firefox Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 #f1f5f9;
+  }
+  
+  .dark * {
+    scrollbar-color: #3b82f6 #1e293b;
+  }
+  
+  /* Custom Cursor Styles */
+  a, button, select, input[type="button"], input[type="submit"], 
+  [role="button"], .cursor-pointer {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%233b82f6" stroke="%233b82f6" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><circle cx="13.5" cy="13.5" r="1.5" fill="white"/></svg>') 4 4, pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .dark a, .dark button, .dark select, .dark input[type="button"], 
+  .dark input[type="submit"], .dark [role="button"], .dark .cursor-pointer {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%2360a5fa" stroke="%2360a5fa" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><circle cx="13.5" cy="13.5" r="1.5" fill="white"/></svg>') 4 4, pointer;
+  }
+  
+  a:hover, button:hover, select:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Search icon only on search input */
+  input[type="text"].search-input,
+  input[type="search"] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2.5"><path d="M15 15l6 6m-11-4a7 7 0 110-14 7 7 0 010 14z"/></svg>') 12 12, text;
+  }
+  
+  .dark input[type="text"].search-input,
+  .dark input[type="search"] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2360a5fa" stroke-width="2.5"><path d="M15 15l6 6m-11-4a7 7 0 110-14 7 7 0 010 14z"/></svg>') 12 12, text;
+  }
+  
+  /* Checkbox cursor */
+  input[type="checkbox"] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%233b82f6" stroke="%233b82f6" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><circle cx="13.5" cy="13.5" r="1.5" fill="white"/></svg>') 4 4, pointer;
+  }
+  
+  .dark input[type="checkbox"] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%2360a5fa" stroke="%2360a5fa" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><circle cx="13.5" cy="13.5" r="1.5" fill="white"/></svg>') 4 4, pointer;
+  }
+  
+  input[type="text"], input[type="email"], input[type="password"], 
+  input[type="number"], textarea {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/></svg>') 10 10, text;
+  }
+  
+  .dark input[type="text"], .dark input[type="email"], .dark input[type="password"], 
+  .dark input[type="number"], .dark textarea {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%2360a5fa" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/></svg>') 10 10, text;
+  }
+  
+  input[disabled], button[disabled], [aria-disabled="true"] {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>') 12 12, not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Drag cursor */
+  [draggable="true"], .cursor-grab {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="2"><path d="M9 5h2m0 0h2m-2 0v2m0-2V3m-6 6h2m0 0h2m-2 0v2m0-2V7m0 6h2m0 0h2m-2 0v2m0-2v-2m6-6h2m0 0h2m-2 0v2m0-2V3m0 6h2m0 0h2m-2 0v2m0-2V7m0 6h2m0 0h2m-2 0v2m0-2v-2"/></svg>') 12 12, grab;
+  }
+  
+  [draggable="true"]:active, .cursor-grabbing {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%233b82f6" stroke="%233b82f6" stroke-width="2"><path d="M9 5h2m0 0h2m-2 0v2m0-2V3m-6 6h2m0 0h2m-2 0v2m0-2V7m0 6h2m0 0h2m-2 0v2m0-2v-2m6-6h2m0 0h2m-2 0v2m0-2V3m0 6h2m0 0h2m-2 0v2m0-2V7m0 6h2m0 0h2m-2 0v2m0-2v-2"/></svg>') 12 12, grabbing;
+  }
 }
+
+@layer components {
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl;
+  }
+  
+  .card-hover {
+    @apply hover:scale-[1.02] hover:-translate-y-1;
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/30;
+  }
+  
+  .input-modern {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-all duration-200 active:scale-95;
+  }
+}
+
 input:focus {
   outline: none;
 }
@@ -17,15 +176,16 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* Loader */
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #fff;
-  border-bottom-color: #ff3d00;
+  border: 4px solid #e5e7eb;
+  border-top-color: #3b82f6;
   border-radius: 50%;
   display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
+  animation: rotation 0.8s linear infinite;
 }
 
 @keyframes rotation {
@@ -37,19 +197,49 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
+/* Smooth animations */
 .smoothVisible {
-  animation: visibleInHalfSecond 0.5s;
+  animation: fadeInUp 0.5s ease-out;
 }
-@keyframes visibleInHalfSecond {
+
+@keyframes fadeInUp {
   0% {
     opacity: 0;
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
-.box_shadow {
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+.appear {
+  animation: appearAnimation 0.6s ease-out;
+}
+
+@keyframes appearAnimation {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Modern shadows */
+.shadow-modern {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-modern-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-modern-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }

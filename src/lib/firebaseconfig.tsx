@@ -16,6 +16,20 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+// Debug: Check if Firebase config is loaded
+if (typeof window !== 'undefined') {
+  console.log('Firebase Config Check:', {
+    hasApiKey: !!firebaseConfig.apiKey,
+    hasProjectId: !!firebaseConfig.projectId,
+    projectId: firebaseConfig.projectId,
+  });
+  
+  if (!firebaseConfig.projectId) {
+    console.error('❌ Firebase projectId is missing! Check your .env file.');
+    console.error('Make sure you have a .env.local file with NEXT_PUBLIC_FIREBASE_* variables');
+  }
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

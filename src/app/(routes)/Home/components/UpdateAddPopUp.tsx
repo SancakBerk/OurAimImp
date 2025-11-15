@@ -110,76 +110,138 @@ export const UpdateAddPopUp = (): JSX.Element => {
   }, [values.isRequired]); // isRequired değiştiğinde çalışır.
 
   return (
-    <div className=" smoothVisible ">
-      <div className="w-screen h-screen fixed top-0 left-0 bg-gray-500 opacity-45 flex justify-center items-center"></div>
-      <div className="w-screen h-screen fixed top-0 left-0 flex justify-center items-center z-50  ">
+    <div className="smoothVisible">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50"
+        onClick={() => {
+          dispatch(
+            setPopupOpen({
+              isPopupOpen: false,
+              isUpdate: false,
+              expenseData: undefined,
+            })
+          );
+        }}
+      ></div>
+
+      {/* Modal */}
+      <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-none px-4">
         <form
-          className="w-[70%] h-[70%] flex flex-col gap-5 bg-white dark:bg-darkBackground  justify-center items-center rounded-md max-sm:w-[80%] max-sm:h-[80%] "
+          className="glass-effect w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col gap-6 p-6 md:p-8 rounded-2xl shadow-2xl pointer-events-auto"
           onSubmit={handleSubmit}
+          onClick={(e) => e.stopPropagation()}
         >
-          <InputComponent
-            name="name"
-            parentClassName="w-[75%]"
-            placeholder="Name"
-            value={values.name}
-            className={`${errors.name && "border-red-500"}`}
-            onChange={handleChange}
-          />
-
-          <InputComponent
-            name="price"
-            parentClassName="w-[75%]"
-            placeholder="Price"
-            className={`${errors.price && "border-red-500"}`}
-            value={values.price}
-            onChange={handleChange}
-          />
-          <InputComponent
-            name="imageUrl"
-            parentClassName="w-[75%]"
-            placeholder="Image Url"
-            className={`${errors.imageUrl && "border-red-500"}`}
-            value={values.imageUrl}
-            onChange={handleChange}
-          />
-
-          <InputComponent
-            name="amount"
-            parentClassName="w-[75%]"
-            placeholder="Amount"
-            value={values.amount}
-            className={`${errors.amount && "border-red-500"}`}
-            onChange={handleChange}
-          />
-          <div className="w-[75%] ">
-            <Select
-              name="isRequired"
-              className={`dark:text-white dark:border-white border`}
-              value={values.isRequired}
-              label="İs Required"
-              onChange={handleChange}
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {homePageSlice.isPopupOpen.isUpdate
+                ? "Ürünü Güncelle"
+                : "Yeni Ürün Ekle"}
+            </h2>
+            <button
+              type="button"
+              onClick={() => {
+                dispatch(
+                  setPopupOpen({
+                    isPopupOpen: false,
+                    isUpdate: false,
+                    expenseData: undefined,
+                  })
+                );
+              }}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
-              <MenuItem value={0}>Request</MenuItem>
-              <MenuItem value={1}>Required</MenuItem>
-            </Select>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
-          <InputComponent
-            name="rate"
-            parentClassName="w-[75%]"
-            className={`${errors.rate && "border-red-500"} ${
-              values.isRequired == 1
-                ? "bg-gray-300 dark:bg-gray-700"
-                : "bg-white dark:bg-darkBackground"
-            }`}
-            placeholder="Rate 1 - 10"
-            value={values.rate}
-            disabled={values.isRequired == 1 ? true : false}
-            onChange={handleChange}
-          />
 
-          <div className="flex w-[75%]  justify-center items-center  gap-x-10  ">
+          {/* Form Fields */}
+          <div className="space-y-4">
+            <InputComponent
+              name="name"
+              label="Ürün Adı"
+              placeholder="Ürün adını giriniz"
+              value={values.name}
+              error={errors.name}
+              onChange={handleChange}
+            />
+
+            <InputComponent
+              name="price"
+              type="number"
+              label="Fiyat (TL)"
+              placeholder="Fiyat giriniz"
+              value={values.price}
+              error={errors.price}
+              onChange={handleChange}
+            />
+
+            <InputComponent
+              name="imageUrl"
+              label="Görsel URL"
+              placeholder="Görsel URL'si giriniz"
+              value={values.imageUrl}
+              error={errors.imageUrl}
+              onChange={handleChange}
+            />
+
+            <InputComponent
+              name="amount"
+              type="number"
+              label="Miktar"
+              placeholder="Miktar giriniz"
+              value={values.amount}
+              error={errors.amount}
+              onChange={handleChange}
+            />
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Tür
+              </label>
+              <Select
+                name="isRequired"
+                className="w-full dark:text-white dark:border-gray-600 border border-gray-300 rounded-lg"
+                value={values.isRequired}
+                onChange={handleChange}
+              >
+                <MenuItem value={0}>İstek</MenuItem>
+                <MenuItem value={1}>İhtiyaç</MenuItem>
+              </Select>
+            </div>
+
+            <InputComponent
+              name="rate"
+              type="number"
+              label="İstek Derecesi (1-10)"
+              placeholder="1-10 arası değer giriniz"
+              value={values.rate}
+              error={errors.rate}
+              disabled={values.isRequired == 1}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <ButtonComponent
-              text="Close"
+              type="button"
+              variant="secondary"
+              className="flex-1"
+              text="İptal"
               onClick={() => {
                 dispatch(
                   setPopupOpen({
@@ -191,8 +253,10 @@ export const UpdateAddPopUp = (): JSX.Element => {
               }}
             />
             <ButtonComponent
-              text={homePageSlice.isPopupOpen.isUpdate ? "Update" : "Add"}
               type="submit"
+              variant="primary"
+              className="flex-1"
+              text={homePageSlice.isPopupOpen.isUpdate ? "Güncelle" : "Ekle"}
             />
           </div>
         </form>

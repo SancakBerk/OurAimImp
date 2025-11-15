@@ -18,16 +18,28 @@ import {
   updateExpenseDataByDocumentId,
 } from "@/services/expensesService";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { FiSearch, FiFilter } from "react-icons/fi";
+import { BiSortAlt2, BiSortUp, BiSortDown } from "react-icons/bi";
 import "@/app/(routes)/Home/style.css";
 import { motion } from "framer-motion";
+import { useLocale } from "@/contexts/LocaleContext";
 export const Expenses = () => {
   const dispatch = useDispatch();
+  const { t } = useLocale();
 
   const homePageSlice = useSelector((state: RootState) => state.homePageSlice);
   const globalSlice = useSelector((state: RootState) => state.globalSlice);
   const [expensesData, setExpensesData] = useState<
     expensesDataWithDocumentId[]
   >([]);
+  const [filteredData, setFilteredData] = useState<
+    expensesDataWithDocumentId[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "price" | "rate">("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [filterType, setFilterType] = useState<"all" | "need" | "want">("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (homePageSlice.currentExpenseData.length > 0) {
@@ -44,7 +56,45 @@ export const Expenses = () => {
 
   useEffect(() => {
     setExpensesData(homePageSlice.currentExpenseData);
+    setFilteredData(homePageSlice.currentExpenseData);
   }, [homePageSlice.currentExpenseData]);
+
+  useEffect(() => {
+    let result = [...expensesData];
+
+    // Search filter
+    if (searchQuery) {
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Type filter
+    if (filterType !== "all") {
+      result = result.filter((item) =>
+        filterType === "need" ? item.isRequired : !item.isRequired
+      );
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortBy === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortBy === "price") {
+        const priceA = a.price * a.amount * homePageSlice.currentExchangeRates.dollar.Alış;
+        const priceB = b.price * b.amount * homePageSlice.currentExchangeRates.dollar.Alış;
+        comparison = priceA - priceB;
+      } else {
+        comparison = a.rate - b.rate;
+      }
+      
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    setFilteredData(result);
+  }, [searchQuery, sortBy, sortOrder, filterType, expensesData, homePageSlice.currentExchangeRates]);
 
   const getExpenses = async () => {
     await getUserExpensesByUserId(globalSlice.userId).then(
@@ -61,92 +111,216 @@ export const Expenses = () => {
     <div
       className={`${
         globalSlice.isDarkMode && "dark"
-      } relative  w-screen h-screen   `}
+      } relative w-full h-screen`}
     >
-      {/* <div className="scrollWatch"></div> */}
-      <div
-        className={`flex   flex-wrap justify-center w-full h-screen overflow-y-scroll  p-10 relative dark:bg-darkBackground opacity-90 pl-[10vw]    max-sm:pt-[10vh] max-sm:px-0   `}
-      >
-        {expensesData.map((eachData: expensesDataWithDocumentId) => {
+      <div className="w-full h-screen overflow-y-scroll relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        {/* Search and Filter Bar */}
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 p-4">
+          <div className="max-w-7xl mx-auto space-y-4">
+            {/* Search Bar */}
+            <div className="flex gap-3 items-center">
+              <div className="flex-1 relative">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                <input
+                  type="text"
+                  placeholder={t('expenses.search') || 'Ürün ara...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`p-3 rounded-lg border transition-all ${
+                  showFilters
+                    ? 'bg-blue-500 border-blue-500 text-white'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <FiFilter className="text-xl" />
+              </button>
+            </div>
+
+            {/* Filters */}
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="flex flex-wrap gap-3"
+              >
+                {/* Sort */}
+                <div className="flex items-center gap-2">
+                  <BiSortAlt2 className="text-gray-600 dark:text-gray-400" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="name">{t('expenses.sortByName') || 'İsme Göre'}</option>
+                    <option value="price">{t('expenses.sortByPrice') || 'Fiyata Göre'}</option>
+                    <option value="rate">{t('expenses.sortByRate') || 'Dereceye Göre'}</option>
+                  </select>
+                  
+                  {/* Sort Order Toggle */}
+                  <button
+                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                    title={sortOrder === 'asc' ? (t('expenses.ascending') || 'Artan') : (t('expenses.descending') || 'Azalan')}
+                  >
+                    {sortOrder === 'asc' ? (
+                      <BiSortUp className="text-xl" />
+                    ) : (
+                      <BiSortDown className="text-xl" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Filter Type */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setFilterType('all')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      filterType === 'all'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {t('expenses.all') || 'Tümü'}
+                  </button>
+                  <button
+                    onClick={() => setFilterType('need')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      filterType === 'need'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {t('expenses.need') || 'İhtiyaç'}
+                  </button>
+                  <button
+                    onClick={() => setFilterType('want')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      filterType === 'want'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {t('expenses.want') || 'İstek'}
+                  </button>
+                </div>
+
+                {/* Results Count */}
+                <div className="ml-auto flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <span className="font-medium">{filteredData.length}</span>
+                  <span className="ml-1">{t('expenses.results') || 'sonuç'}</span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        <div className="flex flex-wrap justify-center p-6 lg:p-10 max-sm:px-4 gap-6">
+        {filteredData.map((eachData: expensesDataWithDocumentId) => {
           return (
-            <div
-              className="  box_shadow w-[45%] h-[50%] m-5 flex flex-wrap  justify-between   border border-blue-950 relative  bg-white bg-opacity-80 dark:bg-opacity-0  dark:border-white rounded-md border-opacity-50 p-6 flex-row  appear max-xl:w-[90%] max-sm:h-[60%]   "
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] h-auto max-h-[600px] p-6 flex flex-col gap-4"
               key={eachData.documentId}
             >
-              <div className="  w-full h-[60%] flex justify-center overflow-hidden mb-2 max-sm:mb-0 ">
+              {/* Image Section */}
+              <div className="relative w-full h-64 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
                 <Image
                   loading="lazy"
                   src={eachData.imageUrl}
-                  alt="Image"
-                  blurDataURL={eachData.imageUrl}
-                  width={500}
-                  height={300}
-                  className=" bg-contain bg-center bg-no-repeat h-full rounded-md hover:scale-105 transition-transform duration-1000    "
+                  alt={eachData.name}
+                  fill
+                  className="object-contain hover:scale-110 transition-transform duration-500"
                 />
               </div>
-              <div className="w-full h-[30%]  flex justify-center  ">
-                <div className="flex flex-wrap flex-col gap-4 w-[70%] h-full justify-evenly  dark:text-white font-semibold  gap-x-2 max-2xl:text-sm max-sm:gap-0   max-sm:text-xs max-sm:w-[100%] max-sm:gap-y-1 ">
-                  <div className="flex text-center  ">
-                    <p>İsim: </p>
-                    <p>{eachData.name.toUpperCase()} </p>
-                  </div>
-                  <div className="flex text-center  ">
-                    <p>Ne kadar İstiyorsun: </p>
-                    <p>{eachData.rate}/10</p>
-                  </div>
 
-                  <div className="flex  text-center ">
-                    <p>Ücret: </p>
-                    <p>
-                      {" "}
-                      {(
-                        eachData.price *
-                        homePageSlice.currentExchangeRates.dollar.Alış *
-                        eachData.amount
-                      ).toFixed(0)}
-                      TL ({" "}
-                      {(
-                        eachData.price *
-                        homePageSlice.currentExchangeRates.dollar.Alış
-                      ).toFixed(0)}{" "}
-                      x {eachData.amount})
-                    </p>
-                  </div>
+              {/* Content Section */}
+              <div className="flex-1 flex flex-col gap-3">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
+                    {eachData.name.toUpperCase()}
+                  </h3>
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
                     className={`${
-                      eachData.isRequired ? "bg-blue-500" : "bg-gray-500"
-                    } flex text-center w-24  justify-center items-center rounded-full h-11`}
+                      eachData.isRequired
+                        ? "bg-blue-500"
+                        : "bg-gray-400 dark:bg-gray-600"
+                    } px-3 py-1 rounded-full text-white text-xs font-medium whitespace-nowrap`}
                   >
-                    <p>{eachData.isRequired ? "İhtiyaç" : "İstek"}</p>
+                    {eachData.isRequired ? "İhtiyaç" : "İstek"}
                   </motion.div>
                 </div>
-                <div className="h-full flex flex-col dark:text-white font-semibold  max-sm:text-xs ">
-                  <p>Hesapla:</p>
-                  <Checkbox
-                    checked={eachData.isCalculating}
-                    color="success"
-                    onChange={async (e) => {
-                      await updateExpenseDataByDocumentId(eachData.documentId, {
-                        amount: eachData.amount,
-                        imageUrl: eachData.imageUrl,
-                        isCalculating: e.target.checked,
-                        isRequired: eachData.isRequired,
-                        name: eachData.name,
-                        price: eachData.price,
-                        rate: eachData.rate,
-                        userId: eachData.userId,
-                      });
-                      dispatch(setExpenseDataChanged(true));
-                    }}
-                  />
+
+                <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <span className="font-medium">İstek Derecesi:</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                      {eachData.rate}/10
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <span className="font-medium">Toplam Ücret:</span>
+                    <div className="text-right">
+                      <span className="font-bold text-green-600 dark:text-green-400">
+                        {(
+                          eachData.price *
+                          homePageSlice.currentExchangeRates.dollar.Alış *
+                          eachData.amount
+                        ).toFixed(0)}{" "}
+                        TL
+                      </span>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {(
+                          eachData.price *
+                          homePageSlice.currentExchangeRates.dollar.Alış
+                        ).toFixed(0)}{" "}
+                        × {eachData.amount}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <span className="font-medium">Hesaplamaya Dahil:</span>
+                    <Checkbox
+                      checked={eachData.isCalculating}
+                      color="success"
+                      size="small"
+                      onChange={async (e) => {
+                        await updateExpenseDataByDocumentId(
+                          eachData.documentId,
+                          {
+                            amount: eachData.amount,
+                            imageUrl: eachData.imageUrl,
+                            isCalculating: e.target.checked,
+                            isRequired: eachData.isRequired,
+                            name: eachData.name,
+                            price: eachData.price,
+                            rate: eachData.rate,
+                            userId: eachData.userId,
+                          }
+                        );
+                        dispatch(setExpenseDataChanged(true));
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className=" w-full h-[10%]  flex justify-center gap-5    ">
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                 <ButtonComponent
-                  className="bg-opacity-20    "
-                  width="w-[20%]"
+                  className="flex-1 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 border-red-200 dark:border-red-800"
                   onClick={() => {
                     dispatch(
                       setDeletePopUpConfirmation({
@@ -156,11 +330,12 @@ export const Expenses = () => {
                     );
                   }}
                 >
-                  <p className="text-red-600 ">Sil</p>
+                  <p className="text-red-600 dark:text-red-400 font-medium">
+                    Sil
+                  </p>
                 </ButtonComponent>
                 <ButtonComponent
-                  className="bg-opacity-20"
-                  width="w-[20%]"
+                  className="flex-1 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 border-blue-200 dark:border-blue-800"
                   onClick={() => {
                     dispatch(
                       setPopupOpen({
@@ -170,31 +345,40 @@ export const Expenses = () => {
                       })
                     );
                   }}
-                  text="Güncelle"
-                />
+                >
+                  <p className="text-blue-600 dark:text-blue-400 font-medium">
+                    Güncelle
+                  </p>
+                </ButtonComponent>
               </div>
-            </div>
+            </motion.div>
           );
         })}
-        <div className="box_shadow w-[45%] h-[50%] m-5 flex flex-wrap  border border-black dark:border-white rounded-md border-opacity-50 p-3 flex-row justify-center  bg-white bg-opacity-80 dark:bg-darkBackground appear max-xl:w-[100%] ">
-          <div className="w-full h-full  flex justify-center items-center">
-            <ButtonComponent
-              className=" text-[100px] jumping "
-              width="w-[10%]"
-              onClick={() => {
-                dispatch(
-                  setPopupOpen({
-                    isPopupOpen: true,
-                    isUpdate: false,
-                    expenseData: undefined,
-                  })
-                );
-              }}
-            >
-              <MdOutlineAddCircleOutline className=" dark:text-white" />
-            </ButtonComponent>
+
+        {/* Add New Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="card card-hover w-full lg:w-[calc(50%-1.5rem)] xl:w-[calc(45%-1.5rem)] h-[400px] flex items-center justify-center cursor-pointer group"
+          onClick={() => {
+            dispatch(
+              setPopupOpen({
+                isPopupOpen: true,
+                isUpdate: false,
+                expenseData: undefined,
+              })
+            );
+          }}
+        >
+          <div className="text-center">
+            <MdOutlineAddCircleOutline className="text-8xl text-gray-400 dark:text-gray-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+            <p className="text-lg font-medium text-gray-600 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400">
+              Yeni Ürün Ekle
+            </p>
           </div>
-        </div>
+        </motion.div>
+      </div>
       </div>
     </div>
   );

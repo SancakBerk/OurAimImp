@@ -146,16 +146,20 @@ const HomePage = (): JSX.Element => {
   return (
     <div className={`${isDarkMode && "dark"}`}>
       <div
-        className={`w-screen h-screen flex relative  ${
+        className={`w-full h-screen flex relative  ${
           isDarkMode ? "bg-DarkModeImage" : "bg-LightModeImage"
         }`}
       >
-        <div className="w-[10%] h-full fixed top-0 left-0  z-50  max-sm:w-full max-sm:h-[8vh] ">
+        {/* Sidebar - Fixed */}
+        <div className="w-[10vw] h-full fixed top-0 left-0 z-50 max-sm:w-full max-sm:h-[8vh]">
           <VerticalNavbar />
         </div>
-        <div className=" w-[100%] h-screen">
+        
+        {/* Main Content - Offset by sidebar width */}
+        <div className="w-full h-screen ml-[10vw] max-sm:ml-0 max-sm:mt-[8vh]">
           <Expenses />
         </div>
+        
         {homePageSlice.isPopupOpen.isPopupOpen && <UpdateAddPopUp />}
         {homePageSlice.deletePopUpConfirmation.showDeletePopUp && (
           <ConfirmDeletePopUp />
