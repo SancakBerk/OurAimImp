@@ -344,7 +344,7 @@ export const Expenses = () => {
                               ? "Ürün hesaplamaya dahil edildi!"
                               : "Ürün hesaplamadan çıkarıldı!"
                           );
-                        } catch (error) {
+                        } catch {
                           toast.error("İşlem sırasında bir hata oluştu.");
                         }
                       }}
