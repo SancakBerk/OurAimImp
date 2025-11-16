@@ -246,7 +246,6 @@ export const Expenses = () => {
                     fill
                     className="object-contain hover:scale-110 transition-transform duration-500"
                     onError={(e) => {
-                      // Fallback to placeholder if image fails to load
                       e.currentTarget.style.display = 'none';
                     }}
                   />

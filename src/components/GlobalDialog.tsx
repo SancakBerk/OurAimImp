@@ -1,6 +1,5 @@
 import { globalDialogEachButtonType } from "@/types/types";
 import React from "react";
-import { ButtonComponent } from "./ButtonComponent";
 
 interface globalDialogProps extends React.HTMLAttributes<HTMLDivElement> {
   buttons?: globalDialogEachButtonType[];

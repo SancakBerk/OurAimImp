@@ -1,14 +1,13 @@
 "use client";
-import { ButtonComponent } from "@/components/ButtonComponent";
+import React, { JSX } from "react";
 import {
   setDeletePopUpConfirmation,
   setExpenseDataChanged,
 } from "@/redux/slices/homePageSlice";
 import { RootState } from "@/redux/store";
-import { deleteExpensesByDocumentId } from "@/services/expensesService";
-import { JSX } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { deleteExpensesByDocumentId } from "@/services/expensesService";
 
 export const ConfirmDeletePopUp = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -88,7 +87,7 @@ export const ConfirmDeletePopUp = (): JSX.Element => {
                   );
                   dispatch(setExpenseDataChanged(true));
                   toast.success("Ürün başarıyla silindi!");
-                } catch (error) {
+                } catch {
                   toast.error("Ürün silinirken bir hata oluştu.");
                 }
               }}

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, JSX } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 interface ImageUploadProps {
   value?: string;
@@ -105,16 +106,29 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* Preview */}
       {preview && (
         <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              toast.error("Resim yüklenemedi. Geçerli bir URL giriniz.");
-              setPreview("");
-              e.currentTarget.style.display = 'none';
-            }}
-          />
+          {preview.startsWith('data:image/') ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full h-full object-contain"
+              onError={() => {
+                toast.error("Resim yüklenemedi.");
+                setPreview("");
+              }}
+            />
+          ) : (
+            <Image
+              src={preview}
+              alt="Preview"
+              fill
+              className="object-contain"
+              onError={() => {
+                toast.error("Resim yüklenemedi. Geçerli bir URL giriniz.");
+                setPreview("");
+              }}
+            />
+          )}
           <button
             type="button"
             onClick={handleRemove}
