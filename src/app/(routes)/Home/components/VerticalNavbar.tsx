@@ -13,6 +13,7 @@ import { setModeToRedux } from "@/redux/slices/globalSlice";
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { redirect } from "next/navigation";
 import { useLocale } from "@/contexts/LocaleContext";
+import { toast } from "react-toastify";
 
 const VerticalNavbar = (): JSX.Element => {
   const [visibleComponentId, setVisibleComponentId] = useState<number | null>(
@@ -23,6 +24,15 @@ const VerticalNavbar = (): JSX.Element => {
   const isDarkMode = useSelector(
     (state: RootState) => state.globalSlice.isDarkMode
   );
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("session");
+    toast.success("Çıkış başarılı! Görüşmek üzere! 👋");
+    setTimeout(() => {
+      redirect("/Login");
+    }, 500);
+  };
 
   const verticalNavbarData: verticalNavbarType[] = [
     {
@@ -115,11 +125,7 @@ const VerticalNavbar = (): JSX.Element => {
           <ButtonComponent
             variant="danger"
             className="w-full text-sm"
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("session");
-              redirect("/Login");
-            }}
+            onClick={handleLogout}
             text={t('common.logout')}
           />
         </div>
@@ -136,11 +142,7 @@ const VerticalNavbar = (): JSX.Element => {
           />
           <LanguageSelector />
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("session");
-              redirect("/Login");
-            }}
+            onClick={handleLogout}
             className="w-10 h-10 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
             title={t('common.logout')}
           >

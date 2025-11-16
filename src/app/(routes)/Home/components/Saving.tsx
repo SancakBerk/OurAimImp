@@ -10,6 +10,7 @@ import {
   totalSavingTypeWithDocumentId,
 } from "@/types/types";
 import React, { JSX, useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPerSavingsByUserId,
@@ -50,10 +51,21 @@ export const SavingComponent = (): JSX.Element => {
     useState(true);
   const [showMonthlyChart, setShowMonthlyChart] = useState(false);
   const [showChartsOnMobile, setShowChartsOnMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const dispatch = useDispatch();
   const valueFormatter = (item: { value: number }) => ` ${item.value}% `;
   const leftScrollRef = useDragScroll();
   const rightScrollRef = useDragScroll();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const calculateBarChartData = useCallback(() => {
     if (!globalSlice.userId || globalSlice.userId.trim() === '') {
@@ -230,7 +242,17 @@ export const SavingComponent = (): JSX.Element => {
           );
           calculateBarChartData();
           clearValues();
+          toast.success(
+            isTotalSavingProcessAdding
+              ? "Birikim başarıyla eklendi!"
+              : "Birikim başarıyla çıkarıldı!"
+          );
+        } else {
+          toast.error("Birikim işlemi sırasında bir hata oluştu.");
         }
+      }).catch((error) => {
+        console.error("Saving error:", error);
+        toast.error("Birikim işlemi sırasında bir hata oluştu.");
       });
     },
   });
@@ -361,18 +383,18 @@ export const SavingComponent = (): JSX.Element => {
         </div>
 
         {/* Right Side - Charts */}
-        <div ref={rightScrollRef} className={`${showChartsOnMobile ? 'block' : 'hidden'} lg:block lg:w-1/3 w-full h-full overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900/50`}>
-          <div className="space-y-6">
+        <div ref={rightScrollRef} className={`${showChartsOnMobile ? 'block' : 'hidden'} lg:block lg:w-1/3 w-full h-full overflow-y-auto p-3 sm:p-6 bg-gray-50 dark:bg-gray-900/50`}>
+          <div className="space-y-4 sm:space-y-6">
             {/* Pie Chart */}
-            <div className="card p-6 hidden lg:block">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="card p-3 sm:p-6 hidden lg:block">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
                 Birikim Dağılımı
               </h3>
-              <div className="flex justify-center">
+              <div className="flex justify-center overflow-x-auto">
                 <ThemeProvider theme={themeState}>
                   <PieChart
-                    width={400}
-                    height={300}
+                    width={isMobile ? Math.min(350, window.innerWidth - 60) : 400}
+                    height={isMobile ? 250 : 300}
                     series={
                       pieChartData.length > 0
                         ? [
@@ -392,51 +414,83 @@ export const SavingComponent = (): JSX.Element => {
                             },
                           ]
                     }
+                    slotProps={{
+                      legend: {
+                        direction: isMobile ? 'column' : 'row',
+                        position: { vertical: 'bottom', horizontal: 'middle' },
+                        labelStyle: { fontSize: isMobile ? 9 : 10 },
+                        itemMarkHeight: isMobile ? 8 : 10,
+                        itemMarkWidth: isMobile ? 8 : 10,
+                        padding: isMobile ? 1 : 2,
+                        itemGap: isMobile ? 4 : 8,
+                      },
+                    }}
+                    margin={{
+                      left: isMobile ? 10 : 20,
+                      right: isMobile ? 10 : 20,
+                      top: isMobile ? 10 : 20,
+                      bottom: isMobile ? 80 : 60,
+                    }}
                   />
                 </ThemeProvider>
               </div>
             </div>
 
             {/* Bar Chart */}
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="card p-3 sm:p-6">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                   Aylık Birikim Grafiği
                 </h3>
                 <button
                   type="button"
                   onClick={() => setShowMonthlyChart(!showMonthlyChart)}
-                  className="lg:hidden px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+                  className="lg:hidden px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm font-medium transition-colors"
                 >
                   {showMonthlyChart ? 'Gizle' : 'Göster'}
                 </button>
               </div>
-              <div className={`${showMonthlyChart ? 'block' : 'hidden'} lg:block`}>
-                <ThemeProvider theme={themeState}>
-                  <BarChart
-                    height={300}
-                    series={barChartData}
-                    xAxis={[
-                      {
-                        data: monthNamesShort,
-                        scaleType: "band",
-                        tickLabelStyle: { fontSize: 11 },
-                      },
-                    ]}
-                    yAxis={[
-                      {
-                        tickLabelStyle: { fontSize: 11 },
-                      },
-                    ]}
-                    slotProps={{
-                      legend: {
-                        labelStyle: { fontSize: 11 },
-                        itemMarkHeight: 12,
-                        itemMarkWidth: 12,
-                      },
-                    }}
-                  />
-                </ThemeProvider>
+              <div className={`${showMonthlyChart ? 'block' : 'hidden'} lg:block overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0`}>
+                <div className="min-w-[300px]">
+                  <ThemeProvider theme={themeState}>
+                    <BarChart
+                      height={300}
+                      series={barChartData}
+                      xAxis={[
+                        {
+                          data: monthNamesShort,
+                          scaleType: "band",
+                          tickLabelStyle: { 
+                            fontSize: isMobile ? 9 : 11,
+                            angle: isMobile ? -45 : 0,
+                          },
+                        },
+                      ]}
+                      yAxis={[
+                        {
+                          tickLabelStyle: { fontSize: isMobile ? 9 : 11 },
+                        },
+                      ]}
+                      slotProps={{
+                        legend: {
+                          direction: isMobile ? 'column' : 'row',
+                          position: { vertical: 'top', horizontal: 'left' },
+                          labelStyle: { fontSize: isMobile ? 9 : 11 },
+                          itemMarkHeight: isMobile ? 8 : 12,
+                          itemMarkWidth: isMobile ? 8 : 12,
+                          padding: isMobile ? 2 : 5,
+                          itemGap: isMobile ? 3 : 5,
+                        },
+                      }}
+                      margin={{
+                        left: isMobile ? 35 : 50,
+                        right: isMobile ? 10 : 20,
+                        top: isMobile ? 100 : 50,
+                        bottom: isMobile ? 70 : 50,
+                      }}
+                    />
+                  </ThemeProvider>
+                </div>
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { JSX, useEffect, useRef, useState } from "react";
 import { loginInformationSchema } from "@/utils/loginInformationSchemas";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { collection, getDocs, query, where, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebaseconfig";
@@ -127,7 +127,7 @@ const LoginForm = (): JSX.Element => {
 
   const createAccount = async (): Promise<void> => {
     if (values.password !== values.passwordCheck) {
-      toast.error("Passwords are not the same");
+      toast.error("Şifreler eşleşmiyor!");
       return;
     }
     await createUserService({
@@ -153,7 +153,14 @@ const LoginForm = (): JSX.Element => {
       dispatch(setUserIdToRedux(res.data.userId));
       console.log('✅ Register - userId dispatched to Redux:', res.data.userId);
       
-      router.push("/Home");
+      toast.success("Kayıt başarılı! Yönlendiriliyorsunuz...");
+      
+      setTimeout(() => {
+        router.push("/Home");
+      }, 500);
+    }).catch((error) => {
+      console.error("❌ Register error:", error);
+      toast.error("Kayıt sırasında bir hata oluştu.");
     });
   };
 
@@ -247,19 +254,6 @@ const LoginForm = (): JSX.Element => {
           </div>
         </div>
       </form>
-      <ToastContainer 
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        limit={3}
-        style={{ maxWidth: '400px' }}
-      />
     </>
   );
 };

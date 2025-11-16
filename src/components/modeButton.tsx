@@ -8,6 +8,7 @@ import sunImage from "../../public/sun.png";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { setModeToRedux } from "@/redux/slices/globalSlice";
+import { toast } from "react-toastify";
 
 interface modeButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   width?: string;
@@ -28,6 +29,10 @@ const ModeButton: FC<modeButtonProps> = ({
   const handleMode = (): void => {
     localStorage.setItem("darkMode", JSON.stringify(!darkMode));
     dispatch(setModeToRedux(!darkMode));
+    toast.info(
+      !darkMode ? "Karanlık mod etkinleştirildi 🌙" : "Aydınlık mod etkinleştirildi ☀️",
+      { autoClose: 2000 }
+    );
   };
 
   return (

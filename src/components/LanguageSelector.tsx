@@ -1,15 +1,24 @@
 "use client";
 import React from 'react';
 import { useLocale } from '@/contexts/LocaleContext';
+import { toast } from 'react-toastify';
 
 export const LanguageSelector: React.FC<{ className?: string }> = ({ className }) => {
   const { locale, setLocale } = useLocale();
+
+  const handleLanguageChange = (newLocale: 'tr' | 'en') => {
+    setLocale(newLocale);
+    toast.info(
+      newLocale === 'tr' ? 'Dil Türkçe olarak değiştirildi 🇹🇷' : 'Language changed to English 🇬🇧',
+      { autoClose: 2000 }
+    );
+  };
 
   return (
     <div className={`relative ${className}`}>
       <select
         value={locale}
-        onChange={(e) => setLocale(e.target.value as 'tr' | 'en')}
+        onChange={(e) => handleLanguageChange(e.target.value as 'tr' | 'en')}
         className="h-10 px-3 pr-8 rounded-lg border transition-all duration-200 cursor-pointer
           bg-gray-100 dark:bg-gray-800 
           border-gray-300 dark:border-gray-600

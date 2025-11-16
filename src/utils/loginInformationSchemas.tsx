@@ -25,7 +25,25 @@ export const loginInformationSchema = yup.object().shape({
 
 export const updateExpensesSchema = yup.object().shape({
   amount: yup.number().integer("Amount alanı sayı olmalıdır").min(0).required(),
-  imageUrl: yup.string().url("ImageUrl alanı url olmalıdır").required(),
+  imageUrl: yup
+    .string()
+    .test(
+      "is-url-or-base64",
+      "Geçerli bir URL veya resim giriniz",
+      function (value) {
+        if (!value || value === "") return true; // Optional field
+        // Check if it's a valid URL
+        try {
+          new URL(value);
+          return true;
+        } catch {
+          // Check if it's a base64 image
+          return value.startsWith("data:image/");
+        }
+      }
+    )
+    .optional()
+    .nullable(),
   isRequired: yup.boolean(),
   name: yup.string().required("Name alanı boş bırakılamaz"),
   price: yup

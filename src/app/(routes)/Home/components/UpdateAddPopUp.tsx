@@ -1,5 +1,6 @@
 import { ButtonComponent } from "@/components/ButtonComponent";
 import { InputComponent } from "@/components/InputComponent";
+import { ImageUpload } from "@/components/ImageUpload";
 import {
   setExpenseDataChanged,
   setPopupOpen,
@@ -64,7 +65,7 @@ export const UpdateAddPopUp = (): JSX.Element => {
         
         const object: expensesType = {
           amount: Number(values.amount),
-          imageUrl: values.imageUrl as string,
+          imageUrl: values.imageUrl || "",
           name: values.name as string,
           price: getFloatValueAsFixed2(
             parseFloat(values.price) /
@@ -91,8 +92,10 @@ export const UpdateAddPopUp = (): JSX.Element => {
                 })
               );
               dispatch(setExpenseDataChanged(true));
+              toast.success("Ürün başarıyla güncellendi!");
             } else {
               console.log("error", res.message);
+              toast.error("Ürün güncellenirken bir hata oluştu.");
             }
           });
         } else {
@@ -106,7 +109,9 @@ export const UpdateAddPopUp = (): JSX.Element => {
                 })
               );
               dispatch(setExpenseDataChanged(true));
-              toast.success("Added Successfully");
+              toast.success("Ürün başarıyla eklendi!");
+            } else {
+              toast.error("Ürün eklenirken bir hata oluştu.");
             }
           });
         }
@@ -199,13 +204,10 @@ export const UpdateAddPopUp = (): JSX.Element => {
               onChange={handleChange}
             />
 
-            <InputComponent
-              name="imageUrl"
-              label="Görsel URL"
-              placeholder="Görsel URL'si giriniz"
+            <ImageUpload
               value={values.imageUrl}
+              onChange={(imageUrl) => setFieldValue("imageUrl", imageUrl)}
               error={errors.imageUrl}
-              onChange={handleChange}
             />
 
             <InputComponent

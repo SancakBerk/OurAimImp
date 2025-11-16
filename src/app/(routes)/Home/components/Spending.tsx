@@ -4,6 +4,7 @@ import {
   serviceReturnType,
 } from "@/types/types";
 import React, { JSX, useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
@@ -45,8 +46,13 @@ const Spending = (): JSX.Element => {
       ).then((res: serviceReturnType) => {
         if (res.statusCode === 200) {
           dispatch(setTotalSavingsDataChanged(true));
+          toast.success("Hedef tarihiniz başarıyla güncellendi!");
+        } else {
+          toast.error("Tarih güncellenirken bir hata oluştu.");
         }
       });
+    } else {
+      toast.warning("Lütfen bir tarih seçiniz.");
     }
   };
   const updateAimDateGlobalDialogButtons: globalDialogEachButtonType[] = [
